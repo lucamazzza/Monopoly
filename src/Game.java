@@ -7,9 +7,12 @@ public class Game {
 
     public void start(){
         ScannerUtils scannerUtils = new ScannerUtils();
-        for(int i = 0; i < Constant.PLAYER_NUMBER; i++){
+        Bank bank = new Bank();
+
+        for(int i = 0; i < Constant.PLAYER_NUMBER; i++) {
             players[i] = new Player(scannerUtils.readStringAndEnsureIsNotEmptyOrWhiteSpaces(), scannerUtils.readCharAndEnsureIsNotEmptyOrWhiteSpaces());
             System.out.println("Player " + players[i].getName() + " created");
+            bank.setAmount(bank.getAmount()-Constant.PLAYER_START_AMOUNT);
         }
     }
 }
