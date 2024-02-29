@@ -22,7 +22,6 @@ public class Game {
      *
      */
     private ScannerUtils scannerUtils;
-
     /**
      *
      */
@@ -32,7 +31,6 @@ public class Game {
         }
         players = new Player[playersNumber];
     }
-
     /**
      *
      */
