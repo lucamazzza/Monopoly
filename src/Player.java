@@ -16,17 +16,4 @@ public class Player {
     public String getName() {
         return name;
     }
-
-    public int getBalance() {
-        return balance;
-    }
-
-    public void setBalance(int balance) {
-        this.balance = balance;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(getSymbol());
-    }
 }
