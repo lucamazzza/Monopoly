@@ -26,7 +26,7 @@ public class ScannerUtils {
         String input = "";
         boolean correctInput = false;
         while (!correctInput) {
-            System.out.println("Please enter a string:");
+            System.out.print("Please enter a string: ");
             input = scanner.nextLine();
             if (input.trim().isEmpty()) {
                 System.out.println("Error: string is empty or contains only white spaces.");
@@ -40,11 +40,13 @@ public class ScannerUtils {
         String input = "";
         boolean correctInput = false;
         while (!correctInput) {
-            System.out.println("Please enter a character:");
+            System.out.print("Please enter a character: ");
             input = scanner.nextLine();
             if (input.trim().isEmpty()) {
                 System.out.println("Error: character is empty or contains only white spaces.");
-            } else if(input.length()==1){
+            } else if(input.length()!=1){
+                System.out.println("Error: input is not a character");
+            }else{
                 correctInput = true;
             }
         }
