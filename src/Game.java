@@ -32,8 +32,27 @@ public class Game {
         players = new Player[playersNumber];
     }
     /**
-     *
+     * <p>
+     * Initializes the game by reading the game settings from the user.
+     * </p>
+     * <p>
+     * In this method, players are first assigned a name and a character, by reading
+     * the input from the user, on the console.
+     * </p>
+     * <p>
+     * The bank distributes then 2000.- to each player.
+     * </p>
      */
+    public void init() {
+        for (int i = 0; i < this.players.length; i++) {
+            this.players[i] = new Player(
+                    this.scannerUtils.readStringAndEnsureIsNotEmptyOrWhiteSpaces(),
+                    this.scannerUtils.readCharAndEnsureIsNotEmptyOrWhiteSpaces()
+            );
+            this.bank.setAmount(bank.getAmount() - Constant.PLAYER_START_AMOUNT);
+            System.out.printf("Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
+        }
+    }
     public void start(){
 //        for(int i = 0; i < Constant.PLAYER_NUMBER; i++) {
 //            System.out.println("Insert the player n" + (i+1) + " informations");
