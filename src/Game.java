@@ -1,14 +1,42 @@
+/**
+ *
+ */
 public class Game {
+    /**
+     *
+     */
     private Player[] players;
+    /**
+     *
+     */
+    private Bank bank;
+    /**
+     *
+     */
+    private Board board;
+    /**
+     *
+     */
+    private Dice dice;
+    /**
+     *
+     */
+    private ScannerUtils scannerUtils;
 
-    public Game(){
-        players = new Player[Constant.PLAYER_NUMBER];
+    /**
+     *
+     */
+    public Game(int playersNumber){
+        if (playersNumber < 2) {
+            playersNumber = 2;
+        }
+        players = new Player[playersNumber];
     }
 
+    /**
+     *
+     */
     public void start(){
-        ScannerUtils scannerUtils = new ScannerUtils();
-        Bank bank = new Bank();
-
         for(int i = 0; i < Constant.PLAYER_NUMBER; i++) {
             System.out.println("Insert the player n" + (i+1) + " informations");
             players[i] = new Player(scannerUtils.readStringAndEnsureIsNotEmptyOrWhiteSpaces(), scannerUtils.readCharAndEnsureIsNotEmptyOrWhiteSpaces());
