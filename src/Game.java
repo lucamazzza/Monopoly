@@ -30,6 +30,13 @@ public class Game {
             playersNumber = 2;
         }
         players = new Player[playersNumber];
+    /**
+     * Return the next player's index, based on the current player.
+     *
+     * @return the next player's index in `players`
+     */
+    private int getNextPlayer(){
+        return (currentPlayer + 1) % players.length;
     }
     /**
      * <p>
