@@ -47,7 +47,7 @@ public class Game {
      * @return the next player's index in `players`
      */
     private int getNextPlayer(){
-        return (currentPlayer + 1) % players.length;
+        return (this.currentPlayer + 1) % this.players.length;
     }
     /**
      * <p>
