@@ -22,6 +22,17 @@ public class Game {
      *
      */
     private ScannerUtils scannerUtils;
+
+    /**
+     * Stores the index of the current player.
+     */
+    private int currentPlayer = 0;
+
+    /**
+     * True if the game is still running.
+     */
+    private boolean isGameRunning = true;
+
     /**
      *
      */
