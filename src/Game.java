@@ -64,8 +64,8 @@ public class Game {
     public void init() {
         for (int i = 0; i < this.players.length; i++) {
             this.players[i] = new Player(
-                    this.scannerUtils.readStringAndEnsureIsNotEmptyOrWhiteSpaces(),
-                    this.scannerUtils.readCharAndEnsureIsNotEmptyOrWhiteSpaces()
+                    this.scannerUtils.readNonBlankString("Player #"+(i+1)+" name: "),
+                    this.scannerUtils.readNonBlankChar("Player #"+(i+1)+" symbol: ")
             );
             this.bank.setAmount(bank.getAmount() - Constant.PLAYER_START_AMOUNT);
             System.out.printf("Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
