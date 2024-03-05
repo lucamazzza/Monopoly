@@ -2,22 +2,27 @@
  *
  */
 public class Game {
+
     /**
      *
      */
     private Player[] players;
+
     /**
      *
      */
     private Bank bank;
+
     /**
      *
      */
     private Board board;
+
     /**
      *
      */
     private Dice dice;
+
     /**
      *
      */
@@ -49,6 +54,7 @@ public class Game {
     private int getNextPlayer(){
         return (this.currentPlayer + 1) % this.players.length;
     }
+
     /**
      * <p>
      * Initializes the game by reading the game settings from the user.
@@ -89,6 +95,7 @@ public class Game {
         System.out.println(text);
         this.scannerUtils.readKey("Press any key to start");
     }
+
     /**
      * <p>
      * Sorts the players by their balance, in order to display them accordingly
@@ -147,7 +154,6 @@ public class Game {
     /**
      *
      */
-    // TODO: Implement
     public void quit() {
         this.scannerUtils.closeScanner();
     }
