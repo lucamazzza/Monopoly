@@ -80,12 +80,21 @@ public class Game {
      */
     public void init() {
         for (int i = 0; i < this.players.length; i++) {
-            this.players[i] = new Player(
-                    this.scannerUtils.readNonBlankString("gruppo1.game.Player #"+(i+1)+" name: "),
-                    this.scannerUtils.readNonBlankChar("gruppo1.game.Player #"+(i+1)+" symbol: ")
+            Player tmp = new Player(
+                    this.scannerUtils.readNonBlankString("Player #"+(i+1)+" name: "),
+                    this.scannerUtils.readNonBlankChar("Player #"+(i+1)+" symbol: ")
             );
-            this.bank.setAmount(bank.getAmount() - Constant.PLAYER_START_AMOUNT);
-            System.out.printf("gruppo1.game.Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
+            if (i > 0 && this.isNotUniquePlayer(tmp, i)) {
+                ANSIUtility.setForegroundColor(ANSIUtility.RED);
+                System.out.println("Player name already taken, please choose another one.\n");
+                ANSIUtility.reset();
+                i--;
+                continue;
+            }
+            this.players[i] = tmp;
+            this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
+            this.players[i].receive(Constant.PLAYER_START_AMOUNT);
+            ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN , players[i].getName(), players[i].getSymbol());
         }
     }
 
