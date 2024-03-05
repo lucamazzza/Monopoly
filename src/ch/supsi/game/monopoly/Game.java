@@ -194,13 +194,15 @@ public class Game {
             int option = this.scannerUtils.readOption();
             switch (option) {
                 case 1:
-                    int roll = this.dice.roll();
+                    this.dice.roll();
                     ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
                     // TODO: Implement further
                     break;
                 case 2:
-                    this.players[this.currentPlayer].print();
                     ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
+                    continue;
+                case 3:
+                    this.isGameRunning = false;
                     break;
                 default:
                     ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
