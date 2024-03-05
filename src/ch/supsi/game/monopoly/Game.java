@@ -154,7 +154,13 @@ public class Game {
     }
 
     private void printLeaderboard() {
-
+        ANSIUtility.clearScreen();
+        ANSIUtility.setBold();
+        ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
+        this.sortPlayersByBalance();
+        for (int i = 0; i < this.players.length; i++) {
+            System.out.printf("%-20s: %d.–%n", this.players[i].getName(), this.players[i].getBalance());
+        }
     }
 
     /**
