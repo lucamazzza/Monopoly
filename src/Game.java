@@ -103,12 +103,6 @@ public class Game {
      * </p>
      */
     public void start(){
-//        for(int i = 0; i < Constant.PLAYER_NUMBER; i++) {
-//            System.out.println("Insert the player n" + (i+1) + " informations");
-//            players[i] = new Player(scannerUtils.readStringAndEnsureIsNotEmptyOrWhiteSpaces(), scannerUtils.readCharAndEnsureIsNotEmptyOrWhiteSpaces());
-//            bank.setAmount(bank.getAmount()-Constant.PLAYER_START_AMOUNT);
-//            System.out.println("Player " + players[i].getName() + " created with character " + players[i].getSymbol() + "\n");
-//        }
         this.printStartMessage();
         this.init();
         while (this.isGameRunning) {
