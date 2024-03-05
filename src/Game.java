@@ -4,27 +4,27 @@
 public class Game {
 
     /**
-     *
+     * List of players in the game
      */
     private Player[] players;
 
     /**
-     *
+     * The bank in the game
      */
     private Bank bank;
 
     /**
-     *
+     * The board of the game
      */
     private Board board;
 
     /**
-     *
+     * The dice in the game
      */
     private Dice dice;
 
     /**
-     *
+     * Utility class managing user interaction, through the console, with the game.
      */
     private ScannerUtils scannerUtils;
 
@@ -87,9 +87,7 @@ public class Game {
     }
 
     /**
-     * <p>
      * Prints the start message on the console.
-     * </p>
      */
     private void printStartMessage() {
         String text = """
@@ -173,7 +171,7 @@ public class Game {
     }
 
     /**
-     *
+     * When the game is over, this method closes the scanner.
      */
     public void quit() {
         this.scannerUtils.closeScanner();
