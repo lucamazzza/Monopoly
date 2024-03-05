@@ -1,4 +1,4 @@
-package gruppo1.game;
+package ch.supsi.game.monopoly;
 
 public class Cell {
     private int fee;

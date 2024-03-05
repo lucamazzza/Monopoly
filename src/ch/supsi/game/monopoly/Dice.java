@@ -1,4 +1,4 @@
-package gruppo1.game;
+package ch.supsi.game.monopoly;
 
 import java.util.Random;
 public class Dice {

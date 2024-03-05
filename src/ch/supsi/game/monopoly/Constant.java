@@ -1,4 +1,4 @@
-package gruppo1.game;
+package ch.supsi.game.monopoly;
 
 public final class Constant {
     public static final int BANK_START_AMOUNT = 1000000;
