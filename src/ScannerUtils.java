@@ -64,6 +64,11 @@ public class ScannerUtils {
         return this.readIntInRange(1,2,"1. View your balance \n 2. Roll the dice");
     }
 
+    void readKey(String msg){
+        System.out.println(msg);
+        scanner.nextLine();
+    }
+
     void closeScanner() {
         scanner.close();
     }
