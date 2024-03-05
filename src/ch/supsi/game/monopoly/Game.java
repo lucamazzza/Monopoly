@@ -97,6 +97,14 @@ public class Game {
             ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN , players[i].getName(), players[i].getSymbol());
         }
     }
+    private boolean isNotUniquePlayer(Player player, int j) {
+        for (int i = 0; i < this.players.length; i++) {
+            if (i != j && this.players[i].equals(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Prints the start message on the console.
