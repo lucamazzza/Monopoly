@@ -71,6 +71,24 @@ public class Game {
             System.out.printf("Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
         }
     }
+
+    /**
+     * <p>
+     * Prints the start message on the console.
+     * </p>
+     */
+    private void printStartMessage() {
+        String text = """
+                            ooo_____ooo____oooo____ooo____oo____oooo____ooooooo_____oooo____oo______oo____oo_
+                            oooo___oooo__oo____oo__oooo___oo__oo____oo__oo____oo__oo____oo__oo______oo____oo_
+                            oo_oo_oo_oo_oo______oo_oo_oo__oo_oo______oo_oo____oo_oo______oo_oo_______oo__oo__
+                            oo__ooo__oo_oo______oo_oo__oo_oo_oo______oo_oooooo___oo______oo_oo_________oo____
+                            oo_______oo__oo____oo__oo___oooo__oo____oo__oo________oo____oo__oo_________oo____
+                            oo_______oo____oooo____oo____ooo____oooo____oo__________oooo____ooooooo____oo____
+                """;
+        System.out.println(text);
+        this.scannerUtils.readKey("Press any key to start");
+    }
     public void start(){
 //        for(int i = 0; i < Constant.PLAYER_NUMBER; i++) {
 //            System.out.println("Insert the player n" + (i+1) + " informations");
