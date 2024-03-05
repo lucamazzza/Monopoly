@@ -195,13 +195,15 @@ public class Game {
             switch (option) {
                 case 1:
                     int roll = this.dice.roll();
+                    ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
                     // TODO: Implement further
                     break;
                 case 2:
                     this.players[this.currentPlayer].print();
+                    ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
                     break;
                 default:
-                    System.out.println("Invalid option, try again");
+                    ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
                     continue;
             }
             this.currentPlayer = this.getNextPlayer();
