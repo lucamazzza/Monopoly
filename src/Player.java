@@ -12,8 +12,16 @@ public class Player {
     public char getSymbol() {
         return symbol;
     }
-
     public String getName() {
         return name;
+    }
+    public int getBalance() {
+        return balance;
+    }
+    public void setBalance(int amount){
+        balance = amount;
+    }
+    public void print(){
+        System.out.println("Player: " + name + "(" + symbol + ")" + " Balance: " + balance);
     }
 }
