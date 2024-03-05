@@ -209,8 +209,11 @@ public class Game {
                     ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
                     continue;
             }
-            this.currentPlayer = this.getNextPlayer();
+            this.getNextPlayer();
         }
+        this.printLeaderboard();
+        this.scannerUtils.readKey("Game ended, press enter to exit...");
+        this.quit();
     }
 
     /**
