@@ -89,6 +89,19 @@ public class Game {
         System.out.println(text);
         this.scannerUtils.readKey("Press any key to start");
     }
+    /**
+     * <p>
+     * Executes the game cycle.
+     * </p>
+     * <p>
+     * The game starts by initializing players, then enters a loop
+     * on which every user gets to play (by choosing if to see their
+     * balance, roll the dice or quit the game) and then the next player is chosen.
+     * </p>
+     * <p>
+     * The game ends when a user quits or when a user runs out of money.
+     * </p>
+     */
     public void start(){
 //        for(int i = 0; i < Constant.PLAYER_NUMBER; i++) {
 //            System.out.println("Insert the player n" + (i+1) + " informations");
@@ -96,5 +109,25 @@ public class Game {
 //            bank.setAmount(bank.getAmount()-Constant.PLAYER_START_AMOUNT);
 //            System.out.println("Player " + players[i].getName() + " created with character " + players[i].getSymbol() + "\n");
 //        }
+        this.printStartMessage();
+        this.init();
+        while (this.isGameRunning) {
+            this.printUI();
+            int option = this.scannerUtils.readOption();
+            switch (option) {
+                case 1:
+                    int roll = this.dice.roll();
+                    // TODO: Implement further
+                    break;
+                case 2:
+                    this.players[this.currentPlayer].print();
+                    break;
+                default:
+                    System.out.println("Invalid option, try again");
+                    continue;
+            }
+            this.currentPlayer = this.getNextPlayer();
+        }
+    }
     }
 }
