@@ -97,6 +97,12 @@ public class Game {
             ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN , players[i].getName(), players[i].getSymbol());
         }
     }
+
+    /**
+     *
+     * @param player
+     * @return
+     */
     private boolean isNotUniquePlayer(Player player, int j) {
         for (int i = 0; i < this.players.length; i++) {
             if (i != j && this.players[i].equals(player)) {
@@ -111,15 +117,21 @@ public class Game {
      */
     private void printStartMessage() {
         String text = """
-                            ooo_____ooo____oooo____ooo____oo____oooo____ooooooo_____oooo____oo______oo____oo_
-                            oooo___oooo__oo____oo__oooo___oo__oo____oo__oo____oo__oo____oo__oo______oo____oo_
-                            oo_oo_oo_oo_oo______oo_oo_oo__oo_oo______oo_oo____oo_oo______oo_oo_______oo__oo__
-                            oo__ooo__oo_oo______oo_oo__oo_oo_oo______oo_oooooo___oo______oo_oo_________oo____
-                            oo_______oo__oo____oo__oo___oooo__oo____oo__oo________oo____oo__oo_________oo____
-                            oo_______oo____oooo____oo____ooo____oooo____oo__________oooo____ooooooo____oo____
-                """;
-        System.out.println(text);
-        this.scannerUtils.readKey("Press any key to start");
+                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
+                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
+                        88YbdP88 Yb   dP 88 Y88 Yb   dP 88""\"  Yb   dP 88  .o   8P
+                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
+                 """;
+        String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
+        ANSIUtility.clearScreen();
+        ANSIUtility.setBold();
+        ANSIUtility.printcf("%s", ANSIUtility.RED, text);
+        System.out.print("       ");
+        ANSIUtility.printcf("%s", ANSIUtility.WHITE, copyright);
+        ANSIUtility.setBold();
+        System.out.print("       ");
+        this.scannerUtils.readKey("Press enter to start...");
+        ANSIUtility.reset();
     }
 
     /**
