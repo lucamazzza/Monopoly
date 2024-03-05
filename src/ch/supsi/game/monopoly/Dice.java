@@ -16,6 +16,10 @@ public class Dice {
         this.currentValue = random.nextInt(loBound,hiBound + 1);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return String.valueOf(this.currentValue);

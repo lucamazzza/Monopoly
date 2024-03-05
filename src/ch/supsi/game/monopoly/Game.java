@@ -53,6 +53,7 @@ public class Game {
         this.bank = new Bank();
         this.board = new Board(5,5);
         this.dice = new Dice(1,4);
+        this.dice = new Dice(Constant.DICE_MIN_VALUE,Constant.DICE_MAX_VALUE);
         this.scannerUtils = new ScannerUtils();
     }
 
