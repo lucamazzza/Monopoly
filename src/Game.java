@@ -36,11 +36,19 @@ public class Game {
     /**
      *
      */
+    // TODO: Alternative constructors
+    // TODO: Check if there is a better way to manage players number
     public Game(int playersNumber){
         if (playersNumber < 2) {
             playersNumber = 2;
         }
-        players = new Player[playersNumber];
+        this.players = new Player[playersNumber];
+        this.bank = new Bank();
+        this.board = new Board(5,5);
+        this.dice = new Dice(1,4);
+        this.scannerUtils = new ScannerUtils();
+    }
+
     /**
      * Return the next player's index, based on the current player.
      *
@@ -89,6 +97,7 @@ public class Game {
         System.out.println(text);
         this.scannerUtils.readKey("Press any key to start");
     }
+
     /**
      * <p>
      * Sorts the players by their balance, in order to display them accordingly
@@ -107,6 +116,19 @@ public class Game {
             }
         }
         return playersSorted;
+    }
+
+    private void printLeaderboard() {
+
+    }
+
+    /**
+     *
+     */
+    //TODO: Implement
+    private void printUI() {
+        this.board.print();
+
     }
 
     /**
