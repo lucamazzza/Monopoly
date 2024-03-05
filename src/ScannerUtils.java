@@ -1,8 +1,8 @@
 import java.util.Scanner;
 public class ScannerUtils {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
-    int readIntInRange(int min, int max, String msg) {
+    public int readIntInRange(int min, int max, String msg) {
         int input = 0;
         boolean correctInput = false;
         while (!correctInput) {
@@ -22,7 +22,7 @@ public class ScannerUtils {
         return input;
     }
 
-    String readNonBlankString(String msg) {
+    public String readNonBlankString(String msg) {
         String input = "";
         boolean correctInput = false;
         while (!correctInput) {
@@ -36,7 +36,7 @@ public class ScannerUtils {
         }
         return input;
     }
-    char readNonBlankChar(String msg){
+    public char readNonBlankChar(String msg){
         String input = "";
         boolean correctInput = false;
         while (!correctInput) {
@@ -53,27 +53,26 @@ public class ScannerUtils {
         return input.charAt(0);
     }
 
-    int getNumberOfPlayers(){
-        System.out.println("How many players will play?");
-        int num = readIntegerInRange(2, 6);
+    public int getNumberOfPlayers(){
+        int num = readIntInRange(2, 6, "How many players will play?");
         return num;
     }
 
-    int readOption(){
+    public int readOption(){
         System.out.println("What do you want to do?");
         return this.readIntInRange(1,2,"1. View your balance \n 2. Roll the dice");
     }
 
-    void readKey(String msg){
+    public void readKey(String msg){
         System.out.println(msg);
         scanner.nextLine();
     }
 
-    void closeScanner() {
+    public void closeScanner() {
         scanner.close();
     }
 
-    void emptyTheScanner() {
+    public void emptyTheScanner() {
         scanner.nextLine();
     }
 }
