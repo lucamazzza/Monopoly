@@ -141,13 +141,12 @@ public class Game {
      * </p>
      * @return the sorted players array
      */
-    private Player[] getPlayersSorted() {
-        Player[] playersSorted = new Player[this.players.length];
-        for (int i = 0; i < this.players.length - 1; i++) {
-            for (int j = 0; j < this.players.length - i - 1; j++) {
+    private void sortPlayersByBalance() {
+        for (int i = 0; i < players.length - 1; i++) {
+            for (int j = 0; j < players.length - i - 1; j++) {
                 if (this.players[j].getBalance() < this.players[j + 1].getBalance()) {
-                    playersSorted[j] = this.players[j + 1];
-                    playersSorted[j + 1] = this.players[j];
+                    players[j] = this.players[j + 1];
+                    players[j + 1] = this.players[j];
                 }
             }
         }
