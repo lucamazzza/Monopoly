@@ -167,6 +167,8 @@ public class Game {
      */
     //TODO: Implement
     private void printUI() {
+        System.out.println();
+        ANSIUtility.printbcf("%s's Turn%n", ANSIUtility.GREEN, this.players[this.currentPlayer].getName());
         //this.board.print();
 
     }
