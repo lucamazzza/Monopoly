@@ -2,22 +2,27 @@
  *
  */
 public class Game {
+
     /**
      *
      */
     private Player[] players;
+
     /**
      *
      */
     private Bank bank;
+
     /**
      *
      */
     private Board board;
+
     /**
      *
      */
     private Dice dice;
+
     /**
      *
      */
@@ -57,6 +62,7 @@ public class Game {
     private int getNextPlayer(){
         return (this.currentPlayer + 1) % this.players.length;
     }
+
     /**
      * <p>
      * Initializes the game by reading the game settings from the user.
@@ -169,7 +175,6 @@ public class Game {
     /**
      *
      */
-    // TODO: Implement
     public void quit() {
         this.scannerUtils.closeScanner();
     }
