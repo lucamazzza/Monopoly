@@ -1,12 +1,12 @@
 import java.util.Scanner;
 public class ScannerUtils {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
-    int readIntegerInRange(int min, int max) {
+    public int readIntInRange(int min, int max, String msg) {
         int input = 0;
         boolean correctInput = false;
         while (!correctInput) {
-            System.out.println("Please enter a number between " + min + " and " + max + ":");
+            System.out.println(msg + min + " and " + max + ":");
             if (scanner.hasNextInt()) {
                 input = scanner.nextInt();
                 if (input < min || input > max)
@@ -22,11 +22,11 @@ public class ScannerUtils {
         return input;
     }
 
-    String readStringAndEnsureIsNotEmptyOrWhiteSpaces() {
+    public String readNonBlankString(String msg) {
         String input = "";
         boolean correctInput = false;
         while (!correctInput) {
-            System.out.print("Please enter a string: ");
+            System.out.print(msg);
             input = scanner.nextLine();
             if (input.trim().isEmpty()) {
                 System.out.println("Error: string is empty or contains only white spaces.");
@@ -36,11 +36,11 @@ public class ScannerUtils {
         }
         return input;
     }
-    char readCharAndEnsureIsNotEmptyOrWhiteSpaces(){
+    public char readNonBlankChar(String msg){
         String input = "";
         boolean correctInput = false;
         while (!correctInput) {
-            System.out.print("Please enter a character: ");
+            System.out.print(msg);
             input = scanner.nextLine();
             if (input.trim().isEmpty()) {
                 System.out.println("Error: character is empty or contains only white spaces.");
@@ -53,17 +53,26 @@ public class ScannerUtils {
         return input.charAt(0);
     }
 
-    int getNumberOfPlayers(){
-        System.out.println("How many players will play?");
-        int num = readIntegerInRange(2, 6);
+    public int getNumberOfPlayers(){
+        int num = readIntInRange(2, 6, "How many players will play?");
         return num;
     }
 
-    void closeScanner() {
+    public int readOption(){
+        System.out.println("What do you want to do?");
+        return this.readIntInRange(1,2,"1. View your balance \n 2. Roll the dice");
+    }
+
+    public void readKey(String msg){
+        System.out.println(msg);
+        scanner.nextLine();
+    }
+
+    public void closeScanner() {
         scanner.close();
     }
 
-    void emptyTheScanner() {
+    public void emptyTheScanner() {
         scanner.nextLine();
     }
 }
