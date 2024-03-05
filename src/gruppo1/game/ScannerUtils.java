@@ -1,3 +1,5 @@
+package gruppo1.game;
+
 import java.util.Scanner;
 public class ScannerUtils {
     private final Scanner scanner = new Scanner(System.in);

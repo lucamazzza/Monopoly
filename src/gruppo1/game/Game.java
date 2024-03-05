@@ -1,3 +1,5 @@
+package gruppo1.game;
+
 /**
  *
  */
@@ -78,11 +80,11 @@ public class Game {
     public void init() {
         for (int i = 0; i < this.players.length; i++) {
             this.players[i] = new Player(
-                    this.scannerUtils.readNonBlankString("Player #"+(i+1)+" name: "),
-                    this.scannerUtils.readNonBlankChar("Player #"+(i+1)+" symbol: ")
+                    this.scannerUtils.readNonBlankString("gruppo1.game.Player #"+(i+1)+" name: "),
+                    this.scannerUtils.readNonBlankChar("gruppo1.game.Player #"+(i+1)+" symbol: ")
             );
             this.bank.setAmount(bank.getAmount() - Constant.PLAYER_START_AMOUNT);
-            System.out.printf("Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
+            System.out.printf("gruppo1.game.Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
         }
     }
 
@@ -131,7 +133,7 @@ public class Game {
      */
     //TODO: Implement
     private void printUI() {
-        this.board.print();
+        //this.board.print();
 
     }
 

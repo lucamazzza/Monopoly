@@ -1,3 +1,5 @@
+package gruppo1.game;
+
 public class Cell {
     private int fee;
     private boolean type;

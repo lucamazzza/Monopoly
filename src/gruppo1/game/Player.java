@@ -1,3 +1,5 @@
+package gruppo1.game;
+
 public class Player {
     private String name;
     private char symbol;
@@ -22,6 +24,6 @@ public class Player {
         balance = amount;
     }
     public void print(){
-        System.out.println("Player: " + name + "(" + symbol + ")" + " Balance: " + balance);
+        System.out.println("gruppo1.game.Player: " + name + "(" + symbol + ")" + " Balance: " + balance);
     }
 }

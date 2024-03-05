@@ -1,3 +1,5 @@
+package gruppo1.game;
+
 import java.util.Random;
 public class Dice {
     private int loBound;

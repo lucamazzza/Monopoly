@@ -1,3 +1,5 @@
+package gruppo1.game;
+
 public class Board {
     private Cell[][] cells;
 
