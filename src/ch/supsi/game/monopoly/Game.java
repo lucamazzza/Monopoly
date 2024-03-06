@@ -51,7 +51,7 @@ public class Game {
         }
         this.players = new Player[playersNumber];
         this.bank = new Bank();
-        this.board = new Board(5,5);
+        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.dice = new Dice(1,4);
         this.scannerUtils = new ScannerUtils();
     }
@@ -86,6 +86,7 @@ public class Game {
             this.bank.setAmount(bank.getAmount() - Constant.PLAYER_START_AMOUNT);
             System.out.printf("gruppo1.game.Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
         }
+        this.board.getCells()[0].setPlayers(this.players);
     }
 
     /**
@@ -133,7 +134,7 @@ public class Game {
      */
     //TODO: Implement
     private void printUI() {
-        //this.board.print();
+        System.out.println(this.board);
 
     }
 
