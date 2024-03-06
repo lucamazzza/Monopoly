@@ -135,7 +135,6 @@ public class Game {
     //TODO: Implement
     private void printUI() {
         System.out.println(this.board);
-
     }
 
     /**

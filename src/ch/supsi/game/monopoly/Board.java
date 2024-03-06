@@ -8,6 +8,10 @@ public class Board {
         this.boardCells = new Cell[rows][cols];
         this.cells = new Cell[(rows-1)*(cols-1)];
 
+        initBoard();
+    }
+
+    private void initBoard(){
         int row = Constant.BOARD_HEIGHT-1;
         int col = Constant.BOARD_WIDTH-1;
         int rowAdd = 0;
@@ -18,7 +22,7 @@ public class Board {
                 cell = new Cell(CellType.START);
                 this.boardCells[row][col] = cell;
                 this.cells[i] = cell;
-            }else {
+            }else{
                 cell = new Cell(CellType.TOLL);
                 this.boardCells[row][col] = cell;
                 this.cells[i] = cell;
@@ -93,21 +97,6 @@ public class Board {
         }
         for(int i = 0; i < Constant.CELL_WIDTH*Constant.BOARD_WIDTH; i++){
             sb.append("-");
-        }
-        return sb.toString();
-    }
-
-    private String debugBoard(){
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < boardCells.length; i++){
-            for(int j = 0; j < boardCells[i].length; j++){
-                if(boardCells[i][j] != null) {
-                    sb.append("cella");
-                }else{
-                    sb.append("     ");
-                }
-            }
-            sb.append("\n");
         }
         return sb.toString();
     }
