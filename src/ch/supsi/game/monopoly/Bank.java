@@ -1,16 +1,36 @@
 package ch.supsi.game.monopoly;
 
 public class Bank {
-    private int amount;
+
+    private int balance;
+
     public Bank(){
-        this.amount = Constant.BANK_START_AMOUNT;
+        if (Constant.BANK_START_AMOUNT < 1_000_000) {
+            throw new IllegalArgumentException("Bank start amount must be at least 1,000,000");
+        }
+        this.balance = Constant.BANK_START_AMOUNT;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getBalance() {
+        return this.balance;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void deposit(int amount) {
+        if (amount < 1) {
+            return;
+        }
+        this.balance += amount;
+    }
+
+    public void withdraw(int amount){
+        if (amount < 1) {
+            return;
+        }
+        this.balance -= amount;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Bank: %d.–", this.balance);
     }
 }

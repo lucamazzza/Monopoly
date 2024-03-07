@@ -1,4 +1,5 @@
 package ch.supsi.game.monopoly;
+import ch.mazluc.util.ANSIUtility;
 
 /**
  *
@@ -53,6 +54,7 @@ public class Game {
         this.bank = new Bank();
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.dice = new Dice(1,4);
+        this.dice = new Dice(Constant.DICE_MIN_VALUE,Constant.DICE_MAX_VALUE);
         this.scannerUtils = new ScannerUtils();
     }
 
@@ -61,8 +63,8 @@ public class Game {
      *
      * @return the next player's index in `players`
      */
-    private int getNextPlayer(){
-        return (this.currentPlayer + 1) % this.players.length;
+    private void getNextPlayer(){
+        this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
     }
 
     /**
@@ -79,14 +81,37 @@ public class Game {
      */
     public void init() {
         for (int i = 0; i < this.players.length; i++) {
-            this.players[i] = new Player(
-                    this.scannerUtils.readNonBlankString("gruppo1.game.Player #"+(i+1)+" name: "),
-                    this.scannerUtils.readNonBlankChar("gruppo1.game.Player #"+(i+1)+" symbol: ")
+            Player tmp = new Player(
+                    this.scannerUtils.readNonBlankString("Player #"+(i+1)+" name: "),
+                    this.scannerUtils.readNonBlankChar("Player #"+(i+1)+" symbol: ")
             );
-            this.bank.setAmount(bank.getAmount() - Constant.PLAYER_START_AMOUNT);
-            System.out.printf("gruppo1.game.Player %s created with character %s\n\n", players[i].getName(), players[i].getSymbol());
+            if (i > 0 && this.isNotUniquePlayer(tmp, i)) {
+                ANSIUtility.setForegroundColor(ANSIUtility.RED);
+                System.out.println("Player name already taken, please choose another one.\n");
+                ANSIUtility.reset();
+                i--;
+                continue;
+            }
+            this.players[i] = tmp;
+            this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
+            this.players[i].receive(Constant.PLAYER_START_AMOUNT);
+            ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN , players[i].getName(), players[i].getSymbol());
         }
         this.board.getCells()[0].setPlayers(this.players);
+    }
+
+    /**
+     *
+     * @param player
+     * @return
+     */
+    private boolean isNotUniquePlayer(Player player, int j) {
+        for (int i = 0; i < this.players.length; i++) {
+            if (i != j && this.players[i].equals(player)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -94,15 +119,21 @@ public class Game {
      */
     private void printStartMessage() {
         String text = """
-                            ooo_____ooo____oooo____ooo____oo____oooo____ooooooo_____oooo____oo______oo____oo_
-                            oooo___oooo__oo____oo__oooo___oo__oo____oo__oo____oo__oo____oo__oo______oo____oo_
-                            oo_oo_oo_oo_oo______oo_oo_oo__oo_oo______oo_oo____oo_oo______oo_oo_______oo__oo__
-                            oo__ooo__oo_oo______oo_oo__oo_oo_oo______oo_oooooo___oo______oo_oo_________oo____
-                            oo_______oo__oo____oo__oo___oooo__oo____oo__oo________oo____oo__oo_________oo____
-                            oo_______oo____oooo____oo____ooo____oooo____oo__________oooo____ooooooo____oo____
-                """;
-        System.out.println(text);
-        this.scannerUtils.readKey("Press any key to start");
+                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
+                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
+                        88YbdP88 Yb   dP 88 Y88 Yb   dP 88""\"  Yb   dP 88  .o   8P
+                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
+                 """;
+        String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
+        ANSIUtility.clearScreen();
+        ANSIUtility.setBold();
+        ANSIUtility.printcf("%s", ANSIUtility.RED, text);
+        System.out.print("       ");
+        ANSIUtility.printcf("%s", ANSIUtility.WHITE, copyright);
+        ANSIUtility.setBold();
+        System.out.print("       ");
+        this.scannerUtils.readKey("Press enter to start...");
+        ANSIUtility.reset();
     }
 
     /**
@@ -112,21 +143,25 @@ public class Game {
      * </p>
      * @return the sorted players array
      */
-    private Player[] getPlayersSorted() {
-        Player[] playersSorted = new Player[this.players.length];
-        for (int i = 0; i < this.players.length - 1; i++) {
-            for (int j = 0; j < this.players.length - i - 1; j++) {
+    private void sortPlayersByBalance() {
+        for (int i = 0; i < players.length - 1; i++) {
+            for (int j = 0; j < players.length - i - 1; j++) {
                 if (this.players[j].getBalance() < this.players[j + 1].getBalance()) {
-                    playersSorted[j] = this.players[j + 1];
-                    playersSorted[j + 1] = this.players[j];
+                    players[j] = this.players[j + 1];
+                    players[j + 1] = this.players[j];
                 }
             }
         }
-        return playersSorted;
     }
 
     private void printLeaderboard() {
-
+        ANSIUtility.clearScreen();
+        ANSIUtility.setBold();
+        ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
+        this.sortPlayersByBalance();
+        for (int i = 0; i < this.players.length; i++) {
+            System.out.printf("%-20s: %d.–%n", this.players[i].getName(), this.players[i].getBalance());
+        }
     }
 
     /**
@@ -134,7 +169,10 @@ public class Game {
      */
     //TODO: Implement
     private void printUI() {
-        System.out.println(this.board);
+        System.out.println();
+        ANSIUtility.printbcf("%s's Turn%n", ANSIUtility.GREEN, this.players[this.currentPlayer].getName());
+        //this.board.print();
+
     }
 
     /**
@@ -158,18 +196,25 @@ public class Game {
             int option = this.scannerUtils.readOption();
             switch (option) {
                 case 1:
-                    int roll = this.dice.roll();
+                    this.dice.roll();
+                    ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
                     // TODO: Implement further
                     break;
                 case 2:
-                    this.players[this.currentPlayer].print();
+                    ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
+                    continue;
+                case 3:
+                    this.isGameRunning = false;
                     break;
                 default:
-                    System.out.println("Invalid option, try again");
+                    ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
                     continue;
             }
-            this.currentPlayer = this.getNextPlayer();
+            this.getNextPlayer();
         }
+        this.printLeaderboard();
+        this.scannerUtils.readKey("Game ended, press enter to exit...");
+        this.quit();
     }
 
     /**

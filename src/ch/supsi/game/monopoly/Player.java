@@ -18,12 +18,23 @@ public class Player {
         return name;
     }
     public int getBalance() {
-        return balance;
+        return this.balance;
     }
-    public void setBalance(int amount){
-        balance = amount;
+    public void receive(int amount){
+        if (amount < 1) {
+            return;
+        }
+        this.balance += amount;
     }
-    public void print(){
-        System.out.println("gruppo1.game.Player: " + name + "(" + symbol + ")" + " Balance: " + balance);
+    public void pay(int amount){
+        if (amount < 1) {
+            return;
+        }
+        this.balance -= amount;
+    }
+    @Override
+    public String toString(){
+        return String.format("[%c: %s] Your Balance: %d.–%n", this.symbol, this.name, this.balance);
+    }
     }
 }
