@@ -171,8 +171,7 @@ public class Game {
     private void printUI() {
         System.out.println();
         ANSIUtility.printbcf("%s's Turn%n", ANSIUtility.GREEN, this.players[this.currentPlayer].getName());
-        //this.board.print();
-
+        System.out.println(this.board);
     }
 
     /**
@@ -198,10 +197,12 @@ public class Game {
                 case 1:
                     this.dice.roll();
                     ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
+                    this.scannerUtils.readKey("Press enter to continue...");
                     // TODO: Implement further
                     break;
                 case 2:
                     ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
+                    this.scannerUtils.readKey("Press enter to continue...");
                     continue;
                 case 3:
                     this.isGameRunning = false;
