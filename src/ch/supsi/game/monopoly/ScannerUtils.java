@@ -8,7 +8,7 @@ public class ScannerUtils {
         int input = 0;
         boolean correctInput = false;
         while (!correctInput) {
-            System.out.println(msg + min + " and " + max + ":");
+            System.out.print(msg);
             if (scanner.hasNextInt()) {
                 input = scanner.nextInt();
                 if (input < min || input > max)
@@ -66,7 +66,7 @@ public class ScannerUtils {
     }
 
     public void readKey(String msg){
-        System.out.println(msg);
+        System.out.print(msg);
         scanner.nextLine();
     }
 
