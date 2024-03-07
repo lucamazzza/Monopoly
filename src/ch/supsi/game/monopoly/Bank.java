@@ -2,9 +2,6 @@ package ch.supsi.game.monopoly;
 
 public class Bank {
 
-    /**
-     *
-     */
     private int balance;
 
     public Bank(){
@@ -15,7 +12,7 @@ public class Bank {
     }
 
     public int getBalance() {
-        return balance;
+        return this.balance;
     }
 
     public void deposit(int amount) {
