@@ -3,9 +3,11 @@ package ch.supsi.game.monopoly;
 public class Bank {
 
     private int amount;
+    private int balance;
 
     public Bank(){
         this.amount = Constant.BANK_START_AMOUNT;
+        this.balance = Constant.BANK_START_AMOUNT;
     }
 
     public int getBalance() {
