@@ -26,6 +26,11 @@ public class Player {
         }
         this.balance += amount;
     }
+    public void pay(int amount){
+        if (amount < 1) {
+            return;
+        }
+        this.balance -= amount;
     }
     @Override
     public String toString(){
