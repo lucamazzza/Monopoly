@@ -110,4 +110,9 @@ public class Board {
         //return debugBoard();
         return generateBoard();
     }
+    public void movePlayer(int diceValue, Player currentPlayer) {
+        cells[currentPlayer.getPosition()].removePlayer(currentPlayer);
+        currentPlayer.setPosition(diceValue);
+        cells[currentPlayer.getPosition()].setPlayer(currentPlayer);
+    }
 }

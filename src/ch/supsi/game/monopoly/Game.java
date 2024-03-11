@@ -46,15 +46,15 @@ public class Game {
      */
     // TODO: Alternative constructors
     // TODO: Check if there is a better way to manage players number
-    public Game(int playersNumber){
+    public Game(int playersNumber) {
         if (playersNumber < 2) {
             playersNumber = 2;
         }
         this.players = new Player[playersNumber];
         this.bank = new Bank();
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
-        this.dice = new Dice(1,4);
-        this.dice = new Dice(Constant.DICE_MIN_VALUE,Constant.DICE_MAX_VALUE);
+        this.dice = new Dice(1, 4);
+        this.dice = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
         this.scannerUtils = new ScannerUtils();
     }
 
@@ -63,7 +63,7 @@ public class Game {
      *
      * @return the next player's index in `players`
      */
-    private void getNextPlayer(){
+    private void getNextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
     }
 
@@ -82,8 +82,8 @@ public class Game {
     public void init() {
         for (int i = 0; i < this.players.length; i++) {
             Player tmp = new Player(
-                    this.scannerUtils.readNonBlankString("Player #"+(i+1)+" name: "),
-                    this.scannerUtils.readNonBlankChar("Player #"+(i+1)+" symbol: ")
+                    this.scannerUtils.readNonBlankString("Player #" + (i + 1) + " name: "),
+                    this.scannerUtils.readNonBlankChar("Player #" + (i + 1) + " symbol: ")
             );
             if (i > 0 && this.isNotUniquePlayer(tmp, i)) {
                 ANSIUtility.setForegroundColor(ANSIUtility.RED);
@@ -95,13 +95,11 @@ public class Game {
             this.players[i] = tmp;
             this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
             this.players[i].receive(Constant.PLAYER_START_AMOUNT);
-            ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN , players[i].getName(), players[i].getSymbol());
+            ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN, players[i].getName(), players[i].getSymbol());
         }
-        this.board.getCells()[0].setPlayers(this.players);
     }
 
     /**
-     *
      * @param player
      * @return
      */
@@ -119,11 +117,11 @@ public class Game {
      */
     private void printStartMessage() {
         String text = """
-                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
-                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
-                        88YbdP88 Yb   dP 88 Y88 Yb   dP 88""\"  Yb   dP 88  .o   8P
-                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
-                 """;
+                       8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
+                       88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
+                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""\"  Yb   dP 88  .o   8P
+                       88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
+                """;
         String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
         ANSIUtility.clearScreen();
         ANSIUtility.setBold();
@@ -141,6 +139,7 @@ public class Game {
      * Sorts the players by their balance, in order to display them accordingly
      * in the leaderboard.
      * </p>
+     *
      * @return the sorted players array
      */
     private void sortPlayersByBalance() {
@@ -187,7 +186,7 @@ public class Game {
      * The game ends when a user quits or when a user runs out of money.
      * </p>
      */
-    public void start(){
+    public void start() {
         this.printStartMessage();
         this.init();
         while (this.isGameRunning) {
@@ -197,6 +196,7 @@ public class Game {
                 case 1:
                     this.dice.roll();
                     ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
+                    this.board.movePlayer(dice.getCurrentValue(), players[currentPlayer]);
                     this.scannerUtils.readKey("Press enter to continue...");
                     // TODO: Implement further
                     break;

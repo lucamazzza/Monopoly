@@ -4,13 +4,17 @@ public class Player {
     private String name;
     private char symbol;
     private int balance;
-
+    private int position;
     public Player(String name, char symbol){
         this.name = name;
         this.symbol = symbol;
-        this.balance = Constant.PLAYER_START_AMOUNT;
     }
-
+    public int getPosition() {
+        return this.position;
+    }
+    public void setPosition(int diceValue) {
+        position = (position + diceValue) % 16 ;
+    }
     public char getSymbol() {
         return symbol;
     }
@@ -35,6 +39,5 @@ public class Player {
     @Override
     public String toString(){
         return String.format("[%c: %s] Your Balance: %d.–%n", this.symbol, this.name, this.balance);
-    }
     }
 }

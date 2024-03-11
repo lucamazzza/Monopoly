@@ -24,4 +24,7 @@ public class Dice {
     public String toString() {
         return String.valueOf(this.currentValue);
     }
+    public int getCurrentValue() {
+        return currentValue;
+    }
 }

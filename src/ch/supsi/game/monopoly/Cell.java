@@ -28,8 +28,19 @@ public class Cell {
         return type;
     }
 
-    public void setPlayers(Player[] players) {
-        this.players = players;
+    public void setPlayer(Player player) {
+        int i = 0;
+        while (this.players[i] != null) {
+            i++;
+        }
+        this.players[i] = player;
+    }
+    public void removePlayer(Player playerToRemove) {
+        for (int i = 0; i < players.length; i++){
+            if (players[i] == playerToRemove){
+                players[i] = null;
+            }
+        }
     }
 
     public Player[] getPlayers() {
