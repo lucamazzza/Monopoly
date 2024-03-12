@@ -3,49 +3,49 @@ package ch.supsi.game.monopoly;
 public class Board {
     private Cell[][] boardCells;
     private Cell[] cells;
+    private final Cell[][] boardCells;
 
     public Board(int rows, int cols) {
         this.boardCells = new Cell[rows][cols];
-        this.cells = new Cell[(rows-1)*(cols-1)];
-
+        this.cells = new Cell[(rows - 1) * (cols - 1)];
         initBoard();
     }
 
     private void initBoard(){
-        int row = Constant.BOARD_HEIGHT-1;
-        int col = Constant.BOARD_WIDTH-1;
+        int row = Constant.BOARD_HEIGHT - 1;
+        int col = Constant.BOARD_WIDTH - 1;
         int rowAdd = 0;
         int colAdd = -1;
         Cell cell;
         for(int i = 0; i < cells.length; i++){
-            if(i==0){
+            if (i == 0) {
                 cell = new Cell(CellType.START);
                 this.boardCells[row][col] = cell;
                 this.cells[i] = cell;
-            }else{
+            } else {
                 cell = new Cell(CellType.TOLL);
                 this.boardCells[row][col] = cell;
                 this.cells[i] = cell;
             }
-            if(col == 0 && row == Constant.BOARD_HEIGHT-1){
+            if (col == 0 && row == Constant.BOARD_HEIGHT - 1) {
                 colAdd = 0;
                 rowAdd = -1;
-            }else if(col == 0 && row == 0){
+            } else if (col == 0 && row == 0){
                 colAdd = 1;
                 rowAdd = 0;
-            }else if(col == Constant.BOARD_WIDTH-1 && row == 0){
+            } else if (col == Constant.BOARD_WIDTH-1 && row == 0) {
                 colAdd = 0;
                 rowAdd = 1;
-            }else if(col == Constant.BOARD_WIDTH-1 && row == Constant.BOARD_HEIGHT){
+            } else if (col == Constant.BOARD_WIDTH-1 && row == Constant.BOARD_HEIGHT) {
                 colAdd = -1;
                 rowAdd = 0;
             }
-            col+=colAdd;
-            row+=rowAdd;
+            col += colAdd;
+            row += rowAdd;
         }
     }
 
-    private String generateBoard(){
+    private String generateBoard() {
         StringBuilder sb = new StringBuilder();
         for(int row = 0; row < Constant.BOARD_WIDTH; row++){
             if(row == 0 || row == 1 || row == Constant.BOARD_WIDTH-1 || row == Constant.BOARD_WIDTH){
@@ -107,9 +107,9 @@ public class Board {
 
     @Override
     public String toString() {
-        //return debugBoard();
         return generateBoard();
     }
+
     public void movePlayer(int diceValue, Player currentPlayer) {
         cells[currentPlayer.getPosition()].removePlayer(currentPlayer);
         currentPlayer.setPosition(diceValue);
