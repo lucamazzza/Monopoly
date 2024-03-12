@@ -56,8 +56,7 @@ public class ScannerUtils {
     }
 
     public int getNumberOfPlayers(){
-        int num = readIntInRange(2, 6, "How many players will play?");
-        return num;
+        return readIntInRange(2, 6, "How many players will play?");
     }
 
     public int readOption(){
