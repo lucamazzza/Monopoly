@@ -94,7 +94,13 @@ public class Game {
             this.players[i] = tmp;
             this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
             this.players[i].receive(Constant.PLAYER_START_AMOUNT);
-            ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN, players[i].getName(), players[i].getSymbol());
+            ANSIUtility.printcf(
+                    "Player %s (%c) created%n%n",
+                    ANSIUtility.GREEN,
+                    this.players[i].getName(),
+                    this.players[i].getSymbol()
+            );
+            this.board.movePlayer(0, this.players[i]);
         }
     }
 
@@ -118,17 +124,15 @@ public class Game {
         String text = """
                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
-                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""\"  Yb   dP 88  .o   8P
+                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""''  Yb   dP 88  .o   8P
                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
                 """;
         String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
         ANSIUtility.clearScreen();
         ANSIUtility.setBold();
-        ANSIUtility.printcf("%s", ANSIUtility.RED, text);
-        System.out.print("       ");
-        ANSIUtility.printcf("%s", ANSIUtility.WHITE, copyright);
+        ANSIUtility.printcf("%s       ", ANSIUtility.RED, text);
+        ANSIUtility.printcf("%s       ", ANSIUtility.WHITE, copyright);
         ANSIUtility.setBold();
-        System.out.print("       ");
         this.scannerUtils.readKey("Press enter to start...");
         ANSIUtility.reset();
     }
@@ -138,8 +142,6 @@ public class Game {
      * Sorts the players by their balance, in order to display them accordingly
      * in the leaderboard.
      * </p>
-     *
-     * @return the sorted players array
      */
     private void sortPlayersByBalance() {
         for (int i = 0; i < players.length - 1; i++) {
@@ -165,10 +167,15 @@ public class Game {
     /**
      *
      */
-    //TODO: Implement
     private void printUI() {
         System.out.println();
-        ANSIUtility.printbcf("%s's Turn%n", ANSIUtility.GREEN, this.players[this.currentPlayer].getName());
+        ANSIUtility.printbcf(
+                "%s's Turn [Balance: %d]%n",
+                ANSIUtility.GREEN,
+                this.players[this.currentPlayer].getName(),
+                this.players[this.currentPlayer].getBalance()
+        );
+        ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, this.bank);
         System.out.println(this.board);
     }
 
@@ -226,7 +233,7 @@ public class Game {
     public void start() {
         this.printStartMessage();
         this.init();
-        while (this.isGameRunning) {
+        do {
             this.printUI();
             int option = this.scannerUtils.readOption();
             switch (option) {
@@ -245,7 +252,8 @@ public class Game {
                     continue;
             }
             this.getNextPlayer();
-        }
+            hasPlayerLost();
+        } while (this.isGameRunning);
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
         this.quit();
