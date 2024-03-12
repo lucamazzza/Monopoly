@@ -50,10 +50,9 @@ public class Game {
         if (playersNumber < 2) {
             playersNumber = 2;
         }
+        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
         this.bank = new Bank();
-        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
-        this.dice = new Dice(1, 4);
         this.dice = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
         this.scannerUtils = new ScannerUtils();
     }
@@ -173,6 +172,29 @@ public class Game {
         System.out.println(this.board);
     }
 
+    /**
+     *
+     */
+    private void hasPlayerLost() {
+        for (Player player : this.players) {
+            if (player.getBalance() < 0) {
+                this.isGameRunning = false;
+                return;
+            }
+        }
+        this.isGameRunning = true;
+    }
+
+    /**
+     * <p>
+     * Manages the behaviour of the dice roll case.
+     * </p>
+     * <p>
+     * When called the dice is rolled and the player's position is moved.
+     * Once the player is moved the cell he' onto gets checked and the relative fee
+     * is applied to the player.
+     * </p>
+     */
     private void diceRollCase() {
         this.dice.roll();
         ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
