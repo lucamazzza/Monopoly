@@ -7,8 +7,16 @@ public class Board {
      */
     private final Cell[][] boardCells;
 
+    /**
+     *
+     */
     private final Cell[] cells;
 
+    /**
+     *
+     * @param rows
+     * @param cols
+     */
     public Board(int rows, int cols) {
         this.boardCells = new Cell[rows][cols];
         this.cells = new Cell[(rows - 1) * (cols - 1)];
@@ -51,57 +59,42 @@ public class Board {
 
     private String generateBoard() {
         StringBuilder sb = new StringBuilder();
-        for(int row = 0; row < Constant.BOARD_WIDTH; row++){
-            if(row == 0 || row == 1 || row == Constant.BOARD_WIDTH-1 || row == Constant.BOARD_WIDTH){
-                for(int i = 0; i < Constant.CELL_WIDTH*Constant.BOARD_WIDTH; i++){
-                    sb.append("-");
-                }
-            }else{
-                for(int i = 0; i < Constant.CELL_WIDTH; i++){
-                    sb.append("-");
-                }
-                for(int i = 0; i < Constant.CELL_WIDTH*(Constant.BOARD_WIDTH-2); i++){
-                    sb.append(" ");
-                }
-                for(int i = 0; i < Constant.CELL_WIDTH; i++){
-                    sb.append("-");
-                }
+        for (int row = 0; row < Constant.BOARD_WIDTH; row++) {
+            if (row == 0 || row == 1 || row == Constant.BOARD_WIDTH - 1) {
+                sb.append("-".repeat(Constant.CELL_WIDTH * Constant.BOARD_WIDTH));
+            } else {
+                sb.append("-".repeat(Constant.CELL_WIDTH));
+                sb.append(" ".repeat(Constant.CELL_WIDTH * (Constant.BOARD_WIDTH - 2)));
+                sb.append("-".repeat(Constant.CELL_WIDTH));
             }
             sb.append("\n");
-
-            for(int d = 0; d < Constant.CELL_DETAILS; d++){
-                for(int col = 0; col < Constant.BOARD_WIDTH; col++){
-                    if(boardCells[row][col] == null){
-                        for(int i = 0; i < Constant.CELL_WIDTH; i++){
-                            sb.append(" ");
-                        }
-                    }else{
+            for (int d = 0; d < Constant.CELL_DETAILS; d++) {
+                for (int col = 0; col < Constant.BOARD_WIDTH; col++) {
+                    if (boardCells[row][col] == null) {
+                        sb.append(" ".repeat(Constant.CELL_WIDTH));
+                    } else {
                         sb.append("|");
-                        String detail = "";
-                        if(d == 0){
-                            detail = boardCells[row][col].getType().toString();
-                        }else if(d == 1){
-                            detail = String.valueOf(boardCells[row][col].getFee());
-                        }else if(d == Constant.CELL_DETAILS-1){
-                            for(int i = 0; i < boardCells[row][col].getPlayers().length; i++){
-                                if(boardCells[row][col].getPlayers()[i] != null) {
-                                    detail += boardCells[row][col].getPlayers()[i].getSymbol() + " ";
+                        StringBuilder detail = new StringBuilder();
+                        if (d == 0) {
+                            detail = new StringBuilder(boardCells[row][col].getType().toString());
+                        } else if (d == 1) {
+                            detail = new StringBuilder(String.valueOf(boardCells[row][col].getFee()));
+                        } else if (d == Constant.CELL_DETAILS-1) {
+                            for (int i = 0; i < boardCells[row][col].getPlayers().length; i++) {
+                                if (boardCells[row][col].getPlayers()[i] != null) {
+                                    detail.append(boardCells[row][col].getPlayers()[i].getSymbol()).append(" ");
                                 }
                             }
                         }
                         sb.append(detail);
-                        for(int i = 0; i < 22-detail.length(); i++){
-                            sb.append(" ");
-                        }
+                        sb.append(" ".repeat(Math.max(0, 22 - detail.length())));
                         sb.append("|");
                     }
                 }
                 sb.append("\n");
             }
         }
-        for(int i = 0; i < Constant.CELL_WIDTH*Constant.BOARD_WIDTH; i++){
-            sb.append("-");
-        }
+        sb.append("-".repeat(Constant.CELL_WIDTH * Constant.BOARD_WIDTH));
         return sb.toString();
     }
 
