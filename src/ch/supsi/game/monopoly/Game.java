@@ -145,8 +145,9 @@ public class Game {
         for (int i = 0; i < players.length - 1; i++) {
             for (int j = 0; j < players.length - i - 1; j++) {
                 if (this.players[j].getBalance() < this.players[j + 1].getBalance()) {
+                    Player tmp = this.players[j];
                     players[j] = this.players[j + 1];
-                    players[j + 1] = this.players[j];
+                    players[j + 1] = tmp;
                 }
             }
         }
