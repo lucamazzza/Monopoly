@@ -1,9 +1,13 @@
 package ch.supsi.game.monopoly;
 
 public class Board {
-    private Cell[][] boardCells;
-    private Cell[] cells;
+
+    /**
+     *
+     */
     private final Cell[][] boardCells;
+
+    private final Cell[] cells;
 
     public Board(int rows, int cols) {
         this.boardCells = new Cell[rows][cols];
