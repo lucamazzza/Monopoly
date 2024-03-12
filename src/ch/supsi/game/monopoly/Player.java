@@ -3,6 +3,10 @@ package ch.supsi.game.monopoly;
 public class Player {
     private String name;
     private char symbol;
+    private final String name;
+
+    private final char symbol;
+
     private int balance;
     private int position;
     public Player(String name, char symbol){

@@ -9,27 +9,27 @@ public class Game {
     /**
      * List of players in the game
      */
-    private Player[] players;
+    private final Player[] players;
 
     /**
      * The bank in the game
      */
-    private Bank bank;
+    private final Bank bank;
 
     /**
      * The board of the game
      */
-    private Board board;
+    private final Board board;
 
     /**
      * The dice in the game
      */
-    private Dice dice;
+    private final Dice dice;
 
     /**
      * Utility class managing user interaction, through the console, with the game.
      */
-    private ScannerUtils scannerUtils;
+    private final ScannerUtils scannerUtils;
 
     /**
      * Stores the index of the current player.
