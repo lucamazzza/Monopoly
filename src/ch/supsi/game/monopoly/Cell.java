@@ -3,8 +3,7 @@ package ch.supsi.game.monopoly;
 import java.util.Random;
 
 public class Cell {
-    private int fee;
-    private CellType type;
+
     private final int fee;
 
     private final CellType type;

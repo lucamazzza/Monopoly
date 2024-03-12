@@ -47,9 +47,7 @@ public class Game {
     // TODO: Alternative constructors
     // TODO: Check if there is a better way to manage players number
     public Game(int playersNumber) {
-        if (playersNumber < 2) {
-            playersNumber = 2;
-        }
+        playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
         this.bank = new Bank();
