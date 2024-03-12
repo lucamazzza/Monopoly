@@ -44,4 +44,23 @@ public class Player {
     public String toString(){
         return String.format("[%c: %s] Your Balance: %d.–%n", this.symbol, this.name, this.balance);
     }
+
+    /**
+     *
+     * @param obj
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Player)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        return this.symbol == ((Player) obj).getSymbol();
+    }
 }
