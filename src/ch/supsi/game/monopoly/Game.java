@@ -173,6 +173,21 @@ public class Game {
         System.out.println(this.board);
     }
 
+    private void diceRollCase() {
+        this.dice.roll();
+        ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
+        this.board.movePlayer(dice.getCurrentValue(), this.players[this.currentPlayer]);
+        int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
+        if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.START){
+            this.players[this.currentPlayer].receive(tmpFee);
+            this.bank.withdraw(tmpFee);
+        } else {
+            this.players[this.currentPlayer].pay(tmpFee);
+            this.bank.deposit(tmpFee);
+        }
+        this.scannerUtils.readKey("Press enter to continue...");
+    }
+
     /**
      * <p>
      * Executes the game cycle.
@@ -194,11 +209,7 @@ public class Game {
             int option = this.scannerUtils.readOption();
             switch (option) {
                 case 1:
-                    this.dice.roll();
-                    ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
-                    this.board.movePlayer(dice.getCurrentValue(), players[currentPlayer]);
-                    this.scannerUtils.readKey("Press enter to continue...");
-                    // TODO: Implement further
+                    this.diceRollCase();
                     break;
                 case 2:
                     ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
