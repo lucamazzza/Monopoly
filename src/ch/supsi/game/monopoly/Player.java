@@ -6,6 +6,12 @@ public class Player {
     private int balance;
     private int position;
     public Player(String name, char symbol){
+        if (name.isEmpty() || name.isBlank()) {
+            throw new IllegalArgumentException("Player name must not be empty or blank.");
+        }
+        if (symbol < 21) {
+            throw new IllegalArgumentException("Player symbol must not be a blank character");
+        }
         this.name = name;
         this.symbol = symbol;
     }
