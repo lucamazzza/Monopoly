@@ -5,10 +5,7 @@ public class Bank {
     private int balance;
 
     public Bank(){
-        if (Constant.BANK_START_AMOUNT < 1_000_000) {
-            throw new IllegalArgumentException("Bank start amount must be at least 1,000,000");
-        }
-        this.balance = Constant.BANK_START_AMOUNT;
+        this.balance = Math.max(Constant.BANK_START_AMOUNT, 1_000_000);
     }
 
     public int getBalance() {
