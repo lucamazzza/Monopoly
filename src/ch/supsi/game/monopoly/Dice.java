@@ -8,8 +8,17 @@ public class Dice {
     private int currentValue;
 
     public Dice(int loBound, int hiBound) {
-        this.loBound = loBound;
-        this.hiBound = hiBound;
+        if (loBound < 1) {
+            loBound = 1;
+        }
+        if (hiBound < 1) {
+            hiBound = loBound + 1;
+        }
+        this.loBound = Math.min(loBound, hiBound);
+        this.hiBound = Math.max(loBound, hiBound);
+    }
+    public int getCurrentValue() {
+        return currentValue;
     }
 
     public void roll(){
@@ -24,7 +33,5 @@ public class Dice {
     public String toString() {
         return String.valueOf(this.currentValue);
     }
-    public int getCurrentValue() {
-        return currentValue;
-    }
+
 }
