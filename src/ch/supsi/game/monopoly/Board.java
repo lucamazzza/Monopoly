@@ -18,27 +18,27 @@ public class Board {
      * @param cols
      */
     public Board(int rows, int cols) {
+        rows = Math.max(rows, Constant.BOARD_HEIGHT);
+        cols = Math.max(cols, Constant.BOARD_WIDTH);
         this.boardCells = new Cell[rows][cols];
         this.cells = new Cell[(rows - 1) * (cols - 1)];
         initBoard();
     }
 
     private void initBoard(){
-        int row = Constant.BOARD_HEIGHT - 1;
-        int col = Constant.BOARD_WIDTH - 1;
+        int row = this.boardCells.length - 1;
+        int col = this.boardCells[0].length - 1;
         int rowAdd = 0;
         int colAdd = -1;
         Cell cell;
         for(int i = 0; i < cells.length; i++){
             if (i == 0) {
                 cell = new Cell(CellType.START);
-                this.boardCells[row][col] = cell;
-                this.cells[i] = cell;
             } else {
                 cell = new Cell(CellType.TOLL);
-                this.boardCells[row][col] = cell;
-                this.cells[i] = cell;
             }
+            this.boardCells[row][col] = cell;
+            this.cells[i] = cell;
             if (col == 0 && row == Constant.BOARD_HEIGHT - 1) {
                 colAdd = 0;
                 rowAdd = -1;
@@ -105,11 +105,5 @@ public class Board {
     @Override
     public String toString() {
         return generateBoard();
-    }
-
-    public void movePlayer(int diceValue, Player currentPlayer) {
-        cells[currentPlayer.getPosition()].removePlayer(currentPlayer);
-        currentPlayer.setPosition(diceValue);
-        cells[currentPlayer.getPosition()].setPlayer(currentPlayer);
     }
 }
