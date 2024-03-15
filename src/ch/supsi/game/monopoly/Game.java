@@ -44,8 +44,6 @@ public class Game {
     /**
      *
      */
-    // TODO: Alternative constructors
-    // TODO: Check if there is a better way to manage players number
     public Game(int playersNumber) {
         playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
@@ -98,7 +96,7 @@ public class Game {
                     this.players[i].getName(),
                     this.players[i].getSymbol()
             );
-            this.board.movePlayer(0, this.players[i]);
+            this.initPlayer(i);
         }
     }
 
@@ -122,7 +120,7 @@ public class Game {
         String text = """
                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
-                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""''  Yb   dP 88  .o   8P
+                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""'  Yb   dP 88  .o   8P
                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
                 """;
         String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
@@ -158,8 +156,8 @@ public class Game {
         ANSIUtility.setBold();
         ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
         this.sortPlayersByBalance();
-        for (int i = 0; i < this.players.length; i++) {
-            System.out.printf("%-20s: %d.–%n", this.players[i].getName(), this.players[i].getBalance());
+        for (Player player : this.players) {
+            System.out.printf("%-20s: %d.–%n", player.getName(), player.getBalance());
         }
     }
 
@@ -188,7 +186,6 @@ public class Game {
                 return;
             }
         }
-        this.isGameRunning = true;
     }
 
     /**
@@ -204,16 +201,18 @@ public class Game {
     private void diceRollCase() {
         this.dice.roll();
         ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
-        this.board.movePlayer(dice.getCurrentValue(), this.players[this.currentPlayer]);
+        this.movePlayer();
         int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
-        if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.START){
-            this.players[this.currentPlayer].receive(tmpFee);
+        if (this.hasPlayerPassedStart()){
+            this.players[this.currentPlayer].receive(this.board.getCells()[0].getFee());
             this.bank.withdraw(tmpFee);
-        } else {
+        }
+        if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.TOLL) {
             this.players[this.currentPlayer].pay(tmpFee);
             this.bank.deposit(tmpFee);
         }
         this.scannerUtils.readKey("Press enter to continue...");
+        this.getNextPlayer();
     }
 
     /**
@@ -242,16 +241,15 @@ public class Game {
                 case 2:
                     ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
                     this.scannerUtils.readKey("Press enter to continue...");
-                    continue;
+                    break;
                 case 3:
                     this.isGameRunning = false;
                     break;
                 default:
                     ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
-                    continue;
+                    break;
             }
-            this.getNextPlayer();
-            hasPlayerLost();
+            this.hasPlayerLost();
         } while (this.isGameRunning);
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
