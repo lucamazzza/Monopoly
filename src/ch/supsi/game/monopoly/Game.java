@@ -2,34 +2,59 @@ package ch.supsi.game.monopoly;
 import ch.mazluc.util.ANSIUtility;
 
 /**
+ * <p>
+ * This class represents the game "Monopoly" and
+ * manages the game cycle.
+ * </p>
+ * <p>
+ * The game contains a {@link Board}, {@link Bank}, {@link Dice},
+ * a list of {@link Player}s and an instance of {@link ScannerUtils}.
+ * </p>
+ * <p>
+ * Firstly the players are created, by assigning them a name and a symbol,
+ * and then the game starts.
+ * The game is then played.
+ * Players play in turns until the game is over, rolling a dice and moving to a new cell.
+ * When the game is over a winner is declared, and a leaderboard is displayed.
+ * The game is over when a player has no more money.
+ * </p>
+ * <b>Usage</b>:
+ * <pre>
+ * {@code
+ * Game game = new Game(2); // Instantiate a new game with 2 players
+ * game.start();            // Start the game
+ * }
+ * </pre>
  *
+ * @author Luca Mazza
+ * @version 1.1.0
  */
 public class Game {
 
     /**
      * List of players in the game
      */
-    private Player[] players;
+    private final Player[] players;
 
     /**
      * The bank in the game
      */
-    private Bank bank;
+    private final Bank bank;
 
     /**
      * The board of the game
      */
-    private Board board;
+    private final Board board;
 
     /**
      * The dice in the game
      */
-    private Dice dice;
+    private final Dice dice;
 
     /**
      * Utility class managing user interaction, through the console, with the game.
      */
-    private ScannerUtils scannerUtils;
+    private final ScannerUtils scannerUtils;
 
     /**
      * Stores the index of the current player.
@@ -42,28 +67,30 @@ public class Game {
     private boolean isGameRunning = true;
 
     /**
+     * <p>
+     * Constructor of the Game class.
+     * </p>
+     * <p>
+     * The number of players is set to {@link Constant#PLAYER_NUMBER} by default,
+     * then all the game's components are instantiated.
+     * </p>
      *
+     *  @param playersNumber the number of players
      */
-    // TODO: Alternative constructors
-    // TODO: Check if there is a better way to manage players number
-    public Game(int playersNumber){
-        if (playersNumber < 2) {
-            playersNumber = 2;
-        }
+    public Game(int playersNumber) {
+        playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
+        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
         this.bank = new Bank();
-        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
-        this.dice = new Dice(1,4);
-        this.dice = new Dice(Constant.DICE_MIN_VALUE,Constant.DICE_MAX_VALUE);
+        this.dice = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
         this.scannerUtils = new ScannerUtils();
     }
 
     /**
-     * Return the next player's index, based on the current player.
-     *
-     * @return the next player's index in `players`
+     * Sets the next player's index, based on the current player, in field
+     * {@link Game#currentPlayer}.
      */
-    private void getNextPlayer(){
+    private void getNextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
     }
 
@@ -82,8 +109,8 @@ public class Game {
     public void init() {
         for (int i = 0; i < this.players.length; i++) {
             Player tmp = new Player(
-                    this.scannerUtils.readNonBlankString("Player #"+(i+1)+" name: "),
-                    this.scannerUtils.readNonBlankChar("Player #"+(i+1)+" symbol: ")
+                    this.scannerUtils.readNonBlankString("Player #" + (i + 1) + " name: "),
+                    this.scannerUtils.readNonBlankChar("Player #" + (i + 1) + " symbol: ")
             );
             if (i > 0 && this.isNotUniquePlayer(tmp, i)) {
                 ANSIUtility.setForegroundColor(ANSIUtility.RED);
@@ -95,15 +122,21 @@ public class Game {
             this.players[i] = tmp;
             this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
             this.players[i].receive(Constant.PLAYER_START_AMOUNT);
-            ANSIUtility.printcf("Player %s (%c) created%n%n", ANSIUtility.GREEN , players[i].getName(), players[i].getSymbol());
+            ANSIUtility.printcf(
+                    "Player %s (%c) created%n%n",
+                    ANSIUtility.GREEN,
+                    this.players[i].getName(),
+                    this.players[i].getSymbol()
+            );
+            this.initPlayer(i);
         }
-        this.board.getCells()[0].setPlayers(this.players);
     }
 
     /**
+     * Checks if the player name is not already taken.
      *
-     * @param player
-     * @return
+     * @param player the player to check
+     * @return true if the name is not taken, false if is
      */
     private boolean isNotUniquePlayer(Player player, int j) {
         for (int i = 0; i < this.players.length; i++) {
@@ -119,19 +152,17 @@ public class Game {
      */
     private void printStartMessage() {
         String text = """
-                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
-                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
-                        88YbdP88 Yb   dP 88 Y88 Yb   dP 88""\"  Yb   dP 88  .o   8P
-                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
-                 """;
+                       8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
+                       88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
+                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""'  Yb   dP 88  .o   8P
+                       88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
+                """;
         String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
         ANSIUtility.clearScreen();
         ANSIUtility.setBold();
-        ANSIUtility.printcf("%s", ANSIUtility.RED, text);
-        System.out.print("       ");
-        ANSIUtility.printcf("%s", ANSIUtility.WHITE, copyright);
+        ANSIUtility.printcf("%s       ", ANSIUtility.RED, text);
+        ANSIUtility.printcf("%s       ", ANSIUtility.WHITE, copyright);
         ANSIUtility.setBold();
-        System.out.print("       ");
         this.scannerUtils.readKey("Press enter to start...");
         ANSIUtility.reset();
     }
@@ -141,37 +172,121 @@ public class Game {
      * Sorts the players by their balance, in order to display them accordingly
      * in the leaderboard.
      * </p>
-     * @return the sorted players array
      */
     private void sortPlayersByBalance() {
         for (int i = 0; i < players.length - 1; i++) {
             for (int j = 0; j < players.length - i - 1; j++) {
                 if (this.players[j].getBalance() < this.players[j + 1].getBalance()) {
+                    Player tmp = this.players[j];
                     players[j] = this.players[j + 1];
-                    players[j + 1] = this.players[j];
+                    players[j + 1] = tmp;
                 }
             }
         }
     }
 
+    /**
+     * Prints the leaderboard on the console, with the players ordered by balance.
+     */
     private void printLeaderboard() {
         ANSIUtility.clearScreen();
         ANSIUtility.setBold();
         ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
         this.sortPlayersByBalance();
-        for (int i = 0; i < this.players.length; i++) {
-            System.out.printf("%-20s: %d.–%n", this.players[i].getName(), this.players[i].getBalance());
+        for (Player player : this.players) {
+            System.out.printf("%-20s: %d.–%n", player.getName(), player.getBalance());
         }
     }
 
     /**
-     *
+     * <p>
+     * Prints the UI on the console.
+     * </p>
+     * The UI consists of a banner, depicting the current player's name and
+     * their balance, followed by the bank's balance and the board.
      */
-    //TODO: Implement
     private void printUI() {
         System.out.println();
-        ANSIUtility.printbcf("%s's Turn%n", ANSIUtility.GREEN, this.players[this.currentPlayer].getName());
+        ANSIUtility.printbcf(
+                "%s's Turn [Balance: %d]%n",
+                ANSIUtility.GREEN,
+                this.players[this.currentPlayer].getName(),
+                this.players[this.currentPlayer].getBalance()
+        );
+        ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, this.bank);
         System.out.println(this.board);
+    }
+
+    /**
+     * Checks if any player has lost.
+     * When so the game is set over by toggling the {@link Game#isGameRunning}.
+     */
+    private void hasPlayerLost() {
+        for (Player player : this.players) {
+            if (player.getBalance() < 0) {
+                this.isGameRunning = false;
+                return;
+            }
+        }
+    }
+
+    /**
+     * Moves the player to the next cell, based on the dice.
+     */
+    private void movePlayer() {
+        this.board.getCells()[this.players[currentPlayer].getPosition()].removePlayer(this.players[this.currentPlayer]);
+        this.players[this.currentPlayer].setPosition(this.dice.getCurrentValue());
+        this.board.getCells()[this.players[this.currentPlayer].getPosition()].setPlayer(this.players[this.currentPlayer]);
+    }
+
+    /**
+     * Initializes the player's position on the board,
+     * setting it to the start cell.
+     *
+     * @param i the index of the player.
+     */
+    private void initPlayer(int i) {
+        this.board.getCells()[this.players[i].getPosition()].removePlayer(this.players[i]);
+        this.players[i].setPosition(0);
+        this.board.getCells()[this.players[i].getPosition()].setPlayer(this.players[i]);
+    }
+
+    /**
+     * <p>
+     * Manages the behaviour of the dice roll case.
+     * </p>
+     * <p>
+     * When called the dice is rolled and the player's position is moved.
+     * Once the player is moved the cell he' onto gets checked and the relative fee
+     * is applied to the player.
+     * </p>
+     */
+    private void diceRollCase() {
+        this.dice.roll();
+        ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
+        this.movePlayer();
+        int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
+        if (this.hasPlayerPassedStart()){
+            this.players[this.currentPlayer].receive(this.board.getCells()[0].getFee());
+            this.bank.withdraw(tmpFee);
+        }
+        if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.TOLL) {
+            this.players[this.currentPlayer].pay(tmpFee);
+            this.bank.deposit(tmpFee);
+        }
+        this.scannerUtils.readKey("Press enter to continue...");
+        this.getNextPlayer();
+    }
+
+    /**
+     * Checks if the player has passed the start cell.
+     *
+     * @return true if the player has passed the start cell, false otherwise.
+     */
+    private boolean hasPlayerPassedStart() {
+        int previousPosition = this.players[this.currentPlayer].getPosition() - this.dice.getCurrentValue();
+        return previousPosition < 0
+                ;
     }
 
     /**
@@ -187,32 +302,29 @@ public class Game {
      * The game ends when a user quits or when a user runs out of money.
      * </p>
      */
-    public void start(){
+    public void start() {
         this.printStartMessage();
         this.init();
-        while (this.isGameRunning) {
+        do {
             this.printUI();
             int option = this.scannerUtils.readOption();
             switch (option) {
                 case 1:
-                    this.dice.roll();
-                    ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
-                    this.scannerUtils.readKey("Press enter to continue...");
-                    // TODO: Implement further
+                    this.diceRollCase();
                     break;
                 case 2:
                     ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
                     this.scannerUtils.readKey("Press enter to continue...");
-                    continue;
+                    break;
                 case 3:
                     this.isGameRunning = false;
                     break;
                 default:
                     ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
-                    continue;
+                    break;
             }
-            this.getNextPlayer();
-        }
+            this.hasPlayerLost();
+        } while (this.isGameRunning);
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
         this.quit();
