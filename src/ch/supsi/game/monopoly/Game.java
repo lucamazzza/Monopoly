@@ -2,7 +2,32 @@ package ch.supsi.game.monopoly;
 import ch.mazluc.util.ANSIUtility;
 
 /**
+ * <p>
+ * This class represents the game "Monopoly" and
+ * manages the game cycle.
+ * </p>
+ * <p>
+ * The game contains a {@link Board}, {@link Bank}, {@link Dice},
+ * a list of {@link Player}s and an instance of {@link ScannerUtils}.
+ * </p>
+ * <p>
+ * Firstly the players are created, by assigning them a name and a symbol,
+ * and then the game starts.
+ * The game is then played.
+ * Players play in turns until the game is over, rolling a dice and moving to a new cell.
+ * When the game is over a winner is declared, and a leaderboard is displayed.
+ * The game is over when a player has no more money.
+ * </p>
+ * <b>Usage</b>:
+ * <pre>
+ * {@code
+ * Game game = new Game(2); // Instantiate a new game with 2 players
+ * game.start();            // Start the game
+ * }
+ * </pre>
  *
+ * @author Luca Mazza
+ * @version 1.1.0
  */
 public class Game {
 
@@ -42,7 +67,15 @@ public class Game {
     private boolean isGameRunning = true;
 
     /**
+     * <p>
+     * Constructor of the Game class.
+     * </p>
+     * <p>
+     * The number of players is set to {@link Constant#PLAYER_NUMBER} by default,
+     * then all the game's components are instantiated.
+     * </p>
      *
+     *  @param playersNumber the number of players
      */
     public Game(int playersNumber) {
         playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
@@ -54,9 +87,8 @@ public class Game {
     }
 
     /**
-     * Return the next player's index, based on the current player.
-     *
-     * @return the next player's index in `players`
+     * Sets the next player's index, based on the current player, in field
+     * {@link Game#currentPlayer}.
      */
     private void getNextPlayer() {
         this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
@@ -101,8 +133,10 @@ public class Game {
     }
 
     /**
-     * @param player
-     * @return
+     * Checks if the player name is not already taken.
+     *
+     * @param player the player to check
+     * @return true if the name is not taken, false if is
      */
     private boolean isNotUniquePlayer(Player player, int j) {
         for (int i = 0; i < this.players.length; i++) {
@@ -151,6 +185,9 @@ public class Game {
         }
     }
 
+    /**
+     * Prints the leaderboard on the console, with the players ordered by balance.
+     */
     private void printLeaderboard() {
         ANSIUtility.clearScreen();
         ANSIUtility.setBold();
@@ -162,7 +199,11 @@ public class Game {
     }
 
     /**
-     *
+     * <p>
+     * Prints the UI on the console.
+     * </p>
+     * The UI consists of a banner, depicting the current player's name and
+     * their balance, followed by the bank's balance and the board.
      */
     private void printUI() {
         System.out.println();
@@ -177,7 +218,8 @@ public class Game {
     }
 
     /**
-     *
+     * Checks if any player has lost.
+     * When so the game is set over by toggling the {@link Game#isGameRunning}.
      */
     private void hasPlayerLost() {
         for (Player player : this.players) {
@@ -186,6 +228,27 @@ public class Game {
                 return;
             }
         }
+    }
+
+    /**
+     * Moves the player to the next cell, based on the dice.
+     */
+    private void movePlayer() {
+        this.board.getCells()[this.players[currentPlayer].getPosition()].removePlayer(this.players[this.currentPlayer]);
+        this.players[this.currentPlayer].setPosition(this.dice.getCurrentValue());
+        this.board.getCells()[this.players[this.currentPlayer].getPosition()].setPlayer(this.players[this.currentPlayer]);
+    }
+
+    /**
+     * Initializes the player's position on the board,
+     * setting it to the start cell.
+     *
+     * @param i the index of the player.
+     */
+    private void initPlayer(int i) {
+        this.board.getCells()[this.players[i].getPosition()].removePlayer(this.players[i]);
+        this.players[i].setPosition(0);
+        this.board.getCells()[this.players[i].getPosition()].setPlayer(this.players[i]);
     }
 
     /**
@@ -213,6 +276,17 @@ public class Game {
         }
         this.scannerUtils.readKey("Press enter to continue...");
         this.getNextPlayer();
+    }
+
+    /**
+     * Checks if the player has passed the start cell.
+     *
+     * @return true if the player has passed the start cell, false otherwise.
+     */
+    private boolean hasPlayerPassedStart() {
+        int previousPosition = this.players[this.currentPlayer].getPosition() - this.dice.getCurrentValue();
+        return previousPosition < 0
+                ;
     }
 
     /**
