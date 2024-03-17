@@ -2,7 +2,7 @@ package ch.mazluc.util;
 /*
  * MIT License
  *
- * Copyright (c) 2023 Luca Mazza
+ * Copyright (c) 2024 Luca Mazza
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,18 +28,15 @@ package ch.mazluc.util;
  * background and foreground colors, moving the cursor, clearing the screen,
  * and resetting the output format. Color codes are defined as constants and
  * color codes with 16 or 256 bit format are not supported.
- *
- * <p>
- * Usage:
- *
+ * </p>
+ * <b>Usage</b>:
  * <pre>
  * {@code
- * ANSIUtility.clearScreen(); // clear the screen
- * ANSIUtility.moveTo(10, 10); // move the cursor to row 10 and column 10
- * ANSIUtility.setForegroundColor(ANSIUtility.RED); // set the foreground color to red
- * ANSIUtility.setBackgroundColor(ANSIUtility.YELLOW); // set the background color to yellow
- * System.out.println("Hello, World!"); // print "Hello, World!"
- * ANSIUtility.reset(); // reset the output format
+ * ANSIUtility.clearScreen();                                           // clear the screen
+ * ANSIUtility.moveTo(10, 10);                                          // move the cursor to row 10 and column 10
+ * ANSIUtuility.printcf("%s", ANSIUtility.RED, "Hello World!");         // print in red
+ * ANSIUtility.printbcf("Your name is %s", ANSIUtility.BLUE, "Luca");   // print in blue background
+ * ANSIUtility.reset();                                                 // reset the output format
  * }
  * </pre>
  *
