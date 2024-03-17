@@ -25,12 +25,6 @@ When the players pass the start cell, they are given 100.– as a bonus.
 
 The game is over when one of the two players has lost all their money.
 
-## Download
-
-
-## Requirements
-
-
 ## Credits
 
 * **Relator**: [Fabio Landoni](mailto:fabio.landoni@supsi.ch)
