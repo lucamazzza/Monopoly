@@ -1,6 +1,6 @@
 # Monopoly - Gruppo 01
 
-[![Current Series](https://img.shields.io/badge/Latest_Series-SerieG1-green?style=for-the-badge)](https://gitlab-edu.supsi.ch/dti-isin/fabio.landoni/fondamenti_di_informatica/sp_2023_2024/Gruppo_01)
+[![Current Series](https://img.shields.io/badge/Latest_Series-SerieG2-orange?style=for-the-badge)](https://gitlab-edu.supsi.ch/dti-isin/fabio.landoni/fondamenti_di_informatica/sp_2023_2024/Gruppo_01)
 [![JDK Version](https://img.shields.io/badge/JDK-17-aa8664.svg?logo=oracle&style=for-the-badge)](https://www.oracle.com/java/technologies/downloads/#java17)
 [![License](https://img.shields.io/badge/License-UNLICENSED-purple?style=for-the-badge)]()
 
