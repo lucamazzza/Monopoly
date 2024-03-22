@@ -49,7 +49,7 @@ public class Game {
     /**
      * The dice in the game
      */
-    private final Dice dice;
+    private final Dice[] dices;
 
     /**
      * Utility class managing user interaction, through the console, with the game.
@@ -82,7 +82,7 @@ public class Game {
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
         this.bank = new Bank();
-        this.dice = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
+        this.dices = new Dice[]{new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE),new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE)};
         this.scannerUtils = new ScannerUtils();
     }
 
@@ -235,7 +235,7 @@ public class Game {
      */
     private void movePlayer() {
         this.board.getCells()[this.players[currentPlayer].getPosition()].removePlayer(this.players[this.currentPlayer]);
-        this.players[this.currentPlayer].setPosition(this.dice.getCurrentValue());
+        this.players[this.currentPlayer].setPosition(getDicesValue());
         this.board.getCells()[this.players[this.currentPlayer].getPosition()].setPlayer(this.players[this.currentPlayer]);
     }
 
@@ -262,8 +262,10 @@ public class Game {
      * </p>
      */
     private void diceRollCase() {
-        this.dice.roll();
-        ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
+        for (int i = 0; i < dices.length; i++){
+            this.dices[i].roll();
+            ANSIUtility.printcf("Dice " + (i+1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
+        }
         this.movePlayer();
         int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
         if (this.hasPlayerPassedStart()){
@@ -284,9 +286,16 @@ public class Game {
      * @return true if the player has passed the start cell, false otherwise.
      */
     private boolean hasPlayerPassedStart() {
-        int previousPosition = this.players[this.currentPlayer].getPosition() - this.dice.getCurrentValue();
+        int previousPosition = this.players[this.currentPlayer].getPosition() - getDicesValue();
         return previousPosition < 0
                 ;
+    }
+    private int getDicesValue() {
+        int dicesValue = 0;
+        for (Dice dice : dices) {
+            dicesValue += dice.getCurrentValue();
+        }
+        return dicesValue;
     }
 
     /**

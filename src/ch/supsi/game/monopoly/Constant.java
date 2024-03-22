@@ -38,7 +38,7 @@ public final class Constant {
     /**
      * The maximum value of the dice.
      */
-    public static final int DICE_MAX_VALUE = 4;
+    public static final int DICE_MAX_VALUE = 6;
 
     /**
      * The width of the board.
