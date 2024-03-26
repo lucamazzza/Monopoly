@@ -140,6 +140,9 @@ public class Game {
      */
     private boolean isNotUniquePlayer(Player player, int j) {
         for (int i = 0; i < this.players.length; i++) {
+            if (this.players[i] == null) {
+                continue;
+            }
             if (i != j && this.players[i].equals(player)) {
                 return true;
             }
