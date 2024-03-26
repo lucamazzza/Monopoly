@@ -28,7 +28,7 @@ public final class Constant {
     /**
      * The number of players in the game.
      */
-    public static final int PLAYER_NUMBER = 2;
+    public static final int PLAYER_NUMBER = 4;
 
     /**
      * The minimum value of the dice.
