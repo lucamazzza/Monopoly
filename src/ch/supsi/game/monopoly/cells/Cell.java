@@ -8,16 +8,18 @@ import ch.supsi.game.monopoly.Player;
  * This class represents a cell of the game "Monopoly".
  * </p>
  * <p>
- * Every cell has a fee, a type and a list of players, currently on it.
+ * Every cell has a list of players, currently on it.
  * </p>
  * <p>
- * Toll cells have a random fee, starting from -150 to -50.
- * The start cell gives 100 to the player(s) passing it.
+ * See {@link ParkingCell}, {@link StartCell},
+ * {@link ProprietyCell} and {@link TaxCell}
+ * for concrete implementations and usage.
  * </p>
  *
  * @author Andrea Masciocchi
  * @author Ivo Herceg
- * @version 1.1.0
+ * @author Luca Mazza
+ * @version 1.2.0
  */
 public abstract class Cell {
 
@@ -61,7 +63,32 @@ public abstract class Cell {
         return players;
     }
 
+    /**
+     * Applies the effect of a specific cell on a player.
+     * <p>
+     * As an abstract implementation, you must implement
+     * a version of this method for each concrete cell.
+     * </p>
+     * <p>
+     * In this case it is mandatory to use Dynamic Dispatch
+     * to apply the effect on a player, from a call of a
+     * variable type `Cell`.
+     * </p>
+     *
+     * @param player the player to apply the effect on.
+     */
     public abstract void applyEffect(Player player);
 
+    /**
+     * Returns the Type Name of the cell.
+     * <p>
+     * Used to display the type of the cell on the board.
+     * </p>
+     * <p>
+     * This method has a static behaviour, for `Start`
+     * and `Parking` cells, even though it is not static,
+     * as an `abstract` implementation is not compatible.
+     * </p>
+     */
     public abstract String getCellTitle();
 }
