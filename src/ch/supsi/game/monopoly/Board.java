@@ -1,5 +1,7 @@
 package ch.supsi.game.monopoly;
 
+import ch.supsi.game.monopoly.cells.Cell;
+
 /**
  * <p>
  * Class representing the board of the game "Monopoly".
@@ -23,7 +25,7 @@ package ch.supsi.game.monopoly;
  * @author Andrea Masciocchi
  * @author Luca Mazza
  * @author Ivo Herceg
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class Board {
 
@@ -64,6 +66,7 @@ public class Board {
         rows = Math.max(rows, Constant.BOARD_HEIGHT);
         cols = Math.max(cols, Constant.BOARD_WIDTH);
         this.boardCells = new Cell[rows][cols];
+        // TODO: CORRECT AREA CALCULATION [feat(#17)]
         this.cells = new Cell[(rows - 1) * (cols - 1)];
         initBoard();
     }
@@ -92,6 +95,8 @@ public class Board {
         int colAdd = -1;
         Cell cell;
         for(int i = 0; i < cells.length; i++){
+            // TODO: ADD CELLS HIERARCHICALLY AND ON THE CORRECT FORM
+            /*
             if (i == 0) {
                 cell = new Cell(CellType.START);
             } else {
@@ -99,6 +104,7 @@ public class Board {
             }
             this.boardCells[row][col] = cell;
             this.cells[i] = cell;
+
             if (col == 0 && row == Constant.BOARD_HEIGHT - 1) {
                 colAdd = 0;
                 rowAdd = -1;
@@ -114,6 +120,7 @@ public class Board {
             }
             col += colAdd;
             row += rowAdd;
+            */
         }
     }
 
@@ -153,9 +160,9 @@ public class Board {
                         sb.append("|");
                         StringBuilder detail = new StringBuilder();
                         if (d == 0) {
-                            detail = new StringBuilder(boardCells[row][col].getType().toString());
+                            detail = new StringBuilder(boardCells[row][col].toString());
                         } else if (d == 1) {
-                            detail = new StringBuilder(String.valueOf(boardCells[row][col].getFee()));
+                            //detail = new StringBuilder(String.valueOf(boardCells[row][col].getFee()));
                         } else if (d == Constant.CELL_DETAILS-1) {
                             for (int i = 0; i < boardCells[row][col].getPlayers().length; i++) {
                                 if (boardCells[row][col].getPlayers()[i] != null) {
