@@ -1,7 +1,5 @@
 package ch.supsi.game.monopoly;
 
-import java.util.Objects;
-
 /**
  * <p>
  * This class represents a player.
@@ -166,24 +164,20 @@ public class Player {
     /**
      * Checks if the player is equal to another player.
      *
-     * @param o the player to compare
+     * @param obj the player to compare
      * @return true if the players are equal, false if not
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Player player = (Player) o;
-        return this.symbol == player.symbol && Objects.equals(this.name, player.name);
-    }
-
-    /**
-     * Hashes the player, given their name and symbol.
-     *
-     * @return the hashcode
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.name, this.symbol);
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Player)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        return this.symbol == ((Player) obj).getSymbol();
     }
 }
