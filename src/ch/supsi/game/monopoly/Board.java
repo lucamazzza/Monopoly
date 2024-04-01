@@ -1,5 +1,12 @@
 package ch.supsi.game.monopoly;
 
+import ch.supsi.game.monopoly.cells.Cell;
+import ch.supsi.game.monopoly.cells.ParkingCell;
+import ch.supsi.game.monopoly.cells.ProprietyCell;
+import ch.supsi.game.monopoly.cells.StartCell;
+
+import java.util.Random;
+
 /**
  * <p>
  * Class representing the board of the game "Monopoly".
@@ -23,7 +30,7 @@ package ch.supsi.game.monopoly;
  * @author Andrea Masciocchi
  * @author Luca Mazza
  * @author Ivo Herceg
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class Board {
 
@@ -64,7 +71,7 @@ public class Board {
         rows = Math.max(rows, Constant.BOARD_HEIGHT);
         cols = Math.max(cols, Constant.BOARD_WIDTH);
         this.boardCells = new Cell[rows][cols];
-        this.cells = new Cell[(rows - 1) * (cols - 1)];
+        this.cells = new Cell[Constant.BOARD_SIZE];
         initBoard();
     }
 
@@ -86,34 +93,23 @@ public class Board {
      * </p>
      */
     private void initBoard(){
-        int row = this.boardCells.length - 1;
-        int col = this.boardCells[0].length - 1;
-        int rowAdd = 0;
-        int colAdd = -1;
-        Cell cell;
-        for(int i = 0; i < cells.length; i++){
-            if (i == 0) {
-                cell = new Cell(CellType.START);
-            } else {
-                cell = new Cell(CellType.TOLL);
-            }
-            this.boardCells[row][col] = cell;
-            this.cells[i] = cell;
-            if (col == 0 && row == Constant.BOARD_HEIGHT - 1) {
-                colAdd = 0;
-                rowAdd = -1;
-            } else if (col == 0 && row == 0){
-                colAdd = 1;
-                rowAdd = 0;
-            } else if (col == Constant.BOARD_WIDTH-1 && row == 0) {
-                colAdd = 0;
-                rowAdd = 1;
-            } else if (col == Constant.BOARD_WIDTH-1 && row == Constant.BOARD_HEIGHT) {
-                colAdd = -1;
-                rowAdd = 0;
-            }
-            col += colAdd;
-            row += rowAdd;
+        Cell start = new StartCell();
+        Cell parking = new ParkingCell();
+        Cell nStation = new ProprietyCell();
+        Cell sStation = new ProprietyCell();
+        Cell eStation = new ProprietyCell();
+        Cell wStation = new ProprietyCell();
+        this.cells[Constant.START_POSITION] = start;
+        this.cells[Constant.PARKING_POSITION] = parking;
+        this.cells[Constant.NORTH_STATION_POSITION] = nStation;
+        this.cells[Constant.SOUTH_STATION_POSITION] = sStation;
+        this.cells[Constant.EAST_STATION_POSITION] = eStation;
+        this.cells[Constant.WEST_STATION_POSITION] = wStation;
+        for (int i = 0; i < Constant.TAX_CELLS_QTY; i++){
+            // TODO: INIT TAX CELLS
+        }
+        for (int i = 0; i < Constant.PROPRIETY_CELLS_QTY; i++) {
+            // TODO: INIT PROPRIETY CELLS
         }
     }
 
@@ -153,9 +149,9 @@ public class Board {
                         sb.append("|");
                         StringBuilder detail = new StringBuilder();
                         if (d == 0) {
-                            detail = new StringBuilder(boardCells[row][col].getType().toString());
+                            detail = new StringBuilder(boardCells[row][col].toString());
                         } else if (d == 1) {
-                            detail = new StringBuilder(String.valueOf(boardCells[row][col].getFee()));
+                            //detail = new StringBuilder(String.valueOf(boardCells[row][col].getFee()));
                         } else if (d == Constant.CELL_DETAILS-1) {
                             for (int i = 0; i < boardCells[row][col].getPlayers().length; i++) {
                                 if (boardCells[row][col].getPlayers()[i] != null) {

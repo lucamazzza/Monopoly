@@ -28,7 +28,7 @@ public final class Constant {
     /**
      * The number of players in the game.
      */
-    public static final int PLAYER_NUMBER = 2;
+    public static final int PLAYER_NUMBER = 4;
 
     /**
      * The minimum value of the dice.
@@ -59,6 +59,67 @@ public final class Constant {
      * The number of descriptive rows contained by the cell.
      */
     public static final int CELL_DETAILS = 5;
+
+    /**
+     * The total number of cells in the board.
+     */
+    public static final int BOARD_SIZE = (BOARD_WIDTH - 1) * 4;
+
+    /**
+     * Start cell position on the game loop board.
+     */
+    public static final int START_POSITION = 0;
+
+    /**
+     * Parking cell position on the game loop board.
+     */
+    public static final int PARKING_POSITION = BOARD_WIDTH + (BOARD_WIDTH - 1);
+
+    /**
+     * South Station cell position on the game loop board.
+     */
+    public static final int SOUTH_STATION_POSITION = (int) Math.ceil(BOARD_SIZE / 2.0);
+
+    /**
+     * West Station cell position on the game loop board.
+     */
+    public static final int WEST_STATION_POSITION = SOUTH_STATION_POSITION + (BOARD_WIDTH - 1);
+
+    /**
+     * North Station cell position on the game loop board.
+     */
+    public static final int NORTH_STATION_POSITION = WEST_STATION_POSITION + (BOARD_WIDTH - 1);
+
+    /**
+     * East Station cell position on the game loop board.
+     */
+    public static final int EAST_STATION_POSITION = NORTH_STATION_POSITION + (BOARD_WIDTH - 1);
+
+    /**
+     * Number of tax cells.
+     */
+    public static final int TAX_CELLS_QTY = 2;
+
+    /**
+     * Number of station cells.
+     */
+    public static final int STATION_CELLS_QTY = 4;
+
+    /**
+     * Number of start cells.
+     */
+    public static final int START_CELLS_QTY = 1;
+
+    /**
+     * Number of parking cells.
+     */
+    public static final int PARKING_CELLS_QTY = 1;
+
+    /**
+     * Number of propriety cells.
+     */
+    public static final int PROPRIETY_CELLS_QTY =
+            BOARD_SIZE - (TAX_CELLS_QTY + STATION_CELLS_QTY + START_CELLS_QTY + PARKING_CELLS_QTY);
 
     /**
      * <p>
