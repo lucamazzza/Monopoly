@@ -268,15 +268,16 @@ public class Game {
         this.dice.roll();
         ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
         this.movePlayer();
-        int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
+        // TODO: FIX WITH HIERARCHICAL IMPLEMENTATION
+        // int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
         if (this.hasPlayerPassedStart()){
-            this.players[this.currentPlayer].receive(this.board.getCells()[0].getFee());
-            this.bank.withdraw(tmpFee);
+            // this.players[this.currentPlayer].receive(this.board.getCells()[0].getFee());
+            // this.bank.withdraw(tmpFee);
         }
-        if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.TOLL) {
-            this.players[this.currentPlayer].pay(tmpFee);
-            this.bank.deposit(tmpFee);
-        }
+        // if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.TOLL) {
+        //     this.players[this.currentPlayer].pay(tmpFee);
+        //     this.bank.deposit(tmpFee);
+        // }
         this.scannerUtils.readKey("Press enter to continue...");
         this.getNextPlayer();
     }
