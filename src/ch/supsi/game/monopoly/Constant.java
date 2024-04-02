@@ -43,12 +43,12 @@ public final class Constant {
     /**
      * The width of the board.
      */
-    public static final int BOARD_WIDTH = 5;
+    public static final int BOARD_WIDTH = 9;
 
     /**
      * The height of the board.
      */
-    public static final int BOARD_HEIGHT = 5;
+    public static final int BOARD_HEIGHT = 9;
 
     /**
      * The width of the cell.
@@ -78,7 +78,7 @@ public final class Constant {
     /**
      * South Station cell position on the game loop board.
      */
-    public static final int SOUTH_STATION_POSITION = (int) Math.ceil(BOARD_SIZE / 2.0);
+    public static final int SOUTH_STATION_POSITION = (int) Math.ceil(BOARD_WIDTH / 2.0);
 
     /**
      * West Station cell position on the game loop board.
