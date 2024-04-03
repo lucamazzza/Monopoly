@@ -31,6 +31,11 @@ public final class Constant {
     public static final int PLAYER_NUMBER = 4;
 
     /**
+     * The number of dices in the game.
+     */
+    public static final int NUMBER_OF_DICES = 2;
+
+    /**
      * The minimum value of the dice.
      */
     public static final int DICE_MIN_VALUE = 1;
@@ -38,7 +43,7 @@ public final class Constant {
     /**
      * The maximum value of the dice.
      */
-    public static final int DICE_MAX_VALUE = 4;
+    public static final int DICE_MAX_VALUE = 6;
 
     /**
      * The width of the board.
