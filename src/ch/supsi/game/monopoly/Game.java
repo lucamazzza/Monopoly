@@ -82,7 +82,10 @@ public class Game {
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
         this.bank = new Bank();
-        this.dices = new Dice[]{new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE),new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE)};
+        this.dices = new Dice[Constant.NUMBER_OF_DICES];
+        for (int i = 0; i < Constant.NUMBER_OF_DICES; i++) {
+            this.dices[i] = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
+        }
         this.scannerUtils = new ScannerUtils();
     }
 
@@ -287,9 +290,14 @@ public class Game {
      */
     private boolean hasPlayerPassedStart() {
         int previousPosition = this.players[this.currentPlayer].getPosition() - getDicesValue();
-        return previousPosition < 0
-                ;
+        return previousPosition < 0;
     }
+
+    /**
+     * Returns the sum of the dices.
+     *
+     * @return the sum of the dices
+     */
     private int getDicesValue() {
         int dicesValue = 0;
         for (Dice dice : dices) {

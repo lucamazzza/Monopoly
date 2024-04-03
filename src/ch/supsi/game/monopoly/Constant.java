@@ -31,6 +31,11 @@ public final class Constant {
     public static final int PLAYER_NUMBER = 2;
 
     /**
+     * The number of dices in the game.
+     */
+    public static final int NUMBER_OF_DICES = 2;
+
+    /**
      * The minimum value of the dice.
      */
     public static final int DICE_MIN_VALUE = 1;
