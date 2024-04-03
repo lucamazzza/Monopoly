@@ -12,7 +12,9 @@ import ch.supsi.game.monopoly.Player;
  * </p>
  * <pre>
  * {@code
- * TODO: ADD EXAMPLES
+ * Cell parking = new ParkingCell();    // istantiate new ParkingCell w/ polymorphism
+ * parking.applyEffect();               // does nothing
+ * parking.getCellTitle();              // prints: "Parking"
  * }
  * </pre>
  *
@@ -20,20 +22,19 @@ import ch.supsi.game.monopoly.Player;
  * @version 1.2.0
  */
 public class ParkingCell extends Cell {
-    // TODO: IMPLEMENT
 
     /**
      * Applies the effect of a specific cell on a player.
      *
      * <p>
-     * TODO: EXPLAIN THE EFFECT
+     * This method does nothing.
      * </p>
      *
      * @param player the player to apply the effect on.
      */
     @Override
     public void applyEffect(Player player) {
-        // TODO: IMPLEMENT
+        return;
     }
 
     /**
