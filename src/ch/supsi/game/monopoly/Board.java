@@ -1,9 +1,7 @@
 package ch.supsi.game.monopoly;
 
-import ch.supsi.game.monopoly.cells.Cell;
-import ch.supsi.game.monopoly.cells.ParkingCell;
-import ch.supsi.game.monopoly.cells.ProprietyCell;
-import ch.supsi.game.monopoly.cells.StartCell;
+import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.cells.*;
 
 import java.util.Random;
 
@@ -22,8 +20,8 @@ import java.util.Random;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Board board = new Board(5,5);    // Instantiate a new board with 5 rows and 5 columns.
- * System.out.print(board);         // Print the board
+ * Board board = new Board(5,5);    // instantiate a new board with 5 rows and 5 columns.
+ * System.out.print(board);         // print the board
  * }
  * </pre>
  *
@@ -53,6 +51,11 @@ public class Board {
     private final Cell[] cells;
 
     /**
+     * Random generator instance.
+     */
+    private final Random random = new Random();
+
+    /**
      * <p>
      * Constructor of the Board class.
      * </p>
@@ -76,6 +79,15 @@ public class Board {
     }
 
     /**
+     * Returns a random rent between 50 and 150.
+     *
+     * @return the random rent
+     */
+    private int getRandomRent() {
+        return this.random.nextInt(50, 150);
+    }
+
+    /**
      * <p>
      * Initializes the board.
      * </p>
@@ -83,22 +95,20 @@ public class Board {
      * Initializes the board, giving it a working form.
      * </p>
      * <p>
-     * Starts by iterating on the length and width of the board, and
-     * instantiating a `Cell` for each position.
+     * Firstly, static-position cells are initialized,
+     * like {@link ParkingCell}, {@link StartCell},
+     * and {@link ProprietyCell} (stations).
+     * Then the rest of the board is randomly generated.
      * </p>
-     * <p>
-     * The first cell, low-right, is the `START` cell, which gives the player
-     * 100.-.
-     * The other cells are all `TOLL` cells, which apply a random fee on the player.
-     * </p>
+     * <p></p>
      */
     private void initBoard(){
         Cell start = new StartCell();
         Cell parking = new ParkingCell();
-        Cell nStation = new ProprietyCell();
-        Cell sStation = new ProprietyCell();
-        Cell eStation = new ProprietyCell();
-        Cell wStation = new ProprietyCell();
+        Cell nStation = new ProprietyCell(new ProprietyName("North Station", ANSIUtility.DEFAULT), getRandomRent());
+        Cell sStation = new ProprietyCell(new ProprietyName("South Station", ANSIUtility.DEFAULT), getRandomRent());
+        Cell eStation = new ProprietyCell(new ProprietyName("East Station", ANSIUtility.DEFAULT), getRandomRent());
+        Cell wStation = new ProprietyCell(new ProprietyName("West Station", ANSIUtility.DEFAULT), getRandomRent());
         this.cells[Constant.START_POSITION] = start;
         this.cells[Constant.PARKING_POSITION] = parking;
         this.cells[Constant.NORTH_STATION_POSITION] = nStation;
@@ -106,10 +116,52 @@ public class Board {
         this.cells[Constant.EAST_STATION_POSITION] = eStation;
         this.cells[Constant.WEST_STATION_POSITION] = wStation;
         for (int i = 0; i < Constant.TAX_CELLS_QTY; i++){
-            // TODO: INIT TAX CELLS
+            int pos = this.random.nextInt(0, Constant.BOARD_SIZE);
+            if (this.cells[pos] != null) {
+                i--;
+                continue;
+            }
+            if (i == 0) {
+                this.cells[pos] = new LuxuryTaxCell();
+            } else {
+                this.cells[pos] = new WealthTaxCell();
+            }
         }
-        for (int i = 0; i < Constant.PROPRIETY_CELLS_QTY; i++) {
-            // TODO: INIT PROPRIETY CELLS
+        int tmp = Constant.PROPRIETY_CELLS_QTY;
+        for (int i = 0; i < tmp; i++) {
+            if (this.cells[i] != null) {
+                tmp++;
+                continue;
+            }
+            int nameIndex = this.random.nextInt(0, ProprietyCell.nameBank.length);
+            if (ProprietyCell.nameBank[nameIndex].isBlacklisted()) {
+                i--;
+                continue;
+            }
+            this.cells[i] = new ProprietyCell(ProprietyCell.nameBank[nameIndex], getRandomRent());
+            ProprietyCell.nameBank[nameIndex].setBlacklisted(true);
+        }
+        int row = this.boardCells.length - 1;
+        int col = this.boardCells[0].length - 1;
+        int rowAdd = 0;
+        int colAdd = -1;
+        for (int i = 0; i < Constant.BOARD_SIZE; i++) {
+            this.boardCells[row][col] = this.cells[i];
+            if (col == 0 && row == Constant.BOARD_HEIGHT - 1) {
+                colAdd = 0;
+                rowAdd = -1;
+            } else if (col == 0 && row == 0) {
+                colAdd = 1;
+                rowAdd = 0;
+            } else if (col == Constant.BOARD_WIDTH - 1 && row == 0) {
+                colAdd = 0;
+                rowAdd = 1;
+            } else if (col == Constant.BOARD_WIDTH - 1 && row == Constant.BOARD_HEIGHT) {
+                colAdd = -1;
+                rowAdd = 0;
+            }
+            col += colAdd;
+            row += rowAdd;
         }
     }
 
@@ -149,9 +201,9 @@ public class Board {
                         sb.append("|");
                         StringBuilder detail = new StringBuilder();
                         if (d == 0) {
-                            detail = new StringBuilder(boardCells[row][col].toString());
+                            detail = new StringBuilder(boardCells[row][col].getTitle());
                         } else if (d == 1) {
-                            //detail = new StringBuilder(String.valueOf(boardCells[row][col].getFee()));
+                            detail = new StringBuilder(String.valueOf(boardCells[row][col].getDetail()));
                         } else if (d == Constant.CELL_DETAILS-1) {
                             for (int i = 0; i < boardCells[row][col].getPlayers().length; i++) {
                                 if (boardCells[row][col].getPlayers()[i] != null) {
@@ -160,7 +212,8 @@ public class Board {
                             }
                         }
                         sb.append(detail);
-                        sb.append(" ".repeat(Math.max(0, 22 - detail.length())));
+                        String tmp = detail.toString().replaceAll("\u001B\\[[\\d;]*[^\\d;]","");
+                        sb.append(" ".repeat(Math.max(0, 22 - tmp.length())));
                         sb.append("|");
                     }
                 }
@@ -181,9 +234,18 @@ public class Board {
     }
 
     /**
-     * Method that returns the board, as a String.
+     * Returns a cell from the board given its index.
      *
-     * @return the output of {@link Board#generateBoard()}, as a string.
+     * @param index the index of the cell to return
+     * @return the cell at the given index
+     */
+    public Cell getCell(int index) {
+        return this.cells[index];
+    }
+
+    /**
+     * Method that returns the board, as a String.
+     * @return * the output of {@link Board#generateBoard()}, as a string.
      */
     @Override
     public String toString() {
