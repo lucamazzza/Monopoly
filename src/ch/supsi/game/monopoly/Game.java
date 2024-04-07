@@ -21,8 +21,8 @@ import ch.mazluc.util.ANSIUtility;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Game game = new Game(2); // Instantiate a new game with 2 players
- * game.start();            // Start the game
+ * Game game = new Game(2); // instantiate a new game with 2 players
+ * game.start();            // start the game
  * }
  * </pre>
  *
@@ -35,11 +35,6 @@ public class Game {
      * List of players in the game
      */
     private final Player[] players;
-
-    /**
-     * The bank in the game
-     */
-    private final Bank bank;
 
     /**
      * The board of the game
@@ -81,7 +76,6 @@ public class Game {
         playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
-        this.bank = new Bank();
         this.dices = new Dice[Constant.NUMBER_OF_DICES];
         for (int i = 0; i < Constant.NUMBER_OF_DICES; i++) {
             this.dices[i] = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
@@ -123,7 +117,7 @@ public class Game {
                 continue;
             }
             this.players[i] = tmp;
-            this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
+            Bank.withdraw(Constant.PLAYER_START_AMOUNT);
             this.players[i].receive(Constant.PLAYER_START_AMOUNT);
             ANSIUtility.printcf(
                     "Player %s (%c) created%n%n",
@@ -200,7 +194,7 @@ public class Game {
         ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
         this.sortPlayersByBalance();
         for (Player player : this.players) {
-            System.out.printf("%-20s: %d.–%n", player.getName(), player.getBalance());
+            System.out.printf("%-20s: %.2f%n", player.getName(), player.getBalance());
         }
     }
 
@@ -214,26 +208,20 @@ public class Game {
     private void printUI() {
         System.out.println();
         ANSIUtility.printbcf(
-                "%s's Turn [Balance: %d]%n",
+                "%s's Turn [Balance: %.2f]%n",
                 ANSIUtility.GREEN,
                 this.players[this.currentPlayer].getName(),
                 this.players[this.currentPlayer].getBalance()
         );
-        ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, this.bank);
+        ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, Bank.getBalance());
         System.out.println(this.board);
     }
 
     /**
      * Checks if any player has lost.
-     * When so the game is set over by toggling the {@link Game#isGameRunning}.
      */
-    private void hasPlayerLost() {
-        for (Player player : this.players) {
-            if (player.getBalance() < 0) {
-                this.isGameRunning = false;
-                return;
-            }
-        }
+    private boolean hasPlayerLost(int index) {
+        return this.players[index].getBalance() <= 0;
     }
 
     /**
@@ -273,16 +261,10 @@ public class Game {
             ANSIUtility.printcf("Dice " + (i+1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
         }
         this.movePlayer();
-        // TODO: FIX WITH HIERARCHICAL IMPLEMENTATION
-        // int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
         if (this.hasPlayerPassedStart()){
-            // this.players[this.currentPlayer].receive(this.board.getCells()[0].getFee());
-            // this.bank.withdraw(tmpFee);
+            this.board.getCell(Constant.START_POSITION).applyEffect(this.players[this.currentPlayer]);
         }
-        // if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.TOLL) {
-        //     this.players[this.currentPlayer].pay(tmpFee);
-        //     this.bank.deposit(tmpFee);
-        // }
+        this.board.getCell(this.players[this.currentPlayer].getPosition()).applyEffect(this.players[this.currentPlayer]);
         this.scannerUtils.readKey("Press enter to continue...");
         this.getNextPlayer();
     }
@@ -311,6 +293,22 @@ public class Game {
     }
 
     /**
+     * Checks if the game is over.
+     * When so sets the {@link Game#isGameRunning} to false.
+     */
+    private void isGameOver() {
+        int counter = 0;
+        for (Player player : players) {
+            if (player.getBalance() < 0) {
+                counter++;
+            }
+        }
+        if (counter == players.length - 1) {
+            this.isGameRunning = false;
+        }
+    }
+
+    /**
      * <p>
      * Executes the game cycle.
      * </p>
@@ -327,6 +325,9 @@ public class Game {
         this.printStartMessage();
         this.init();
         do {
+            while (this.hasPlayerLost(this.currentPlayer)) {
+                this.getNextPlayer();
+            }
             this.printUI();
             int option = this.scannerUtils.readOption();
             switch (option) {
@@ -344,7 +345,7 @@ public class Game {
                     ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
                     break;
             }
-            this.hasPlayerLost();
+            this.isGameOver();
         } while (this.isGameRunning);
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
