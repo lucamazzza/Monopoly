@@ -12,52 +12,32 @@ package ch.supsi.game.monopoly;
  * It has a starting fund of 1'000'000.
  * </p>
  * <p>
+ * The bank has a static implementation, use it accordingly.
+ * </p>
+ * <p>
  * <b>Usage</b>:
  * </p>
  * <pre>
  * {@code
- * Bank bank = new Bank();
- * bank.deposit(500);       // give some money to the bank
- * bank.withdraw(100);      // take some money from the bank
- * System.out.print(bank);  // prints: "Bank: 1'000'400.–"
+ * Bank.deposit(500);                       // give some money to the bank
+ * Bank.withdraw(100);                      // take some money from the bank
+ * System.out.print(Bank.getBalance());     // prints: "Bank: 1000400.00"
  * }
  * </pre>
  *
  * @author Andrea Masciocchi
  * @author Luca Mazza
- * @version 1.1.0
+ * @version 1.2.0
  */
-public class Bank {
+public final class Bank {
 
     /**
      * The amount of money held in the bank.
      */
-    private int balance;
+    private static double balance = Math.max(Constant.BANK_START_AMOUNT, 1_000_000);
 
-    /**
-     * <p>
-     * Constructor of the Bank class.
-     * </p>
-     * <p>
-     * The starting amount of the bank is set to 1'000'000,
-     * using the {@link Constant} class' constant `BANK_START_AMOUNT`.
-     * </p>
-     * <p>
-     * If this value, for any reason, is set to less than 1'000'000
-     * the value is automatically set to 1'000'000.–
-     * </p>
-     */
-    public Bank(){
-        this.balance = Math.max(Constant.BANK_START_AMOUNT, 1_000_000);
-    }
-
-    /**
-     * Returns the current balance of the class.
-     *
-     * @return the current balance
-     */
-    public int getBalance() {
-        return this.balance;
+    private Bank() {
+        throw new IllegalStateException("Static class");
     }
 
     /**
@@ -66,11 +46,11 @@ public class Bank {
      *
      * @param amount the amount of money to deposit
      */
-    public void deposit(int amount) {
+    public static void deposit(double amount) {
         if (amount < 1) {
             return;
         }
-        this.balance += amount;
+        balance += amount;
     }
 
     /**
@@ -79,11 +59,11 @@ public class Bank {
      *
      * @param amount the amount of money to withdraw
      */
-    public void withdraw(int amount){
+    public static void withdraw(int amount){
         if (amount < 1) {
             return;
         }
-        this.balance -= amount;
+        balance -= amount;
     }
 
     /**
@@ -91,8 +71,7 @@ public class Bank {
      *
      * @return the current balance as a String
      */
-    @Override
-    public String toString() {
-        return String.format("Bank: %d.–", this.balance);
+    public static String getBalance() {
+        return String.format("Bank: %.2f", balance);
     }
 }
