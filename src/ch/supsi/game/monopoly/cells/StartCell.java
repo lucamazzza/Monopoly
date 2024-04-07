@@ -1,5 +1,7 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.supsi.game.monopoly.Bank;
+import ch.supsi.game.monopoly.Constant;
 import ch.supsi.game.monopoly.Player;
 
 /**
@@ -12,7 +14,10 @@ import ch.supsi.game.monopoly.Player;
  * </p>
  * <pre>
  * {@code
- * TODO: ADD EXAMPLES
+ * Cell cell = new StartCell();
+ * cell.getTitle();                    // get "Luxury Tax"
+ * cell.getDetail();                   // get "Get <tax_amount>.–"
+ * cell.applyEffect(player);           // apply the effect of the start cell
  * }
  * </pre>
  *
@@ -20,35 +25,47 @@ import ch.supsi.game.monopoly.Player;
  * @version 1.2.0
  */
 public class StartCell extends Cell{
-    // TODO: IMPLEMENT
+
+    /**
+     * The amount of money received on the start cell.
+     */
+    private final int receivedAmount;
+
+    /**
+     * Instantiate a new Start Cell.
+     */
+    public StartCell() {
+        super("Start");
+        this.receivedAmount = Constant.START_CELL_AMOUNT;
+    }
 
     /**
      * Applies the effect of a specific cell on a player.
      *
      * <p>
-     * TODO: EXPLAIN THE EFFECT
+     * When the luxury tax is applied, the player pays
+     * 200.– to the bank.
      * </p>
      *
      * @param player the player to apply the effect on.
      */
     @Override
     public void applyEffect(Player player) {
-        // TODO: IMPLEMENT
+        player.receive(this.receivedAmount);
+        Bank.withdraw(this.receivedAmount);
     }
 
     /**
-     * Returns the Type Name of the cell.
+     * Returns the description of the cell.
+     *
      * <p>
-     * Used to display the type of the cell on the board.
+     * Used to display the detail of the cell on the board.
      * </p>
-     * <p>
-     * This method has a static behaviour even though
-     * it is not static, as an `abstract` implementation
-     * is not compatible.
-     * </p>
+     *
+     * @return the description of the cell
      */
     @Override
-    public String getCellTitle() {
-        return "Start";
+    public String getDetail() {
+        return "Get " + this.receivedAmount + ".–";
     }
 }
