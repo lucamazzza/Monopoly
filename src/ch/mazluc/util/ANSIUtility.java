@@ -34,17 +34,23 @@ package ch.mazluc.util;
  * {@code
  * ANSIUtility.clearScreen();                                           // clear the screen
  * ANSIUtility.moveTo(10, 10);                                          // move the cursor to row 10 and column 10
- * ANSIUtuility.printcf("%s", ANSIUtility.RED, "Hello World!");         // print in red
+ * ANSIUtility.printcf("%s", ANSIUtility.RED, "Hello World!");          // print in red
  * ANSIUtility.printbcf("Your name is %s", ANSIUtility.BLUE, "Luca");   // print in blue background
  * ANSIUtility.reset();                                                 // reset the output format
+ * String s = ANSIUtility.colorize("Hello World!", ANSIUtility.GREEN);  // colorize a string
  * }
  * </pre>
  *
  * @author Luca Mazza
- * @version 1.0
+ * @version 1.2
  * @since 1.0
  */
 public class ANSIUtility {
+
+    /**
+     * ANSI Default color code **DO NOT USE**
+     */
+    public static final int DEFAULT = 0;
 
     /**
      * ANSI black color code
@@ -85,6 +91,11 @@ public class ANSIUtility {
      * ANSI white color code
      */
     public static final int WHITE = 37;
+
+    /**
+     * ANSI brown color code
+     */
+    public static final int BROWN = 94;
 
     /**
      * ANSI bright black color code
@@ -278,9 +289,22 @@ public class ANSIUtility {
      * @param args the arguments to the `printf` function
      */
     public static void printcf(String format, int color, Object... args) {
-        setForegroundColor(color);
+        if (color != 0) {
+            setForegroundColor(color);
+        }
         System.out.printf(format, args);
         reset();
+    }
+
+    /**
+     * Colorize a string with the given ANSI color code.
+     *
+     * @param s the string
+     * @param code the ANSI color code
+     * @return the colorized string
+     */
+    public static String colorize(String s, int code) {
+        return ESC + code + "m" + s + RESET;
     }
 
     /**
