@@ -26,6 +26,21 @@ public final class Constant {
     public static final int PLAYER_START_AMOUNT = 2000;
 
     /**
+     * The start amount of money to receive in the start cell.
+     */
+    public static final int START_CELL_AMOUNT = 100;
+
+    /**
+     * The amount of money to pay in the luxury tax.
+     */
+    public static final int LUXURY_TAX_AMOUNT = 100;
+
+    /**
+     * The percentage of the wealth tax.
+     */
+    public static final int WEALTH_TAX_PERCENTAGE = 10;
+
+    /**
      * The number of players in the game.
      */
     public static final int PLAYER_NUMBER = 4;
@@ -78,12 +93,12 @@ public final class Constant {
     /**
      * Parking cell position on the game loop board.
      */
-    public static final int PARKING_POSITION = BOARD_WIDTH + (BOARD_WIDTH - 1);
+    public static final int PARKING_POSITION = 2 * (BOARD_WIDTH - 1);
 
     /**
      * South Station cell position on the game loop board.
      */
-    public static final int SOUTH_STATION_POSITION = (int) Math.ceil(BOARD_WIDTH / 2.0);
+    public static final int SOUTH_STATION_POSITION = (int) Math.ceil(BOARD_WIDTH / 2.0) - 1;
 
     /**
      * West Station cell position on the game loop board.
@@ -124,7 +139,7 @@ public final class Constant {
      * Number of propriety cells.
      */
     public static final int PROPRIETY_CELLS_QTY =
-            BOARD_SIZE - (TAX_CELLS_QTY + STATION_CELLS_QTY + START_CELLS_QTY + PARKING_CELLS_QTY);
+            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY;
 
     /**
      * <p>
