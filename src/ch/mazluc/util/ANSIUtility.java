@@ -93,11 +93,6 @@ public class ANSIUtility {
     public static final int WHITE = 37;
 
     /**
-     * ANSI brown color code
-     */
-    public static final int BROWN = 94;
-
-    /**
      * ANSI bright black color code
      */
     public static final int BRIGHT_BLACK = 90;

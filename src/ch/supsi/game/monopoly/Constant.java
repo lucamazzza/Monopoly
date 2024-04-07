@@ -83,7 +83,7 @@ public final class Constant {
     /**
      * The total number of cells in the board.
      */
-    public static final int BOARD_SIZE = (BOARD_WIDTH - 1) * 4;
+    public static final int BOARD_SIZE = (BOARD_WIDTH - 1) * 2 + (BOARD_HEIGHT - 1) * 2;
 
     /**
      * Start cell position on the game loop board.
@@ -93,7 +93,7 @@ public final class Constant {
     /**
      * Parking cell position on the game loop board.
      */
-    public static final int PARKING_POSITION = 2 * (BOARD_WIDTH - 1);
+    public static final int PARKING_POSITION = (BOARD_WIDTH - 1) + (BOARD_HEIGHT - 1);
 
     /**
      * South Station cell position on the game loop board.
@@ -103,17 +103,17 @@ public final class Constant {
     /**
      * West Station cell position on the game loop board.
      */
-    public static final int WEST_STATION_POSITION = SOUTH_STATION_POSITION + (BOARD_WIDTH - 1);
+    public static final int WEST_STATION_POSITION = SOUTH_STATION_POSITION + (BOARD_WIDTH - 1)/2 + (BOARD_HEIGHT - 1)/2;
 
     /**
      * North Station cell position on the game loop board.
      */
-    public static final int NORTH_STATION_POSITION = WEST_STATION_POSITION + (BOARD_WIDTH - 1);
+    public static final int NORTH_STATION_POSITION = WEST_STATION_POSITION + (BOARD_WIDTH - 1)/2 + (BOARD_HEIGHT - 1)/2;
 
     /**
      * East Station cell position on the game loop board.
      */
-    public static final int EAST_STATION_POSITION = NORTH_STATION_POSITION + (BOARD_WIDTH - 1);
+    public static final int EAST_STATION_POSITION = NORTH_STATION_POSITION + (BOARD_WIDTH - 1)/2 + (BOARD_HEIGHT - 1)/2;
 
     /**
      * Number of tax cells.

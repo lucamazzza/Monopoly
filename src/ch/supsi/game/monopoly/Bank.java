@@ -36,6 +36,10 @@ public final class Bank {
      */
     private static double balance = Math.max(Constant.BANK_START_AMOUNT, 1_000_000);
 
+    /**
+     * Private constructor for class Bank.
+     * Prevents instantiation.
+     */
     private Bank() {
         throw new IllegalStateException("Static class");
     }
@@ -59,7 +63,7 @@ public final class Bank {
      *
      * @param amount the amount of money to withdraw
      */
-    public static void withdraw(int amount){
+    public static void withdraw (double amount){
         if (amount < 1) {
             return;
         }

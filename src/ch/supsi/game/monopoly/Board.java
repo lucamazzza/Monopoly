@@ -2,7 +2,6 @@ package ch.supsi.game.monopoly;
 
 import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.cells.*;
-
 import java.util.Random;
 
 /**
@@ -141,8 +140,8 @@ public class Board {
             this.cells[i] = new ProprietyCell(ProprietyCell.nameBank[nameIndex], getRandomRent());
             ProprietyCell.nameBank[nameIndex].setBlacklisted(true);
         }
-        int row = this.boardCells.length - 1;
-        int col = this.boardCells[0].length - 1;
+        int row = Constant.BOARD_HEIGHT - 1;
+        int col = Constant.BOARD_WIDTH - 1;
         int rowAdd = 0;
         int colAdd = -1;
         for (int i = 0; i < Constant.BOARD_SIZE; i++) {
@@ -184,8 +183,8 @@ public class Board {
      */
     private String generateBoard() {
         StringBuilder sb = new StringBuilder();
-        for (int row = 0; row < Constant.BOARD_WIDTH; row++) {
-            if (row == 0 || row == 1 || row == Constant.BOARD_WIDTH - 1) {
+        for (int row = 0; row < Constant.BOARD_HEIGHT; row++) {
+            if (row == 0 || row == 1 || row == (Constant.BOARD_HEIGHT - 1)) {
                 sb.append("-".repeat(Constant.CELL_WIDTH * Constant.BOARD_WIDTH));
             } else {
                 sb.append("-".repeat(Constant.CELL_WIDTH));
@@ -213,7 +212,7 @@ public class Board {
                         }
                         sb.append(detail);
                         String tmp = detail.toString().replaceAll("\u001B\\[[\\d;]*[^\\d;]","");
-                        sb.append(" ".repeat(Math.max(0, 22 - tmp.length())));
+                        sb.append(" ".repeat(Math.max(0, (Constant.CELL_WIDTH - 2) - tmp.length())));
                         sb.append("|");
                     }
                 }

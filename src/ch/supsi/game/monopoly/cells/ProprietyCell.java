@@ -49,8 +49,8 @@ public class ProprietyCell extends Cell{
      */
     public static final ProprietyName[] nameBank = {
             // BROWN
-            new ProprietyName("Short End", ANSIUtility.BROWN),
-            new ProprietyName("Tight End", ANSIUtility.BROWN),
+            new ProprietyName("Short End", ANSIUtility.YELLOW),
+            new ProprietyName("Tight End", ANSIUtility.YELLOW),
             // CYAN
             new ProprietyName("Bastioni Gran Sasso", ANSIUtility.CYAN),
             new ProprietyName("Viale Monterosa", ANSIUtility.CYAN),
@@ -68,9 +68,9 @@ public class ProprietyCell extends Cell{
             new ProprietyName("Corso Magellano", ANSIUtility.RED),
             new ProprietyName("Largo Colombo", ANSIUtility.RED),
             // YELLOW
-            new ProprietyName("Viale Costantino", ANSIUtility.YELLOW),
-            new ProprietyName("Viale Traiano", ANSIUtility.YELLOW),
-            new ProprietyName("Piazza Giulio Cesare", ANSIUtility.YELLOW),
+            new ProprietyName("Viale Costantino", ANSIUtility.BRIGHT_YELLOW),
+            new ProprietyName("Viale Traiano", ANSIUtility.BRIGHT_YELLOW),
+            new ProprietyName("Piazza Giulio Cesare", ANSIUtility.BRIGHT_YELLOW),
             // GREEN
             new ProprietyName("Via Roma", ANSIUtility.GREEN),
             new ProprietyName("Corso Impero", ANSIUtility.GREEN),
