@@ -12,11 +12,11 @@ import java.util.Objects;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Player player = new Player("Luca",'L');  // Instantiate a new Player
- * player.setPosition(0);                   // Set the players position
- * player.receive(100);                     // Receive some money
- * player.pay(50);                          // Pay some money
- * System.out.println(player);              // Print the player's stats
+ * Player player = new Player("Luca",'L');  // instantiate a new Player
+ * player.setPosition(0);                   // set the players position
+ * player.receive(100);                     // receive some money
+ * player.pay(50);                          // pay some money
+ * System.out.println(player);              // print the player's stats
  * }
  * </pre>
  *
@@ -38,7 +38,7 @@ public class Player {
     /**
      * The balance of the player.
      */
-    private int balance;
+    private double balance;
 
     /**
      * The position of the player on the board.
@@ -83,7 +83,7 @@ public class Player {
      * @param diceValue the value of the dice
      */
     public void setPosition(int diceValue) {
-        position = (position + diceValue) % 16 ;
+        this.position = (this.position + diceValue) % Constant.BOARD_SIZE ;
     }
 
     /**
@@ -92,7 +92,7 @@ public class Player {
      * @return the symbol
      */
     public char getSymbol() {
-        return symbol;
+        return this.symbol;
     }
 
 
@@ -102,7 +102,7 @@ public class Player {
      * @return the name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
 
@@ -111,7 +111,7 @@ public class Player {
      *
      * @return the balance
      */
-    public int getBalance() {
+    public double getBalance() {
         return this.balance;
     }
 
@@ -127,7 +127,7 @@ public class Player {
      *
      * @param amount the amount of money received
      */
-    public void receive(int amount){
+    public void receive(double amount){
         if (amount < 1) {
             return;
         }
@@ -146,7 +146,7 @@ public class Player {
      *
      * @param amount the amount of money paid
      */
-    public void pay(int amount){
+    public void pay(double amount){
         if (amount < 1) {
             return;
         }
@@ -160,7 +160,7 @@ public class Player {
      */
     @Override
     public String toString(){
-        return String.format("[%c: %s] Your Balance: %d.–%n", this.symbol, this.name, this.balance);
+        return String.format("[%c: %s] Your Balance: %.2f%n", this.symbol, this.name, this.balance);
     }
 
     /**
