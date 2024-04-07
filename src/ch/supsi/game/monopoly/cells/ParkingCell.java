@@ -24,6 +24,13 @@ import ch.supsi.game.monopoly.Player;
 public class ParkingCell extends Cell {
 
     /**
+     * Instantiates a new Parking cell.
+     */
+    public ParkingCell() {
+        super("Parking");
+    }
+
+    /**
      * Applies the effect of a specific cell on a player.
      *
      * <p>
@@ -34,22 +41,20 @@ public class ParkingCell extends Cell {
      */
     @Override
     public void applyEffect(Player player) {
-        return;
+        // does nothing
     }
 
     /**
-     * Returns the Type Name of the cell.
+     * Returns the description of the cell.
+     *
      * <p>
-     * Used to display the type of the cell on the board.
+     * Used to display the detail of the cell on the board.
      * </p>
-     * <p>
-     * This method has a static behaviour, even though
-     * it is not static, as an `abstract` implementation
-     * is not compatible.
-     * </p>
+     *
+     * @return the description of the cell
      */
     @Override
-    public String getCellTitle() {
-        return "Parking";
+    public String getDetail() {
+        return "";
     }
 }
