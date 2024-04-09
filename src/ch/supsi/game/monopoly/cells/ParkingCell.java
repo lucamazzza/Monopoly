@@ -1,6 +1,6 @@
 package ch.supsi.game.monopoly.cells;
 
-import ch.supsi.game.monopoly.Player;
+import ch.supsi.game.monopoly.movable.Player;
 
 /**
  * <p>
@@ -12,7 +12,7 @@ import ch.supsi.game.monopoly.Player;
  * </p>
  * <pre>
  * {@code
- * Cell parking = new ParkingCell();    // istantiate new ParkingCell w/ polymorphism
+ * Cell parking = new ParkingCell();    // instantiate new ParkingCell w/ polymorphism
  * parking.applyEffect();               // does nothing
  * parking.getCellTitle();              // prints: "Parking"
  * }

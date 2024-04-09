@@ -34,7 +34,7 @@ package ch.mazluc.util;
  * {@code
  * ANSIUtility.clearScreen();                                           // clear the screen
  * ANSIUtility.moveTo(10, 10);                                          // move the cursor to row 10 and column 10
- * ANSIUtility.printcf("%s", ANSIUtility.RED, "Hello World!");          // print in red
+ * ANSIUtuility.printcf("%s", ANSIUtility.RED, "Hello World!");         // print in red
  * ANSIUtility.printbcf("Your name is %s", ANSIUtility.BLUE, "Luca");   // print in blue background
  * ANSIUtility.reset();                                                 // reset the output format
  * String s = ANSIUtility.colorize("Hello World!", ANSIUtility.GREEN);  // colorize a string
@@ -284,9 +284,7 @@ public class ANSIUtility {
      * @param args the arguments to the `printf` function
      */
     public static void printcf(String format, int color, Object... args) {
-        if (color != 0) {
             setForegroundColor(color);
-        }
         System.out.printf(format, args);
         reset();
     }

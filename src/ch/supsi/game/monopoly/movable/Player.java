@@ -1,5 +1,6 @@
-package ch.supsi.game.monopoly;
+package ch.supsi.game.monopoly.movable;
 
+import java.beans.PropertyChangeListener;
 import java.util.Objects;
 
 /**
@@ -13,7 +14,8 @@ import java.util.Objects;
  * <pre>
  * {@code
  * Player player = new Player("Luca",'L');  // instantiate a new Player
- * player.setPosition(0);                   // set the players position
+ * player.addPropertyListener(this);        // listen to the player's position
+ * player.move(2);                          // moves the player
  * player.receive(100);                     // receive some money
  * player.pay(50);                          // pay some money
  * System.out.println(player);              // print the player's stats
@@ -21,9 +23,9 @@ import java.util.Objects;
  * </pre>
  *
  * @author Ivo Herceg
- * @version 1.1.0
+ * @version 1.2.0
  */
-public class Player {
+public class Player extends PlayerMovementDelegate implements Movable{
 
     /**
      * The name of the player.
@@ -41,9 +43,10 @@ public class Player {
     private double balance;
 
     /**
-     * The position of the player on the board.
+     * Delegate to be used by the player to move on the board.
      */
-    private int position;
+    private final Movable delegate;
+
 
     /**
      * <p>
@@ -66,6 +69,7 @@ public class Player {
         }
         this.name = name;
         this.symbol = symbol;
+        this.delegate = new PlayerMovementDelegate();
     }
 
     /**
@@ -73,17 +77,19 @@ public class Player {
      *
      * @return the position of the player
      */
+    @Override
     public int getPosition() {
-        return this.position;
+        return this.delegate.getPosition();
     }
 
     /**
-     * Setter for the position of the player on the board.
+     * Moves the player by the specified number of cells.
      *
-     * @param diceValue the value of the dice
+     * @param movement the number of cells to move
      */
-    public void setPosition(int diceValue) {
-        this.position = (this.position + diceValue) % Constant.BOARD_SIZE ;
+    @Override
+    public void move(int movement) {
+        this.delegate.move(movement);
     }
 
     /**
@@ -92,7 +98,7 @@ public class Player {
      * @return the symbol
      */
     public char getSymbol() {
-        return this.symbol;
+        return symbol;
     }
 
 
@@ -102,7 +108,7 @@ public class Player {
      * @return the name
      */
     public String getName() {
-        return this.name;
+        return name;
     }
 
 
@@ -185,5 +191,25 @@ public class Player {
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.symbol);
+    }
+
+    /**
+     * Adds a new listener to the {@code PropertyChange} trigger class ({@code this}).
+     *
+     * @param pcl a PropertyChangeListener object describing the event listener
+     */
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        this.delegate.addPropertyChangeListener(pcl);
+    }
+
+    /**
+     * Removes a listener to the {@code PropertyChange} trigger class ({@code this}).
+     *
+     * @param pcl a PropertyChangeListener object describing the event listener
+     */
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        this.delegate.removePropertyChangeListener(pcl);
     }
 }

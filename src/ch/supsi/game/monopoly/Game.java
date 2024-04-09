@@ -1,6 +1,9 @@
 package ch.supsi.game.monopoly;
 
 import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.movable.Player;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * <p>
@@ -22,15 +25,15 @@ import ch.mazluc.util.ANSIUtility;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Game game = new Game(2); // instantiate a new game with 2 players
- * game.start();            // start the game
+ * Game game = new Game(2); // Instantiate a new game with 2 players
+ * game.start();            // Start the game
  * }
  * </pre>
  *
  * @author Luca Mazza
  * @version 1.1.0
  */
-public class Game {
+public class Game implements PropertyChangeListener {
 
     /**
      * List of players in the game
@@ -127,6 +130,9 @@ public class Game {
                     this.players[i].getSymbol()
             );
             this.initPlayer(i);
+        }
+        for (int i = 0; i < this.players.length; i++) {
+            this.players[i].addPropertyChangeListener(this);
         }
     }
 
@@ -226,15 +232,6 @@ public class Game {
     }
 
     /**
-     * Moves the player to the next cell, based on the dice.
-     */
-    private void movePlayer() {
-        this.board.getCells()[this.players[currentPlayer].getPosition()].removePlayer(this.players[this.currentPlayer]);
-        this.players[this.currentPlayer].setPosition(getDicesValue());
-        this.board.getCells()[this.players[this.currentPlayer].getPosition()].setPlayer(this.players[this.currentPlayer]);
-    }
-
-    /**
      * Initializes the player's position on the board,
      * setting it to the start cell.
      *
@@ -242,7 +239,7 @@ public class Game {
      */
     private void initPlayer(int i) {
         this.board.getCells()[this.players[i].getPosition()].removePlayer(this.players[i]);
-        this.players[i].setPosition(0);
+        this.players[i].move(0);
         this.board.getCells()[this.players[i].getPosition()].setPlayer(this.players[i]);
     }
 
@@ -261,7 +258,7 @@ public class Game {
             this.dices[i].roll();
             ANSIUtility.printcf("Dice " + (i+1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
         }
-        this.movePlayer();
+        this.players[currentPlayer].move(this.getDicesValue());
         if (this.hasPlayerPassedStart()){
             this.board.getCell(Constant.START_POSITION).applyEffect(this.players[this.currentPlayer]);
         }
@@ -358,5 +355,31 @@ public class Game {
      */
     public void quit() {
         this.scannerUtils.closeScanner();
+    }
+
+    /**
+     * The behaviour of this method is triggered when a {@link PropertyChangeEvent}
+     * with the name `"position"` is fired.
+     *
+     * <p>
+     * Checks if the {@link PropertyChangeEvent} matches the name
+     * and moves the player in the board using {@code oldValue} and
+     * {@code newValue}.
+     * </p>
+     *
+     * @param evt a PropertyChangeEvent object describing the event source
+     *          and the property that has changed
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (!evt.getPropertyName().equals("position")) {
+            return;
+        }
+        if (evt.getOldValue() instanceof Integer && evt.getNewValue() instanceof Integer) {
+            int oldPosition = (int) evt.getOldValue();
+            int newPosition = (int) evt.getNewValue();
+            this.board.getCell(oldPosition).removePlayer(this.players[this.currentPlayer]);
+            this.board.getCell(newPosition).setPlayer(this.players[this.currentPlayer]);
+        }
     }
 }

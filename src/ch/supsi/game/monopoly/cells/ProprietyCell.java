@@ -1,7 +1,7 @@
 package ch.supsi.game.monopoly.cells;
 
 import ch.mazluc.util.ANSIUtility;
-import ch.supsi.game.monopoly.Player;
+import ch.supsi.game.monopoly.movable.Player;
 
 import static ch.supsi.game.monopoly.Bank.deposit;
 

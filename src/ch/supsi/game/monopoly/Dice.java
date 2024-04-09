@@ -12,9 +12,9 @@ import java.util.Random;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Dice dice = new Dice(1,6);   // instantiate a new D-6 dice
- * dice.roll();                 // roll the dice
- * System.out.println(dice);    // print the dices value
+ * Dice dice = new Dice(1,6);   // Instantiate a new D-6 dice
+ * dice.roll();                 // Roll the dice
+ * System.out.println(dice);    // Print the dices value
  * }
  * </pre>
  *

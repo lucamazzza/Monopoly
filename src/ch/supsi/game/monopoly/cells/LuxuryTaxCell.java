@@ -2,7 +2,7 @@ package ch.supsi.game.monopoly.cells;
 
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.Player;
+import ch.supsi.game.monopoly.movable.Player;
 
 /**
  * <p>
