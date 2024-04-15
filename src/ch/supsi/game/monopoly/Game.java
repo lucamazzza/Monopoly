@@ -1,5 +1,9 @@
 package ch.supsi.game.monopoly;
+
 import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.movable.Player;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * <p>
@@ -29,17 +33,12 @@ import ch.mazluc.util.ANSIUtility;
  * @author Luca Mazza
  * @version 1.1.0
  */
-public class Game {
+public class Game implements PropertyChangeListener {
 
     /**
      * List of players in the game
      */
     private final Player[] players;
-
-    /**
-     * The bank in the game
-     */
-    private final Bank bank;
 
     /**
      * The board of the game
@@ -49,7 +48,7 @@ public class Game {
     /**
      * The dice in the game
      */
-    private final Dice dice;
+    private final Dice[] dices;
 
     /**
      * Utility class managing user interaction, through the console, with the game.
@@ -81,8 +80,10 @@ public class Game {
         playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
         this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
         this.players = new Player[playersNumber];
-        this.bank = new Bank();
-        this.dice = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
+        this.dices = new Dice[Constant.NUMBER_OF_DICES];
+        for (int i = 0; i < Constant.NUMBER_OF_DICES; i++) {
+            this.dices[i] = new Dice(Constant.DICE_MIN_VALUE, Constant.DICE_MAX_VALUE);
+        }
         this.scannerUtils = new ScannerUtils();
     }
 
@@ -120,7 +121,7 @@ public class Game {
                 continue;
             }
             this.players[i] = tmp;
-            this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
+            Bank.withdraw(Constant.PLAYER_START_AMOUNT);
             this.players[i].receive(Constant.PLAYER_START_AMOUNT);
             ANSIUtility.printcf(
                     "Player %s (%c) created%n%n",
@@ -129,6 +130,9 @@ public class Game {
                     this.players[i].getSymbol()
             );
             this.initPlayer(i);
+        }
+        for (int i = 0; i < this.players.length; i++) {
+            this.players[i].addPropertyChangeListener(this);
         }
     }
 
@@ -140,6 +144,9 @@ public class Game {
      */
     private boolean isNotUniquePlayer(Player player, int j) {
         for (int i = 0; i < this.players.length; i++) {
+            if (this.players[i] == null) {
+                continue;
+            }
             if (i != j && this.players[i].equals(player)) {
                 return true;
             }
@@ -194,7 +201,7 @@ public class Game {
         ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
         this.sortPlayersByBalance();
         for (Player player : this.players) {
-            System.out.printf("%-20s: %d.–%n", player.getName(), player.getBalance());
+            System.out.printf("%-20s: %.2f%n", player.getName(), player.getBalance());
         }
     }
 
@@ -208,35 +215,20 @@ public class Game {
     private void printUI() {
         System.out.println();
         ANSIUtility.printbcf(
-                "%s's Turn [Balance: %d]%n",
+                "%s's Turn [Balance: %.2f]%n",
                 ANSIUtility.GREEN,
                 this.players[this.currentPlayer].getName(),
                 this.players[this.currentPlayer].getBalance()
         );
-        ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, this.bank);
+        ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, Bank.getBalance());
         System.out.println(this.board);
     }
 
     /**
      * Checks if any player has lost.
-     * When so the game is set over by toggling the {@link Game#isGameRunning}.
      */
-    private void hasPlayerLost() {
-        for (Player player : this.players) {
-            if (player.getBalance() < 0) {
-                this.isGameRunning = false;
-                return;
-            }
-        }
-    }
-
-    /**
-     * Moves the player to the next cell, based on the dice.
-     */
-    private void movePlayer() {
-        this.board.getCells()[this.players[currentPlayer].getPosition()].removePlayer(this.players[this.currentPlayer]);
-        this.players[this.currentPlayer].setPosition(this.dice.getCurrentValue());
-        this.board.getCells()[this.players[this.currentPlayer].getPosition()].setPlayer(this.players[this.currentPlayer]);
+    private boolean hasPlayerLost(int index) {
+        return this.players[index].getBalance() <= 0;
     }
 
     /**
@@ -247,7 +239,7 @@ public class Game {
      */
     private void initPlayer(int i) {
         this.board.getCells()[this.players[i].getPosition()].removePlayer(this.players[i]);
-        this.players[i].setPosition(0);
+        this.players[i].move(0);
         this.board.getCells()[this.players[i].getPosition()].setPlayer(this.players[i]);
     }
 
@@ -262,18 +254,15 @@ public class Game {
      * </p>
      */
     private void diceRollCase() {
-        this.dice.roll();
-        ANSIUtility.printcf("Rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dice);
-        this.movePlayer();
-        int tmpFee = Math.abs(this.board.getCells()[this.players[this.currentPlayer].getPosition()].getFee());
+        for (int i = 0; i < dices.length; i++){
+            this.dices[i].roll();
+            ANSIUtility.printcf("Dice " + (i+1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
+        }
+        this.players[currentPlayer].move(this.getDicesValue());
         if (this.hasPlayerPassedStart()){
-            this.players[this.currentPlayer].receive(this.board.getCells()[0].getFee());
-            this.bank.withdraw(tmpFee);
+            this.board.getCell(Constant.START_POSITION).applyEffect(this.players[this.currentPlayer]);
         }
-        if (this.board.getCells()[this.players[this.currentPlayer].getPosition()].getType() == CellType.TOLL) {
-            this.players[this.currentPlayer].pay(tmpFee);
-            this.bank.deposit(tmpFee);
-        }
+        this.board.getCell(this.players[this.currentPlayer].getPosition()).applyEffect(this.players[this.currentPlayer]);
         this.scannerUtils.readKey("Press enter to continue...");
         this.getNextPlayer();
     }
@@ -284,9 +273,37 @@ public class Game {
      * @return true if the player has passed the start cell, false otherwise.
      */
     private boolean hasPlayerPassedStart() {
-        int previousPosition = this.players[this.currentPlayer].getPosition() - this.dice.getCurrentValue();
-        return previousPosition < 0
-                ;
+        int previousPosition = this.players[this.currentPlayer].getPosition() - getDicesValue();
+        return previousPosition < 0;
+    }
+
+    /**
+     * Returns the sum of the dices.
+     *
+     * @return the sum of the dices
+     */
+    private int getDicesValue() {
+        int dicesValue = 0;
+        for (Dice dice : dices) {
+            dicesValue += dice.getCurrentValue();
+        }
+        return dicesValue;
+    }
+
+    /**
+     * Checks if the game is over.
+     * When so sets the {@link Game#isGameRunning} to false.
+     */
+    private void isGameOver() {
+        int counter = 0;
+        for (Player player : players) {
+            if (player.getBalance() < 0) {
+                counter++;
+            }
+        }
+        if (counter == players.length - 1) {
+            this.isGameRunning = false;
+        }
     }
 
     /**
@@ -306,6 +323,9 @@ public class Game {
         this.printStartMessage();
         this.init();
         do {
+            while (this.hasPlayerLost(this.currentPlayer)) {
+                this.getNextPlayer();
+            }
             this.printUI();
             int option = this.scannerUtils.readOption();
             switch (option) {
@@ -323,7 +343,7 @@ public class Game {
                     ANSIUtility.printcf("Invalid option, try again", ANSIUtility.RED);
                     break;
             }
-            this.hasPlayerLost();
+            this.isGameOver();
         } while (this.isGameRunning);
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
@@ -335,5 +355,31 @@ public class Game {
      */
     public void quit() {
         this.scannerUtils.closeScanner();
+    }
+
+    /**
+     * The behaviour of this method is triggered when a {@link PropertyChangeEvent}
+     * with the name `"position"` is fired.
+     *
+     * <p>
+     * Checks if the {@link PropertyChangeEvent} matches the name
+     * and moves the player in the board using {@code oldValue} and
+     * {@code newValue}.
+     * </p>
+     *
+     * @param evt a PropertyChangeEvent object describing the event source
+     *          and the property that has changed
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (!evt.getPropertyName().equals("position")) {
+            return;
+        }
+        if (evt.getOldValue() instanceof Integer && evt.getNewValue() instanceof Integer) {
+            int oldPosition = (int) evt.getOldValue();
+            int newPosition = (int) evt.getNewValue();
+            this.board.getCell(oldPosition).removePlayer(this.players[this.currentPlayer]);
+            this.board.getCell(newPosition).setPlayer(this.players[this.currentPlayer]);
+        }
     }
 }

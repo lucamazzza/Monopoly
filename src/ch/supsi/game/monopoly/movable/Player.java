@@ -1,4 +1,7 @@
-package ch.supsi.game.monopoly;
+package ch.supsi.game.monopoly.movable;
+
+import java.beans.PropertyChangeListener;
+import java.util.Objects;
 
 /**
  * <p>
@@ -10,18 +13,19 @@ package ch.supsi.game.monopoly;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Player player = new Player("Luca",'L');  // Instantiate a new Player
- * player.setPosition(0);                   // Set the players position
- * player.receive(100);                     // Receive some money
- * player.pay(50);                          // Pay some money
- * System.out.println(player);              // Print the player's stats
+ * Player player = new Player("Luca",'L');  // instantiate a new Player
+ * player.addPropertyListener(this);        // listen to the player's position
+ * player.move(2);                          // moves the player
+ * player.receive(100);                     // receive some money
+ * player.pay(50);                          // pay some money
+ * System.out.println(player);              // print the player's stats
  * }
  * </pre>
  *
  * @author Ivo Herceg
- * @version 1.1.0
+ * @version 1.2.0
  */
-public class Player {
+public class Player extends PlayerMovementDelegate implements Movable{
 
     /**
      * The name of the player.
@@ -36,12 +40,13 @@ public class Player {
     /**
      * The balance of the player.
      */
-    private int balance;
+    private double balance;
 
     /**
-     * The position of the player on the board.
+     * Delegate to be used by the player to move on the board.
      */
-    private int position;
+    private final Movable delegate;
+
 
     /**
      * <p>
@@ -64,6 +69,7 @@ public class Player {
         }
         this.name = name;
         this.symbol = symbol;
+        this.delegate = new PlayerMovementDelegate();
     }
 
     /**
@@ -71,17 +77,19 @@ public class Player {
      *
      * @return the position of the player
      */
+    @Override
     public int getPosition() {
-        return this.position;
+        return this.delegate.getPosition();
     }
 
     /**
-     * Setter for the position of the player on the board.
+     * Moves the player by the specified number of cells.
      *
-     * @param diceValue the value of the dice
+     * @param movement the number of cells to move
      */
-    public void setPosition(int diceValue) {
-        position = (position + diceValue) % 16 ;
+    @Override
+    public void move(int movement) {
+        this.delegate.move(movement);
     }
 
     /**
@@ -109,7 +117,7 @@ public class Player {
      *
      * @return the balance
      */
-    public int getBalance() {
+    public double getBalance() {
         return this.balance;
     }
 
@@ -125,7 +133,7 @@ public class Player {
      *
      * @param amount the amount of money received
      */
-    public void receive(int amount){
+    public void receive(double amount){
         if (amount < 1) {
             return;
         }
@@ -144,7 +152,7 @@ public class Player {
      *
      * @param amount the amount of money paid
      */
-    public void pay(int amount){
+    public void pay(double amount){
         if (amount < 1) {
             return;
         }
@@ -158,26 +166,50 @@ public class Player {
      */
     @Override
     public String toString(){
-        return String.format("[%c: %s] Your Balance: %d.–%n", this.symbol, this.name, this.balance);
+        return String.format("[%c: %s] Your Balance: %.2f%n", this.symbol, this.name, this.balance);
     }
 
     /**
      * Checks if the player is equal to another player.
      *
-     * @param obj the player to compare
+     * @param o the player to compare
      * @return true if the players are equal, false if not
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof Player)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        return this.symbol == ((Player) obj).getSymbol();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return this.symbol == player.symbol && Objects.equals(this.name, player.name);
+    }
+
+    /**
+     * Hashes the player, given their name and symbol.
+     *
+     * @return the hashcode
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.symbol);
+    }
+
+    /**
+     * Adds a new listener to the {@code PropertyChange} trigger class ({@code this}).
+     *
+     * @param pcl a PropertyChangeListener object describing the event listener
+     */
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        this.delegate.addPropertyChangeListener(pcl);
+    }
+
+    /**
+     * Removes a listener to the {@code PropertyChange} trigger class ({@code this}).
+     *
+     * @param pcl a PropertyChangeListener object describing the event listener
+     */
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        this.delegate.removePropertyChangeListener(pcl);
     }
 }
