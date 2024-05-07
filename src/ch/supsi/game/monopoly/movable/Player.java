@@ -1,5 +1,8 @@
 package ch.supsi.game.monopoly.movable;
 
+import ch.supsi.game.monopoly.Board;
+import ch.supsi.game.monopoly.cells.Cell;
+import ch.supsi.game.monopoly.cells.ProprietyCell;
 import java.beans.PropertyChangeListener;
 import java.util.Objects;
 
@@ -47,6 +50,136 @@ public class Player extends PlayerMovementDelegate implements Movable{
      */
     private final Movable delegate;
 
+    /**
+     *
+     */
+    private final int[] colorsOwned = new int[8];
+
+    /**
+     *
+     * @return
+     */
+    public boolean canBuild(){
+        if (colorsOwned[0]==2)
+            return true;
+        for (int i:colorsOwned){
+            if (i==3)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param cell
+     */
+    public void addColor(Cell cell) {
+        if(cell instanceof ProprietyCell pc){
+            int tmp = pc.getColor();
+            colorsOwned[getIndexOfColor(tmp)]++;
+        }
+    }
+
+    /**
+     *
+     * @param buildOptions
+     */
+    public void showBuildOptions(Cell[] buildOptions){
+        System.out.println("Choose where you want to build: ");
+        for (int i = 0; i < buildOptions.length; i++) {
+            if (buildOptions[i] != null)
+                System.out.println(i+1 + ". " + buildOptions[i].getTitle());
+        }
+    }
+
+    /**
+     *
+     * @param board
+     * @return
+     */
+    public Cell[] getBuildOptions(Board board){
+        int numberOfBuildableProprietes = 0;
+        if (colorsOwned[0]==2)
+            numberOfBuildableProprietes += 2;
+        if (colorsOwned[7]==2)
+            numberOfBuildableProprietes += 2;
+        for (int j : colorsOwned) {
+            if (j == 3) {
+                numberOfBuildableProprietes += 3;
+            }
+        }
+        Cell[] buildOptions = new Cell[numberOfBuildableProprietes];
+        int indexOfbuildOptions = 0;
+        Cell[] temp;
+        if (colorsOwned[0]==2) {
+            temp = board.getAllProprietesOfColor(getColorOfIndex(0));
+            for (Cell cell : temp) {
+                buildOptions[indexOfbuildOptions] = cell;
+                indexOfbuildOptions++;
+            }
+        }
+        if (colorsOwned[7]==2) {
+            temp = board.getAllProprietesOfColor(getColorOfIndex(7));
+            for (Cell cell : temp) {
+                buildOptions[indexOfbuildOptions] = cell;
+                indexOfbuildOptions++;
+            }
+        }
+        for (int i = 1; i < colorsOwned.length; i++) {
+            if (i==7)
+                continue;
+            if (colorsOwned[i] == 3){
+                temp = board.getAllProprietesOfColor(getColorOfIndex(i));
+                for (Cell cell : temp) {
+                    buildOptions[indexOfbuildOptions] = cell;
+                    if(indexOfbuildOptions!=numberOfBuildableProprietes-1)
+                        indexOfbuildOptions++;
+                }
+            }
+        }
+        return buildOptions;
+    }
+    //TODO: Browski no
+    private int getColorOfIndex(int indexOfColor) {
+        if (indexOfColor == 0)
+            return 33;
+        else if (indexOfColor == 1)
+            return 36;
+        else if (indexOfColor == 2)
+            return 35;
+        else if (indexOfColor == 3)
+            return 37;
+        else if (indexOfColor == 4)
+            return 31;
+        else if (indexOfColor == 5)
+            return 93;
+        else if (indexOfColor == 6)
+            return 32;
+        else if (indexOfColor == 7)
+            return 34;
+        else
+            return 33;
+    }
+    private int getIndexOfColor(int color){
+        if (color == 33)
+            return 0;
+        else if (color == 36)
+            return 1;
+        else if (color == 35)
+            return 2;
+        else if (color == 37)
+            return 3;
+        else if (color == 31)
+            return 4;
+        else if (color == 93)
+            return 5;
+        else if (color == 32)
+            return 6;
+        else if (color == 34)
+            return 7;
+        else
+            return 0;
+    }
 
     /**
      * <p>

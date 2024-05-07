@@ -87,6 +87,30 @@ public class Board {
     }
 
     /**
+     *
+     * @return
+     */
+    private int getRandomPurchasePrice() {
+        return this.random.nextInt(150, 500);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private int getRandomHousePrice() {
+        return this.random.nextInt(75, 125);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private int getRandomHotelPrice() {
+        return this.random.nextInt(95, 175);
+    }
+
+    /**
      * <p>
      * Initializes the board.
      * </p>
@@ -104,10 +128,10 @@ public class Board {
     private void initBoard(){
         Cell start = new StartCell();
         Cell parking = new ParkingCell();
-        Cell nStation = new ProprietyCell(new ProprietyName("North Station", ANSIUtility.DEFAULT), getRandomRent());
-        Cell sStation = new ProprietyCell(new ProprietyName("South Station", ANSIUtility.DEFAULT), getRandomRent());
-        Cell eStation = new ProprietyCell(new ProprietyName("East Station", ANSIUtility.DEFAULT), getRandomRent());
-        Cell wStation = new ProprietyCell(new ProprietyName("West Station", ANSIUtility.DEFAULT), getRandomRent());
+        Cell nStation = new ProprietyCell(new ProprietyName("North Station", ANSIUtility.DEFAULT), getRandomRent(),getRandomPurchasePrice(),getRandomHousePrice(),getRandomHotelPrice());
+        Cell sStation = new ProprietyCell(new ProprietyName("South Station", ANSIUtility.DEFAULT), getRandomRent(),getRandomPurchasePrice(),getRandomHousePrice(),getRandomHotelPrice());
+        Cell eStation = new ProprietyCell(new ProprietyName("East Station", ANSIUtility.DEFAULT), getRandomRent(),getRandomPurchasePrice(),getRandomHousePrice(),getRandomHotelPrice());
+        Cell wStation = new ProprietyCell(new ProprietyName("West Station", ANSIUtility.DEFAULT), getRandomRent(),getRandomPurchasePrice(),getRandomHousePrice(),getRandomHotelPrice());
         this.cells[Constant.START_POSITION] = start;
         this.cells[Constant.PARKING_POSITION] = parking;
         this.cells[Constant.NORTH_STATION_POSITION] = nStation;
@@ -137,7 +161,7 @@ public class Board {
                 i--;
                 continue;
             }
-            this.cells[i] = new ProprietyCell(ProprietyCell.nameBank[nameIndex], getRandomRent());
+            this.cells[i] = new ProprietyCell(ProprietyCell.nameBank[nameIndex], getRandomRent(), getRandomPurchasePrice(),getRandomHousePrice(),getRandomHotelPrice());
             ProprietyCell.nameBank[nameIndex].setBlacklisted(true);
         }
         int row = Constant.BOARD_HEIGHT - 1;
@@ -203,6 +227,24 @@ public class Board {
                             detail = new StringBuilder(boardCells[row][col].getTitle());
                         } else if (d == 1) {
                             detail = new StringBuilder(String.valueOf(boardCells[row][col].getDetail()));
+                        } else if (d == 2) {
+                            if (boardCells[row][col].getOwner()!=null) {
+                                detail = new StringBuilder("Owner ");
+                                detail.append(boardCells[row][col].getOwner().getSymbol());
+                            } else {
+                                if(boardCells[row][col] instanceof ProprietyCell tmp){
+                                    detail = new StringBuilder("Buy ");
+                                    detail.append(tmp.getPurchasePrice());
+                                }
+                            }
+                        } else if (d == 3) {
+                            if(boardCells[row][col] instanceof ProprietyCell tmp){
+                                detail = new StringBuilder(String.valueOf(tmp.getBuildingPrice()));
+                            }
+                        }else if (d == 4) {
+                            if(boardCells[row][col] instanceof ProprietyCell tmp){
+                                detail = new StringBuilder(String.valueOf(tmp.showBuildings()));
+                            }
                         } else if (d == Constant.CELL_DETAILS-1) {
                             for (int i = 0; i < boardCells[row][col].getPlayers().length; i++) {
                                 if (boardCells[row][col].getPlayers()[i] != null) {
@@ -249,5 +291,28 @@ public class Board {
     @Override
     public String toString() {
         return generateBoard();
+    }
+
+    /**
+     *
+     * @param color
+     * @return
+     */
+    public Cell[] getAllProprietesOfColor(int color){
+        int numberOfCellsOfSameColor;
+        if (color == 33 || color == 34)
+            numberOfCellsOfSameColor = 2;
+        else
+            numberOfCellsOfSameColor = 3;
+
+        Cell[] cellsOfSameColor = new Cell[numberOfCellsOfSameColor];
+        int j = 0;
+        for (Cell cell : cells) {
+            if (cell instanceof ProprietyCell pc) {
+                if (pc.getColor() == color)
+                    cellsOfSameColor[j++] = pc;
+            }
+        }
+        return cellsOfSameColor;
     }
 }

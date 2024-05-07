@@ -39,6 +39,9 @@ public class ProprietyCell extends Cell{
      * The name of the cell, as defined in {@link ProprietyCell#nameBank}.
      */
     private final ProprietyName name;
+    public int getColor(){
+        return name.getColor();
+    }
 
     /**
      * The different names a propriety cell can assume, instances of {@link ProprietyName}.
@@ -86,7 +89,27 @@ public class ProprietyCell extends Cell{
     /**
      * The rent of the cell.
      */
-    private final int rent;
+    private int rent;
+    /**
+     *
+     */
+    private final int purchasePrice;
+    /**
+     *
+     */
+    private final int housePrice;
+    /**
+     *
+     */
+    private final int hotelPrice;
+    /**
+     *
+     */
+    private int numberOfHouses = 0;
+    /**
+     *
+     */
+    private boolean Hotel = false;
 
     /**
      * Instantiates a new ProprietyCell with a name and a rent.
@@ -94,13 +117,19 @@ public class ProprietyCell extends Cell{
      * @param title the name of the cell
      * @param rent  the rent of the cell
      */
-    public ProprietyCell(ProprietyName title, int rent) {
+    public ProprietyCell(ProprietyName title, int rent, int purchasePrice, int housePrice, int hotelPrice) {
         super(title.getName());
         this.name = title;
         if (rent < 0) {
             throw new IllegalArgumentException("The rent must be positive.");
         }
         this.rent = rent;
+        if (purchasePrice < 0) {
+            throw new IllegalArgumentException("The rent must be positive.");
+        }
+        this.purchasePrice = purchasePrice;
+        this.housePrice = housePrice;
+        this.hotelPrice = hotelPrice;
     }
 
     /**
@@ -114,6 +143,10 @@ public class ProprietyCell extends Cell{
      */
     @Override
     public void applyEffect(Player player) {
+        if (getOwner()!=null){
+            player.pay(this.rent);
+            getOwner().receive(this.rent);
+        }
         player.pay(this.rent);
         deposit(this.rent);
     }
@@ -143,6 +176,73 @@ public class ProprietyCell extends Cell{
      */
     @Override
     public String getDetail() {
-        return "Pay " + this.rent + ".–";
+        return "Pay " + this.rent + "$";
+    }
+
+    /**
+     *
+     * @return
+     */
+    public double getPurchasePrice() {
+        return this.purchasePrice;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getBuildingPrice() {
+        return "Prices: " + "⌂ " + this.housePrice + "$" + " ⎕ " + this.hotelPrice + "$";
+    }
+
+    /**
+     *
+     * @param currentPlayer
+     */
+    public void addBuilding(Player currentPlayer) {
+        if (this.Hotel){
+            System.out.println("You can't build anymore in this propriety");
+        } else if (this.numberOfHouses == 4) {
+            this.numberOfHouses = 0;
+            currentPlayer.pay(this.hotelPrice);
+            this.Hotel = true;
+            this.rent += 100;
+        }else {
+            currentPlayer.pay(this.housePrice);
+            this.numberOfHouses++;
+            this.rent += 15;
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String showBuildings() {
+        String tmp="";
+        if (this.Hotel){
+            return " ⎕ ";
+        }else {
+            for (int i = 0; i < numberOfHouses; i++) {
+                tmp += "⌂ ";
+            }
+            return tmp;
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getHousePrice() {
+        return housePrice;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getHotelPrice() {
+        return hotelPrice;
     }
 }

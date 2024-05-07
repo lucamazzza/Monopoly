@@ -30,6 +30,7 @@ public abstract class Cell {
      * The title of the cell, used to display it on the board.
      */
     private final String title;
+    private Player owner;
 
     /**
      * Constructor of the class.
@@ -45,6 +46,24 @@ public abstract class Cell {
      */
     Cell(String title) {
         this.title = title;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Player getOwner() {
+        return owner;
+    }
+
+    /**
+     *
+     * @param owner
+     */
+    public void setOwner(Player owner) {
+        if (owner == null)
+            return;
+        this.owner = owner;
     }
 
     /**

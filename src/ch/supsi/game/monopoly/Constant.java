@@ -78,7 +78,7 @@ public final class Constant {
     /**
      * The number of descriptive rows contained by the cell.
      */
-    public static final int CELL_DETAILS = 5;
+    public static final int CELL_DETAILS = 6;
 
     /**
      * The total number of cells in the board.

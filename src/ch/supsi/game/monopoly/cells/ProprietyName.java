@@ -85,4 +85,12 @@ public class ProprietyName {
     public String getName() {
         return ANSIUtility.colorize(this.name, this.color);
     }
+
+    /**
+     *
+     * @return
+     */
+    public int getColor() {
+        return color;
+    }
 }

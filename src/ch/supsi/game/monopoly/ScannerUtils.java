@@ -27,7 +27,7 @@ public class ScannerUtils {
     /**
      * Scanner instance.
      */
-    private final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     /**
      * <p>
@@ -66,6 +66,25 @@ public class ScannerUtils {
         }
         emptyTheScanner();
         return input;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean readBoolean() {
+        String input;
+        do {
+            System.out.print("Enter 'Y' or 'N': ");
+            input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("y")) {
+                return true;
+            } else if (input.equals("n")) {
+                return false;
+            } else {
+                System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+            }
+        } while (true);
     }
 
     /**
