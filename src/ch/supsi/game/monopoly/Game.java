@@ -32,7 +32,7 @@ import java.beans.PropertyChangeListener;
  * </pre>
  *
  * @author Luca Mazza
- * @version 1.1.0
+ * @version 1.3.0
  */
 public class Game implements PropertyChangeListener {
 
@@ -258,40 +258,33 @@ public class Game implements PropertyChangeListener {
         Player currentPlayer = this.players[indexOfCurrentPlayer];
         for (int i = 0; i < dices.length; i++){
             this.dices[i].roll();
-            ANSIUtility.printcf("Dice " + (i+1) + " rolled: %s%n",
-                    ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
+            ANSIUtility.printcf("Dice " + (i + 1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
         }
         currentPlayer.move(this.getDicesValue());
         if (this.hasPlayerPassedStart()){
             this.board.getCell(Constant.START_POSITION).applyEffect(currentPlayer);
         }
         System.out.println(board);
-        //caso in cui player finisce su una proprieta della banca
-        if (board.getCell(currentPlayer.getPosition()) instanceof ProprietyCell
-                && board.getCell(currentPlayer.getPosition()).getOwner() == null){
-            System.out.println(
-                    "Buy " + board.getCell(currentPlayer.getPosition()).getTitle() + " for " +
-                            ((ProprietyCell) board.getCell(currentPlayer.getPosition()))
-                                    .getPurchasePrice()+ " ?"
-            );
-            if (scannerUtils.readBoolean()){
-                currentPlayer.pay(((ProprietyCell) board.getCell(currentPlayer.getPosition()))
-                        .getPurchasePrice());
-                Bank.deposit(((ProprietyCell) board.getCell(currentPlayer.getPosition())).getPurchasePrice());
-                board.getCell(currentPlayer.getPosition()).setOwner(currentPlayer);
-                currentPlayer.addColor(board.getCell(currentPlayer.getPosition()));
+
+        // Land on a propriety owned by the bank
+        if (this.board.getCell(currentPlayer.getPosition()) instanceof ProprietyCell pc &&
+                this.board.getCell(currentPlayer.getPosition()).getOwner() == null){
+            System.out.printf("Buy %s for %.2f$%n",
+                    this.board.getCell(currentPlayer.getPosition()).getTitle(),
+                    pc.getPurchasePrice());
+            if (this.scannerUtils.readBoolean()){
+                currentPlayer.pay(pc.getPurchasePrice());
+                Bank.deposit(pc.getPurchasePrice());
+                pc.setOwner(currentPlayer);
+                currentPlayer.addColor(pc);
             }
         }
-        //Il player non paga se stesso...
+
+        // Player does not pay itsself
         if (!(currentPlayer.equals(board.getCell(currentPlayer.getPosition()).getOwner()))) {
             this.board.getCell(currentPlayer.getPosition()).applyEffect(currentPlayer);
         }
-        for (int i = 0; i < board.getCells().length; i++) {
-            if (board.getCells()[i] instanceof ProprietyCell){  //Per testare, assegna tutte le caselle a player 0
-                board.getCells()[i].setOwner(this.players[0]);  //attento al secondo giro bugga tutto!!!!!!!!!
-                this.players[0].addColor(board.getCells()[i]);
-            }
-        }
+
         //per costruire
         if (currentPlayer.canBuild()){
             System.out.println("Would you want to build ?");

@@ -15,12 +15,13 @@ import java.util.Scanner;
  * char c = scannerUtils.readNonBlankChar("Enter a character: ");       // Read a character
  * String s = scannerUtils.readNonBlankString("Enter a string: ");      // Read a string
  * scannerUtils.readKey("Press enter to continue...");                  // Read a key
+ * scannerUtils.readBoolean();                                          // Read y/n input
  * scannerUtils.closeScanner();                                         // Close the scanner
  * }
  * </pre>
  *
  * @author Andrea Masciocchi
- * @version 1.1.0
+ * @version 1.3.0
  */
 public class ScannerUtils {
 
@@ -69,20 +70,21 @@ public class ScannerUtils {
     }
 
     /**
+     * Reads a boolean input in the "yes/no" form.
      *
-     * @return
+     * @return true if the user input is yes, false if it is no
      */
     public boolean readBoolean() {
         String input;
         do {
-            System.out.print("Enter 'Y' or 'N': ");
+            System.out.print("Y/n: ");
             input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("y")) {
                 return true;
             } else if (input.equals("n")) {
                 return false;
             } else {
-                System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                System.out.println("Invalid input. Please enter 'Y' or 'n'.");
             }
         } while (true);
     }
