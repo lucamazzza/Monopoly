@@ -44,6 +44,21 @@ public final class Constant {
     public static final int WEALTH_TAX_PERCENTAGE = 10;
 
     /**
+     * The start amount of money to receive in the start cell.
+     */
+    public static final int START_CELL_AMOUNT = 100;
+
+    /**
+     * The amount of money to pay in the luxury tax.
+     */
+    public static final int LUXURY_TAX_AMOUNT = 100;
+
+    /**
+     * The percentage of the wealth tax.
+     */
+    public static final int WEALTH_TAX_PERCENTAGE = 10;
+
+    /**
      * The number of players in the game.
      */
     public static final int PLAYER_NUMBER = 4;

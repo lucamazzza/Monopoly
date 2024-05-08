@@ -284,7 +284,7 @@ public class ANSIUtility {
      * @param args the arguments to the `printf` function
      */
     public static void printcf(String format, int color, Object... args) {
-        setForegroundColor(color);
+            setForegroundColor(color);
         System.out.printf(format, args);
         reset();
     }
