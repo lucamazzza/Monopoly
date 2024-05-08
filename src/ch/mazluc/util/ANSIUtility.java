@@ -70,7 +70,7 @@ public class ANSIUtility {
     /**
      * ANSI yellow color code
      */
-    public static final int YELLOW = 33;
+    public static final int BROWN = 33;
 
     /**
      * ANSI blue color code
