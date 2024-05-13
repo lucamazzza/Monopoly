@@ -168,7 +168,8 @@ public final class Constant {
      * Number of propriety cells.
      */
     public static final int PROPRIETY_CELLS_QTY =
-            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY - PRISON_CELLS_QTY - GO_TO_PRISON_CELLS_QTY - EXTRA_CELLS_QTY;
+            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY - PRISON_CELLS_QTY -
+            GO_TO_PRISON_CELLS_QTY - EXTRA_CELLS_QTY;
 
     // PROPRIETIES -----------------------------------------------------------------------------------------------------
     /**

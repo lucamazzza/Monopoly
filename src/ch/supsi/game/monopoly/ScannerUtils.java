@@ -149,18 +149,6 @@ public class ScannerUtils {
 
     /**
      * <p>
-     * Reads the number of players from the user.
-     * </p>
-     * <i>This method is here because it can be useful in the next series.</i>
-     *
-     * @return the number of players
-     */
-    public int getNumberOfPlayers(){
-        return readIntInRange(2, 6, "How many players will play?");
-    }
-
-    /**
-     * <p>
      * Reads an option from the user
      * </p>
      * <p>

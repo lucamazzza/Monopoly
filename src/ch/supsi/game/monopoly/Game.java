@@ -288,10 +288,8 @@ public class Game implements PropertyChangeListener {
                 this.board.getCell(Constant.START_POSITION).applyEffect(currentPlayer);
             }
             System.out.println(board);
-
-            // Land on a propriety owned by the bank
             if (this.board.getCell(currentPlayer.getPosition()) instanceof ProprietyCell pc &&
-                    this.board.getCell(currentPlayer.getPosition()).getOwner() == null){
+                    pc.getOwner() == null && currentPlayer.getBalance() > pc.getPurchasePrice()){
                 System.out.printf("Buy %s for %.2f$%n",
                         this.board.getCell(currentPlayer.getPosition()).getTitle(),
                         pc.getPurchasePrice());
@@ -303,13 +301,9 @@ public class Game implements PropertyChangeListener {
                 }
             }
         }
-
-        // Player does not pay itsself
         if (!(currentPlayer.equals(board.getCell(currentPlayer.getPosition()).getOwner()))) {
             this.board.getCell(currentPlayer.getPosition()).applyEffect(currentPlayer);
         }
-
-        //per costruire
         if (currentPlayer.canBuild()){
             System.out.println("Would you want to build ?");
             if (scannerUtils.readBoolean()){
@@ -318,7 +312,7 @@ public class Game implements PropertyChangeListener {
                         1,currentPlayer.getBuildOptions(board).length,
                         "Insert number between 1-" + currentPlayer.getBuildOptions(board).length + ": "
                 );
-                if(currentPlayer.getBuildOptions(board)[choice-1] instanceof ProprietyCell pc) {
+                if(currentPlayer.getBuildOptions(board)[choice - 1] instanceof ProprietyCell pc) {
                     pc.addBuilding(currentPlayer);
                 }
             }
@@ -423,11 +417,13 @@ public class Game implements PropertyChangeListener {
         Player player = this.players[playerIndex];
         Cell[] cells = this.board.getCells();
         for(int i = 0; i < cells.length; i++){
-            if(cells[i] instanceof ProprietyCell pc){
-                pc.removeBuildings();
-                pc.setOwner(null);
+            if(cells[i] instanceof ProprietyCell &&
+                    (cells[i].getOwner() != null && cells[i].getOwner().equals(player))) {
+                ((ProprietyCell)cells[i]).removeBuildings();
+                cells[i].setOwner(null);
             }
         }
+        this.board.setCells(cells);
     }
 
     /**

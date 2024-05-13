@@ -252,32 +252,10 @@ public class ProprietyCell extends Cell{
      * @return A string containing little images of houses ⌂ and hotels ⎕.
      */
     public String showBuildings() {
-        String tmp = "";
         if (this.hotel){
-            return " ⎕ ";
+            return "⎕";
         }else {
-            for (int i = 0; i < numberOfHouses; i++) {
-                tmp += "⌂";
-            }
-            return tmp;
+            return "⌂".repeat(Math.max(0, numberOfHouses));
         }
-    }
-
-    /**
-     * Returns the price to build an house on the propriety.
-     *
-     * @return the house price
-     */
-    public int getHousePrice() {
-        return housePrice;
-    }
-
-    /**
-     * Returns the price to build an hotel on the propriety.
-     *
-     * @return the hotel price
-     */
-    public int getHotelPrice() {
-        return hotelPrice;
     }
 }

@@ -47,7 +47,7 @@ public class Board {
      * This field is in charge of managing how the players
      * move on the board.
      */
-    private final Cell[] cells;
+    private Cell[] cells;
 
     /**
      * Random generator instance.
@@ -180,7 +180,7 @@ public class Board {
                 i--;
                 continue;
             }
-            this.cells[pos] = new ParkingCell();
+            this.cells[pos] = new ParkingCell("-");
         }
         for (int i = 0; i < Constant.PROPRIETY_CELLS_QTY; i++) {
             int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
@@ -309,6 +309,15 @@ public class Board {
      */
     public Cell[] getCells() {
         return cells;
+    }
+
+    /**
+     * Setter for the working cell array.
+     *
+     * @param cells the cell array.
+     */
+    public void setCells(Cell[] cells) {
+        this.cells = cells;
     }
 
     /**

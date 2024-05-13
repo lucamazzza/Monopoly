@@ -29,7 +29,7 @@ import java.beans.PropertyChangeSupport;
  * </pre>
  *
  * @author Luca Mazza
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class PlayerMovementDelegate implements Movable {
 
@@ -59,6 +59,7 @@ public class PlayerMovementDelegate implements Movable {
 
     /**
      * Returns the position of the player.
+     *
      * @return the position
      */
     @Override
@@ -66,6 +67,11 @@ public class PlayerMovementDelegate implements Movable {
         return this.position;
     }
 
+    /**
+     * Sets the position of the player to a given position.
+     *
+     * @param position the position
+     */
     @Override
     public void setPosition(int position) {
         int old = this.position;

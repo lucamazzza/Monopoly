@@ -28,7 +28,7 @@ import java.util.Objects;
  * </pre>
  *
  * @author Ivo Herceg
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class Player extends PlayerMovementDelegate implements Movable{
 
@@ -127,8 +127,9 @@ public class Player extends PlayerMovementDelegate implements Movable{
     }
 
     /**
-     * Set the position of the player
-     * @param position
+     * Sets the position of the player to a given position.
+     *
+     * @param position the position
      */
     @Override
     public void setPosition(int position) {
@@ -137,6 +138,7 @@ public class Player extends PlayerMovementDelegate implements Movable{
 
     /**
      * If the player is in prison returns true
+     *
      * @return if the player is in prison
      */
     public boolean isInPrison() {
@@ -144,8 +146,9 @@ public class Player extends PlayerMovementDelegate implements Movable{
     }
 
     /**
-     * Set the prison flag
-     * @param inPrison
+     * Set the prison flag.
+     *
+     * @param inPrison the boolean flag
      */
     public void setInPrison(boolean inPrison) {
         isInPrison = inPrison;
