@@ -31,6 +31,15 @@ public class ParkingCell extends Cell {
     }
 
     /**
+     * Instantiates a new Parking cell with a custom title
+     * TEMPORARY, TO DISPLAY BLANK CELLS
+     * @param title the title.
+     */
+    public ParkingCell(String title) {
+        super(title);
+    }
+
+    /**
      * Applies the effect of a specific cell on a player.
      *
      * <p>

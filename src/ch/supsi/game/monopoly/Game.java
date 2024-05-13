@@ -1,9 +1,13 @@
 package ch.supsi.game.monopoly;
 
 import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.cells.Cell;
+import ch.supsi.game.monopoly.cells.ProprietyCell;
 import ch.supsi.game.monopoly.movable.Player;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import static ch.supsi.game.monopoly.Bank.deposit;
 
 /**
  * <p>
@@ -31,7 +35,7 @@ import java.beans.PropertyChangeListener;
  * </pre>
  *
  * @author Luca Mazza
- * @version 1.1.0
+ * @version 1.3.0
  */
 public class Game implements PropertyChangeListener {
 
@@ -58,7 +62,7 @@ public class Game implements PropertyChangeListener {
     /**
      * Stores the index of the current player.
      */
-    private int currentPlayer = 0;
+    private int indexOfCurrentPlayer = 0;
 
     /**
      * True if the game is still running.
@@ -78,7 +82,7 @@ public class Game implements PropertyChangeListener {
      */
     public Game(int playersNumber) {
         playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
-        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
+        this.board = new Board();
         this.players = new Player[playersNumber];
         this.dices = new Dice[Constant.NUMBER_OF_DICES];
         for (int i = 0; i < Constant.NUMBER_OF_DICES; i++) {
@@ -89,10 +93,10 @@ public class Game implements PropertyChangeListener {
 
     /**
      * Sets the next player's index, based on the current player, in field
-     * {@link Game#currentPlayer}.
+     * {@link Game#indexOfCurrentPlayer}.
      */
     private void getNextPlayer() {
-        this.currentPlayer = (this.currentPlayer + 1) % this.players.length;
+        this.indexOfCurrentPlayer = (this.indexOfCurrentPlayer + 1) % this.players.length;
     }
 
     /**
@@ -131,8 +135,8 @@ public class Game implements PropertyChangeListener {
             );
             this.initPlayer(i);
         }
-        for (int i = 0; i < this.players.length; i++) {
-            this.players[i].addPropertyChangeListener(this);
+        for (Player player : this.players) {
+            player.addPropertyChangeListener(this);
         }
     }
 
@@ -217,8 +221,8 @@ public class Game implements PropertyChangeListener {
         ANSIUtility.printbcf(
                 "%s's Turn [Balance: %.2f]%n",
                 ANSIUtility.GREEN,
-                this.players[this.currentPlayer].getName(),
-                this.players[this.currentPlayer].getBalance()
+                this.players[this.indexOfCurrentPlayer].getName(),
+                this.players[this.indexOfCurrentPlayer].getBalance()
         );
         ANSIUtility.printcf("%s%n", ANSIUtility.WHITE, Bank.getBalance());
         System.out.println(this.board);
@@ -249,20 +253,70 @@ public class Game implements PropertyChangeListener {
      * </p>
      * <p>
      * When called the dice is rolled and the player's position is moved.
-     * Once the player is moved the cell he' onto gets checked and the relative fee
+     * Once the player is moved the cell he's onto gets checked and the relative fee
      * is applied to the player.
      * </p>
      */
     private void diceRollCase() {
+        Player currentPlayer = this.players[indexOfCurrentPlayer];
         for (int i = 0; i < dices.length; i++){
             this.dices[i].roll();
-            ANSIUtility.printcf("Dice " + (i+1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
+            ANSIUtility.printcf("Dice " + (i + 1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
         }
-        this.players[currentPlayer].move(this.getDicesValue());
-        if (this.hasPlayerPassedStart()){
-            this.board.getCell(Constant.START_POSITION).applyEffect(this.players[this.currentPlayer]);
+        if(currentPlayer.isInPrison()){
+            boolean willBeInPrison = false;
+            if(currentPlayer.getTimesTriedEvading()==3){
+                System.out.println("To get out of prison you need to pay " + Constant.PRISON_TAX + "CHF");
+                this.scannerUtils.readKey("Press enter to continue...");
+                currentPlayer.pay(Constant.PRISON_TAX);
+                deposit(Constant.PRISON_TAX);
+                willBeInPrison = false;
+            }else{
+                for(int i = 0; i < this.dices.length-1; i++){
+                    if(this.dices[i] != this.dices[i+1]){
+                        willBeInPrison = true;
+                        break;
+                    }
+                }
+                currentPlayer.setTimesTriedEvading(currentPlayer.getTimesTriedEvading() + 1);
+            }
+            currentPlayer.setInPrison(willBeInPrison);
         }
-        this.board.getCell(this.players[this.currentPlayer].getPosition()).applyEffect(this.players[this.currentPlayer]);
+        if(!currentPlayer.isInPrison()){
+            currentPlayer.move(this.getDicesValue());
+            if (this.hasPlayerPassedStart()){
+                this.board.getCell(Constant.START_POSITION).applyEffect(currentPlayer);
+            }
+            System.out.println(board);
+            if (this.board.getCell(currentPlayer.getPosition()) instanceof ProprietyCell pc &&
+                    pc.getOwner() == null && currentPlayer.getBalance() > pc.getPurchasePrice()){
+                System.out.printf("Buy %s for %.2f$%n",
+                        this.board.getCell(currentPlayer.getPosition()).getTitle(),
+                        pc.getPurchasePrice());
+                if (this.scannerUtils.readBoolean()){
+                    currentPlayer.pay(pc.getPurchasePrice());
+                    Bank.deposit(pc.getPurchasePrice());
+                    pc.setOwner(currentPlayer);
+                    currentPlayer.addColor(pc);
+                }
+            }
+        }
+        if (!(currentPlayer.equals(board.getCell(currentPlayer.getPosition()).getOwner()))) {
+            this.board.getCell(currentPlayer.getPosition()).applyEffect(currentPlayer);
+        }
+        if (currentPlayer.canBuild()){
+            System.out.println("Would you want to build ?");
+            if (scannerUtils.readBoolean()){
+                currentPlayer.showBuildOptions(currentPlayer.getBuildOptions(board));
+                int choice = scannerUtils.readIntInRange(
+                        1,currentPlayer.getBuildOptions(board).length,
+                        "Insert number between 1-" + currentPlayer.getBuildOptions(board).length + ": "
+                );
+                if(currentPlayer.getBuildOptions(board)[choice - 1] instanceof ProprietyCell pc) {
+                    pc.addBuilding(currentPlayer);
+                }
+            }
+        }
         this.scannerUtils.readKey("Press enter to continue...");
         this.getNextPlayer();
     }
@@ -273,7 +327,7 @@ public class Game implements PropertyChangeListener {
      * @return true if the player has passed the start cell, false otherwise.
      */
     private boolean hasPlayerPassedStart() {
-        int previousPosition = this.players[this.currentPlayer].getPosition() - getDicesValue();
+        int previousPosition = this.players[this.indexOfCurrentPlayer].getPosition() - getDicesValue();
         return previousPosition < 0;
     }
 
@@ -323,7 +377,8 @@ public class Game implements PropertyChangeListener {
         this.printStartMessage();
         this.init();
         do {
-            while (this.hasPlayerLost(this.currentPlayer)) {
+            while (this.hasPlayerLost(this.indexOfCurrentPlayer)) {
+                this.playerGameOver(this.indexOfCurrentPlayer);
                 this.getNextPlayer();
             }
             this.printUI();
@@ -333,10 +388,14 @@ public class Game implements PropertyChangeListener {
                     this.diceRollCase();
                     break;
                 case 2:
-                    ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.currentPlayer]);
+                    ANSIUtility.printcf("%s", ANSIUtility.BRIGHT_YELLOW, this.players[this.indexOfCurrentPlayer]);
                     this.scannerUtils.readKey("Press enter to continue...");
                     break;
                 case 3:
+                    System.out.println("\n"+getProprietiesOfPlayer(this.players[this.indexOfCurrentPlayer]));
+                    this.scannerUtils.readKey("Press enter to continue...");
+                    break;
+                case 4:
                     this.isGameRunning = false;
                     break;
                 default:
@@ -348,6 +407,42 @@ public class Game implements PropertyChangeListener {
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
         this.quit();
+    }
+
+    /**
+     * Resets all the propriety of the player that lost.
+     * @param playerIndex index of the player that lost
+     */
+    private void playerGameOver(int playerIndex) {
+        Player player = this.players[playerIndex];
+        Cell[] cells = this.board.getCells();
+        for(int i = 0; i < cells.length; i++){
+            if(cells[i] instanceof ProprietyCell &&
+                    (cells[i].getOwner() != null && cells[i].getOwner().equals(player))) {
+                ((ProprietyCell)cells[i]).removeBuildings();
+                cells[i].setOwner(null);
+            }
+        }
+        this.board.setCells(cells);
+    }
+
+    /**
+     *
+     * @param player
+     * @return the list of the propriety owned by the player
+     */
+    private String getProprietiesOfPlayer(Player player){
+        StringBuilder sb = new StringBuilder();
+        Cell[] cells = this.board.getCells();
+        int tmp = 0;
+        for(int i = 0; i < cells.length; i++){
+            if(cells[i] instanceof ProprietyCell pc){
+                if(pc.getOwner()!=null && pc.getOwner().equals(player)){
+                    sb.append((++tmp) + " " + pc.getTitle() + "\n");
+                }
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -378,8 +473,8 @@ public class Game implements PropertyChangeListener {
         if (evt.getOldValue() instanceof Integer && evt.getNewValue() instanceof Integer) {
             int oldPosition = (int) evt.getOldValue();
             int newPosition = (int) evt.getNewValue();
-            this.board.getCell(oldPosition).removePlayer(this.players[this.currentPlayer]);
-            this.board.getCell(newPosition).setPlayer(this.players[this.currentPlayer]);
+            this.board.getCell(oldPosition).removePlayer(this.players[this.indexOfCurrentPlayer]);
+            this.board.getCell(newPosition).setPlayer(this.players[this.indexOfCurrentPlayer]);
         }
     }
 }

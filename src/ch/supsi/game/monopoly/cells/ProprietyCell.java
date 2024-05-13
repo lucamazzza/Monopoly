@@ -1,6 +1,7 @@
 package ch.supsi.game.monopoly.cells;
 
 import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.Constant;
 import ch.supsi.game.monopoly.movable.Player;
 
 import static ch.supsi.game.monopoly.Bank.deposit;
@@ -31,7 +32,7 @@ import static ch.supsi.game.monopoly.Bank.deposit;
  * @author Luca Mazza
  * @author Ivo Herceg
  * @author Andrea Masciocchi
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class ProprietyCell extends Cell{
 
@@ -39,6 +40,14 @@ public class ProprietyCell extends Cell{
      * The name of the cell, as defined in {@link ProprietyCell#nameBank}.
      */
     private final ProprietyName name;
+
+    /**
+     *
+     * @return the color of the propriety.
+     */
+    public int getColor(){
+        return name.getColor();
+    }
 
     /**
      * The different names a propriety cell can assume, instances of {@link ProprietyName}.
@@ -49,8 +58,8 @@ public class ProprietyCell extends Cell{
      */
     public static final ProprietyName[] nameBank = {
             // BROWN
-            new ProprietyName("Short End", ANSIUtility.YELLOW),
-            new ProprietyName("Tight End", ANSIUtility.YELLOW),
+            new ProprietyName("Short End", ANSIUtility.BROWN),
+            new ProprietyName("Tight End", ANSIUtility.BROWN),
             // CYAN
             new ProprietyName("Bastioni Gran Sasso", ANSIUtility.CYAN),
             new ProprietyName("Viale Monterosa", ANSIUtility.CYAN),
@@ -86,7 +95,32 @@ public class ProprietyCell extends Cell{
     /**
      * The rent of the cell.
      */
-    private final int rent;
+    private int rent;
+
+    /**
+     * The purchase price of the propriety.
+     */
+    private final int purchasePrice;
+
+    /**
+     * The price to build a house.
+     */
+    private final int housePrice;
+
+    /**
+     * Tbe price to build an hotel.
+     */
+    private final int hotelPrice;
+
+    /**
+     * The number of houses on the propriety.
+     */
+    private int numberOfHouses = 0;
+
+    /**
+     * Whether the propriety has a hotel built upon it.
+     */
+    private boolean hotel = false;
 
     /**
      * Instantiates a new ProprietyCell with a name and a rent.
@@ -94,13 +128,19 @@ public class ProprietyCell extends Cell{
      * @param title the name of the cell
      * @param rent  the rent of the cell
      */
-    public ProprietyCell(ProprietyName title, int rent) {
+    public ProprietyCell(ProprietyName title, int rent, int purchasePrice, int housePrice, int hotelPrice) {
         super(title.getName());
         this.name = title;
         if (rent < 0) {
             throw new IllegalArgumentException("The rent must be positive.");
         }
         this.rent = rent;
+        if (purchasePrice < 0) {
+            throw new IllegalArgumentException("The purchase price must be positive.");
+        }
+        this.purchasePrice = purchasePrice;
+        this.housePrice = housePrice;
+        this.hotelPrice = hotelPrice;
     }
 
     /**
@@ -114,6 +154,10 @@ public class ProprietyCell extends Cell{
      */
     @Override
     public void applyEffect(Player player) {
+        if (getOwner() != null){
+            player.pay(this.rent);
+            getOwner().receive(this.rent);
+        }
         player.pay(this.rent);
         deposit(this.rent);
     }
@@ -143,6 +187,75 @@ public class ProprietyCell extends Cell{
      */
     @Override
     public String getDetail() {
-        return "Pay " + this.rent + ".–";
+        return "Pay " + this.rent + "$";
+    }
+
+    /**
+     * Returns the purchase price of the propriety.
+     *
+     * @return the purchase price
+     */
+    public double getPurchasePrice() {
+        return this.purchasePrice;
+    }
+
+    /**
+     * Returns the building prices (houses and hotel) of the propriety.
+     *
+     * @return the building prices
+     */
+    public String getBuildingPrice() {
+        return "Prices: " + "⌂ " + this.housePrice + "$" + " ⎕ " + this.hotelPrice + "$";
+    }
+
+    /**
+     * <p>
+     * Builds a building on the propriety cell.
+     * </p>
+     * <p>
+     * If there is 1-3 houses builds another house;
+     * when the houses are 4, builds an hotel.
+     * </p>
+     *
+     * @param currentPlayer The player building
+     */
+    public void addBuilding(Player currentPlayer) {
+        if (this.hotel){
+            System.out.println("You can't build anymore on this propriety");
+        } else if (this.numberOfHouses == Constant.MAX_NUMBER_HOUSES) {
+            this.numberOfHouses = 0;
+            currentPlayer.pay(this.hotelPrice);
+            this.hotel = true;
+            this.rent += Constant.PROPRIETY_HOTEL_RENT_INCREASE;
+        }else {
+            currentPlayer.pay(this.housePrice);
+            this.numberOfHouses++;
+            this.rent += Constant.PROPRIETY_HOUSE_RENT_INCREASE;
+        }
+    }
+
+    /**
+     * Removes all the buildings on the propriety
+     */
+    public void removeBuildings(){
+        if(this.hotel){
+            this.rent -= Constant.PROPRIETY_HOTEL_RENT_INCREASE;
+        }
+        this.rent -= this.numberOfHouses * Constant.PROPRIETY_HOUSE_RENT_INCREASE;
+        this.hotel = false;
+        this.numberOfHouses = 0;
+    }
+
+    /**
+     * Show the buildings on a cell, as a detail.
+     *
+     * @return A string containing little images of houses ⌂ and hotels ⎕.
+     */
+    public String showBuildings() {
+        if (this.hotel){
+            return "⎕";
+        }else {
+            return "⌂".repeat(Math.max(0, numberOfHouses));
+        }
     }
 }

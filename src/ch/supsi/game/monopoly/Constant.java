@@ -10,21 +10,24 @@ package ch.supsi.game.monopoly;
  *
  * @author Andrea Masciocchi
  * @author Ivo Herceg
- * @version 1.1.0
+ * @version 1.3.0
  */
 public final class Constant {
 
+    // BANK ------------------------------------------------------------------------------------------------------------
     /**
      * The start amount of money in the bank.
      */
     public static final int BANK_START_AMOUNT = 1_000_000;
 
+    // PLAYER ----------------------------------------------------------------------------------------------------------
     /**
      * The start amount of money of the player, given by the bank
      * at the start of the game.
      */
     public static final int PLAYER_START_AMOUNT = 2000;
 
+    // BOARD -----------------------------------------------------------------------------------------------------------
     /**
      * The start amount of money to receive in the start cell.
      */
@@ -39,6 +42,7 @@ public final class Constant {
      * The percentage of the wealth tax.
      */
     public static final int WEALTH_TAX_PERCENTAGE = 10;
+
 
     /**
      * The number of players in the game.
@@ -63,12 +67,12 @@ public final class Constant {
     /**
      * The width of the board.
      */
-    public static final int BOARD_WIDTH = 9;
+    public static final int BOARD_WIDTH = 11;
 
     /**
      * The height of the board.
      */
-    public static final int BOARD_HEIGHT = 9;
+    public static final int BOARD_HEIGHT = 11;
 
     /**
      * The width of the cell.
@@ -78,7 +82,7 @@ public final class Constant {
     /**
      * The number of descriptive rows contained by the cell.
      */
-    public static final int CELL_DETAILS = 5;
+    public static final int CELL_DETAILS = 6;
 
     /**
      * The total number of cells in the board.
@@ -116,6 +120,16 @@ public final class Constant {
     public static final int EAST_STATION_POSITION = NORTH_STATION_POSITION + (BOARD_WIDTH - 1)/2 + (BOARD_HEIGHT - 1)/2;
 
     /**
+     * Prison cell position on the game loop board.
+     */
+    public static final int PRISON_POSITION = BOARD_WIDTH - 1;
+
+    /**
+     * Go to prison cell position on the game loop board.
+     */
+    public static final int GO_TO_PRISON_POSITION = (BOARD_WIDTH - 1) * 2 + (BOARD_HEIGHT - 1);
+
+    /**
      * Number of tax cells.
      */
     public static final int TAX_CELLS_QTY = 2;
@@ -136,10 +150,73 @@ public final class Constant {
     public static final int PARKING_CELLS_QTY = 1;
 
     /**
+     * Number of prisons cells
+     */
+    public static final int PRISON_CELLS_QTY = 1;
+
+    /**
+     * Number of go to prisons cells
+     */
+    public static final int GO_TO_PRISON_CELLS_QTY = 1;
+
+    /**
+     * Number of extra cells.
+     */
+    public static final int EXTRA_CELLS_QTY = 6;
+
+    /**
      * Number of propriety cells.
      */
     public static final int PROPRIETY_CELLS_QTY =
-            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY;
+            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY - PRISON_CELLS_QTY -
+            GO_TO_PRISON_CELLS_QTY - EXTRA_CELLS_QTY;
+
+    // PROPRIETIES -----------------------------------------------------------------------------------------------------
+    /**
+     * The index of the brown color in the `colorsOwned` array in class `Player`.
+     */
+    public static final int BROWN_COLOR_INDEX = 0;
+
+    /**
+     * The index of the blue color in the `colorsOwned` array in class `Player`.
+     */
+    public static final int BLUE_COLOR_INDEX = 7;
+
+    /**
+     * The amount of the brown colored cells in the board.
+     */
+    public static final int BROWN_PROPRIETIES_AMOUNT = 2;
+
+    /**
+     * The amount of the blue colored cells in the board.
+     */
+    public static final int BLUE_PROPRIETIES_AMOUNT = 2;
+
+    /**
+     * The amount of the differently colored cells in the board, per color.
+     */
+    public static final int OTHER_PROPRIETIES_AMOUNT = 3;
+
+    /**
+     * The maximum number of houses on a cell.
+     */
+    public static final int MAX_NUMBER_HOUSES = 4;
+
+    /**
+     * The rent increase if the propriety has a hotel.
+     */
+    public static final int PROPRIETY_HOTEL_RENT_INCREASE = 100;
+
+    /**
+     * The rent increases for every house built on the propriety.
+     */
+    public static final int PROPRIETY_HOUSE_RENT_INCREASE = 15;
+
+    /**
+     * The tax to evade the prison.
+     */
+    public static final int PRISON_TAX = 50;
+
 
     /**
      * <p>

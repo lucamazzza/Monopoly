@@ -1,5 +1,10 @@
 package ch.supsi.game.monopoly.movable;
 
+import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.Board;
+import ch.supsi.game.monopoly.Constant;
+import ch.supsi.game.monopoly.cells.Cell;
+import ch.supsi.game.monopoly.cells.ProprietyCell;
 import java.beans.PropertyChangeListener;
 import java.util.Objects;
 
@@ -23,7 +28,7 @@ import java.util.Objects;
  * </pre>
  *
  * @author Ivo Herceg
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class Player extends PlayerMovementDelegate implements Movable{
 
@@ -47,6 +52,43 @@ public class Player extends PlayerMovementDelegate implements Movable{
      */
     private final Movable delegate;
 
+    /**
+     * Flag that states if the player is in prison
+     */
+    private boolean isInPrison;
+
+    /**
+     * Times that the player tried to evade
+     */
+    private int timesTriedEvading;
+
+    /**
+     * A list of integers representing the proprieties, group by color, owned by the player.
+     * <b>Example:</b>
+     * <table>
+     *     <tr>
+     *      <th>Brown</th>
+     *      <th>Cyan</th>
+     *      <th>Pink</th>
+     *      <th>Grey</th>
+     *      <th>Red</th>
+     *      <th>Yellow</th>
+     *      <th>Green</th>
+     *      <th>Blue</th>
+     *     </tr>
+     *     <tr>
+     *      <td>1</td>
+     *      <td>3</td>
+     *      <td>0</td>
+     *      <td>0</td>
+     *      <td>0</td>
+     *      <td>0</td>
+     *      <td>0</td>
+     *      <td>0</td>
+     *     </tr>
+     * </table>
+     */
+    private final int[] colorsOwned = new int[8];
 
     /**
      * <p>
@@ -69,6 +111,8 @@ public class Player extends PlayerMovementDelegate implements Movable{
         }
         this.name = name;
         this.symbol = symbol;
+        this.isInPrison = false;
+        this.timesTriedEvading = 0;
         this.delegate = new PlayerMovementDelegate();
     }
 
@@ -80,6 +124,50 @@ public class Player extends PlayerMovementDelegate implements Movable{
     @Override
     public int getPosition() {
         return this.delegate.getPosition();
+    }
+
+    /**
+     * Sets the position of the player to a given position.
+     *
+     * @param position the position
+     */
+    @Override
+    public void setPosition(int position) {
+        this.delegate.setPosition(position);
+    }
+
+    /**
+     * If the player is in prison returns true
+     *
+     * @return if the player is in prison
+     */
+    public boolean isInPrison() {
+        return isInPrison;
+    }
+
+    /**
+     * Set the prison flag.
+     *
+     * @param inPrison the boolean flag
+     */
+    public void setInPrison(boolean inPrison) {
+        isInPrison = inPrison;
+    }
+
+    /**
+     * Get the times that the player tried to evade
+     * @return the times the player tried to evade
+     */
+    public int getTimesTriedEvading() {
+        return timesTriedEvading;
+    }
+
+    /**
+     * Set the times the player tried evading from the prison
+     * @param timesTriedEvading
+     */
+    public void setTimesTriedEvading(int timesTriedEvading) {
+        this.timesTriedEvading = timesTriedEvading;
     }
 
     /**
@@ -160,6 +248,143 @@ public class Player extends PlayerMovementDelegate implements Movable{
     }
 
     /**
+     * Determines whether the player can build a propriety,
+     * which means that they own at least all proprieties of one color.
+     *
+     * @return true if the player can build, false otherwise
+     */
+    public boolean canBuild(){
+        if (this.colorsOwned[Constant.BROWN_COLOR_INDEX] == Constant.BROWN_PROPRIETIES_AMOUNT) return true;
+        if (this.colorsOwned[Constant.BLUE_COLOR_INDEX] == Constant.BLUE_PROPRIETIES_AMOUNT) return true;
+        for (int i : this.colorsOwned){
+            if (i == Constant.OTHER_PROPRIETIES_AMOUNT) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Adds a propriety to the colors owned array.
+     *
+     * @param cell the cell the player bought
+     */
+    public void addColor(Cell cell) {
+        if(cell instanceof ProprietyCell pc){
+            int tmp = pc.getColor();
+            if (indexColor(tmp) == -1) return;
+            this.colorsOwned[indexColor(tmp)]++;
+        }
+    }
+
+    /**
+     * Shows the proprieties owned by the player on which they can build.
+     *
+     * @param buildOptions the cells the player can build upon
+     */
+    public void showBuildOptions(Cell[] buildOptions){
+        System.out.println("Choose where you want to build: ");
+        for (int i = 0; i < buildOptions.length; i++) {
+            if (buildOptions[i] != null)
+                System.out.printf("%2s. %s%n", (i+1), buildOptions[i].getTitle());
+        }
+    }
+
+    /**
+     * Counts the proprieties the player can build upon.
+     *
+     * @return the count of proprieties.
+     */
+    public int getBuildableProprietiesCount() {
+        int buildableProprietiesCounter = 0;
+        if (this.colorsOwned[Constant.BROWN_COLOR_INDEX] == Constant.BROWN_PROPRIETIES_AMOUNT)
+            buildableProprietiesCounter += Constant.BROWN_PROPRIETIES_AMOUNT;
+        if (this.colorsOwned[Constant.BLUE_COLOR_INDEX] == Constant.BLUE_PROPRIETIES_AMOUNT)
+            buildableProprietiesCounter += Constant.BLUE_PROPRIETIES_AMOUNT;
+        for (int j : this.colorsOwned) {
+            if (j == Constant.OTHER_PROPRIETIES_AMOUNT)
+                buildableProprietiesCounter += Constant.OTHER_PROPRIETIES_AMOUNT;
+        }
+        return buildableProprietiesCounter;
+    }
+
+    /**
+     * Retrieves all the cells the player can build upon.
+     *
+     * @param board the board to look cells into
+     * @return the cells the user can build upom
+     */
+    public Cell[] getBuildOptions(Board board){
+        int buildableProprietiesCounter = getBuildableProprietiesCount();
+        Cell[] buildOptions = new Cell[buildableProprietiesCounter];
+        int buildOptionIndex = 0;
+        Cell[] temp;
+        if (this.colorsOwned[Constant.BROWN_COLOR_INDEX] == Constant.BROWN_PROPRIETIES_AMOUNT) {
+            temp = board.getAllProprietiesOfColor(ANSIUtility.BROWN);
+            for (Cell cell : temp) {
+                buildOptions[buildOptionIndex] = cell;
+                buildOptionIndex++;
+            }
+        }
+        if (this.colorsOwned[Constant.BLUE_COLOR_INDEX] == Constant.BLUE_PROPRIETIES_AMOUNT) {
+            temp = board.getAllProprietiesOfColor(ANSIUtility.BLUE);
+            for (Cell cell : temp) {
+                buildOptions[buildOptionIndex] = cell;
+                buildOptionIndex++;
+            }
+        }
+        for (int i = 1; i < this.colorsOwned.length; i++) {
+            if (this.colorsOwned[i] == Constant.OTHER_PROPRIETIES_AMOUNT){
+                temp = board.getAllProprietiesOfColor(getColorAt(i));
+                for (Cell cell : temp) {
+                    buildOptions[buildOptionIndex] = cell;
+                    if(buildOptionIndex != buildableProprietiesCounter - 1)
+                        buildOptionIndex++;
+                }
+            }
+        }
+        return buildOptions;
+    }
+
+    /**
+     * Converts an index in the {@link this#colorsOwned} array to a color code.
+     *
+     * @param index the index to look for
+     * @return the color code corresponding to the index
+     */
+    private int getColorAt(int index) {
+        return switch (index) {
+            case 0 -> ANSIUtility.BROWN;
+            case 1 -> ANSIUtility.CYAN;
+            case 2 -> ANSIUtility.MAGENTA;
+            case 3 -> ANSIUtility.WHITE;
+            case 4 -> ANSIUtility.RED;
+            case 5 -> ANSIUtility.BRIGHT_YELLOW;
+            case 6 -> ANSIUtility.GREEN;
+            case 7 -> ANSIUtility.BLUE;
+            default -> -1;
+        };
+    }
+
+    /**
+     * Converts a color code to an index in the {@link this#colorsOwned} array.
+     *
+     * @param color The color code to look for
+     * @return the index in the array
+     */
+    private int indexColor(int color){
+        return switch (color) {
+            case ANSIUtility.BROWN -> 0;
+            case ANSIUtility.CYAN -> 1;
+            case ANSIUtility.MAGENTA -> 2;
+            case ANSIUtility.WHITE -> 3;
+            case ANSIUtility.RED -> 4;
+            case ANSIUtility.BRIGHT_YELLOW -> 5;
+            case ANSIUtility.GREEN -> 6;
+            case ANSIUtility.BLUE -> 7;
+            default -> -1;
+        };
+    }
+
+    /**
      * Returns the player's stats as a String.
      *
      * @return the player's stats
@@ -180,7 +405,7 @@ public class Player extends PlayerMovementDelegate implements Movable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return this.symbol == player.symbol && Objects.equals(this.name, player.name);
+        return this.symbol == player.symbol;
     }
 
     /**

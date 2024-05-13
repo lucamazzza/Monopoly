@@ -15,19 +15,20 @@ import java.util.Scanner;
  * char c = scannerUtils.readNonBlankChar("Enter a character: ");       // Read a character
  * String s = scannerUtils.readNonBlankString("Enter a string: ");      // Read a string
  * scannerUtils.readKey("Press enter to continue...");                  // Read a key
+ * scannerUtils.readBoolean();                                          // Read y/n input
  * scannerUtils.closeScanner();                                         // Close the scanner
  * }
  * </pre>
  *
  * @author Andrea Masciocchi
- * @version 1.1.0
+ * @version 1.3.0
  */
 public class ScannerUtils {
 
     /**
      * Scanner instance.
      */
-    private final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     /**
      * <p>
@@ -66,6 +67,26 @@ public class ScannerUtils {
         }
         emptyTheScanner();
         return input;
+    }
+
+    /**
+     * Reads a boolean input in the "yes/no" form.
+     *
+     * @return true if the user input is yes, false if it is no
+     */
+    public boolean readBoolean() {
+        String input;
+        do {
+            System.out.print("Y/n: ");
+            input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("y")) {
+                return true;
+            } else if (input.equals("n")) {
+                return false;
+            } else {
+                System.out.println("Invalid input. Please enter 'Y' or 'n'.");
+            }
+        } while (true);
     }
 
     /**
@@ -128,32 +149,21 @@ public class ScannerUtils {
 
     /**
      * <p>
-     * Reads the number of players from the user.
-     * </p>
-     * <i>This method is here because it can be useful in the next series.</i>
-     *
-     * @return the number of players
-     */
-    public int getNumberOfPlayers(){
-        return readIntInRange(2, 6, "How many players will play?");
-    }
-
-    /**
-     * <p>
      * Reads an option from the user
      * </p>
      * <p>
      * The user is asked to choose one of the three options:
      * 1. Roll the dice
      * 2. View your balance
-     * 3. Quit
+     * 3. View your proprieties
+     * 4. Quit
      * </p>
      *
      * @return the user's option
      */
     public int readOption(){
         System.out.println("What do you want to do?");
-        return this.readIntInRange(1,3,"1. Roll the dice\n2. View your balance\n3. Quit\nOption: ");
+        return this.readIntInRange(1,4,"1. Roll the dice\n2. View your balance\n3. View your proprieties\n4. Quit\nOption: ");
     }
 
     /**

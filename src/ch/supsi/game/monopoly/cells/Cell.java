@@ -17,7 +17,7 @@ import ch.supsi.game.monopoly.movable.Player;
  * </p>
  *
  * @author Luca Mazza
- * @version 1.2.0
+ * @version 1.3.0
  */
 public abstract class Cell {
 
@@ -30,6 +30,11 @@ public abstract class Cell {
      * The title of the cell, used to display it on the board.
      */
     private final String title;
+
+    /**
+     * The owner of the cell. {@code null} if owned by the bank or not own able.
+     */
+    private Player owner;
 
     /**
      * Constructor of the class.
@@ -45,6 +50,26 @@ public abstract class Cell {
      */
     Cell(String title) {
         this.title = title;
+    }
+
+    /**
+     * Returns the current owner of the cell.
+     *
+     * @return the owner
+     */
+    public Player getOwner() {
+        return owner;
+    }
+
+    /**
+     * Sets the owner of the cell.
+     *
+     * @param owner the owner
+     */
+    public void setOwner(Player owner) {
+        if (owner == null)
+            return;
+        this.owner = owner;
     }
 
     /**

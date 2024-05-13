@@ -27,7 +27,7 @@ import java.util.Random;
  * @author Andrea Masciocchi
  * @author Luca Mazza
  * @author Ivo Herceg
- * @version 1.2.0
+ * @version 1.3.0
  */
 public class Board {
 
@@ -47,7 +47,7 @@ public class Board {
      * This field is in charge of managing how the players
      * move on the board.
      */
-    private final Cell[] cells;
+    private Cell[] cells;
 
     /**
      * Random generator instance.
@@ -65,14 +65,9 @@ public class Board {
      * If these values are set to less than the specified board size, in class
      * {@link Constant}, they are set to the specified board size.
      * </p>
-     *
-     * @param rows the number of rows
-     * @param cols the number of columns
      */
-    public Board(int rows, int cols) {
-        rows = Math.max(rows, Constant.BOARD_HEIGHT);
-        cols = Math.max(cols, Constant.BOARD_WIDTH);
-        this.boardCells = new Cell[rows][cols];
+    public Board() {
+        this.boardCells = new Cell[Constant.BOARD_HEIGHT][Constant.BOARD_WIDTH];
         this.cells = new Cell[Constant.BOARD_SIZE];
         initBoard();
     }
@@ -84,6 +79,33 @@ public class Board {
      */
     private int getRandomRent() {
         return this.random.nextInt(50, 150);
+    }
+
+    /**
+     * Returns a random purchase price between 150 and 500.
+     *
+     * @return the random purchase price
+     */
+    private int getRandomPurchasePrice() {
+        return this.random.nextInt(150, 500);
+    }
+
+    /**
+     * Returns a random house building price between 75 and 125.
+     *
+     * @return the random house building price
+     */
+    private int getRandomHousePrice() {
+        return this.random.nextInt(75, 125);
+    }
+
+    /**
+     * Returns a random hotel building price between 95 and 175.
+     *
+     * @return the random hotel building price
+     */
+    private int getRandomHotelPrice() {
+        return this.random.nextInt(95, 175);
     }
 
     /**
@@ -104,18 +126,44 @@ public class Board {
     private void initBoard(){
         Cell start = new StartCell();
         Cell parking = new ParkingCell();
-        Cell nStation = new ProprietyCell(new ProprietyName("North Station", ANSIUtility.DEFAULT), getRandomRent());
-        Cell sStation = new ProprietyCell(new ProprietyName("South Station", ANSIUtility.DEFAULT), getRandomRent());
-        Cell eStation = new ProprietyCell(new ProprietyName("East Station", ANSIUtility.DEFAULT), getRandomRent());
-        Cell wStation = new ProprietyCell(new ProprietyName("West Station", ANSIUtility.DEFAULT), getRandomRent());
+        Cell nStation = new ProprietyCell(
+                new ProprietyName("North Station", ANSIUtility.DEFAULT), getRandomRent(),
+                getRandomPurchasePrice(),
+                getRandomHousePrice(),
+                getRandomHotelPrice()
+        );
+        Cell sStation = new ProprietyCell(
+                new ProprietyName("South Station", ANSIUtility.DEFAULT),
+                getRandomRent(),getRandomPurchasePrice(),
+                getRandomHousePrice(),
+                getRandomHotelPrice()
+        );
+        Cell eStation = new ProprietyCell(
+                new ProprietyName("East Station", ANSIUtility.DEFAULT),
+                getRandomRent(),
+                getRandomPurchasePrice(),
+                getRandomHousePrice(),
+                getRandomHotelPrice()
+        );
+        Cell wStation = new ProprietyCell(
+                new ProprietyName("West Station", ANSIUtility.DEFAULT),
+                getRandomRent(),
+                getRandomPurchasePrice(),
+                getRandomHousePrice(),
+                getRandomHotelPrice()
+        );
+        Cell prison = new PrisonCell();
+        Cell goToPrison = new GoToPrisonCell();
         this.cells[Constant.START_POSITION] = start;
         this.cells[Constant.PARKING_POSITION] = parking;
         this.cells[Constant.NORTH_STATION_POSITION] = nStation;
         this.cells[Constant.SOUTH_STATION_POSITION] = sStation;
         this.cells[Constant.EAST_STATION_POSITION] = eStation;
         this.cells[Constant.WEST_STATION_POSITION] = wStation;
+        this.cells[Constant.PRISON_POSITION] = prison;
+        this.cells[Constant.GO_TO_PRISON_POSITION] = goToPrison;
         for (int i = 0; i < Constant.TAX_CELLS_QTY; i++){
-            int pos = this.random.nextInt(0, Constant.BOARD_SIZE);
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
             if (this.cells[pos] != null) {
                 i--;
                 continue;
@@ -126,18 +174,31 @@ public class Board {
                 this.cells[pos] = new WealthTaxCell();
             }
         }
-        int tmp = Constant.PROPRIETY_CELLS_QTY;
-        for (int i = 0; i < tmp; i++) {
-            if (this.cells[i] != null) {
-                tmp++;
-                continue;
-            }
-            int nameIndex = this.random.nextInt(0, ProprietyCell.nameBank.length);
-            if (ProprietyCell.nameBank[nameIndex].isBlacklisted()) {
+        for (int i = 0; i < Constant.EXTRA_CELLS_QTY; i++) {
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
+            if (this.cells[pos] != null) {
                 i--;
                 continue;
             }
-            this.cells[i] = new ProprietyCell(ProprietyCell.nameBank[nameIndex], getRandomRent());
+            this.cells[pos] = new ParkingCell("-");
+        }
+        for (int i = 0; i < Constant.PROPRIETY_CELLS_QTY; i++) {
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
+            if (this.cells[pos] != null) {
+                i--;
+                continue;
+            }
+            int nameIndex;
+            do {
+                nameIndex = this.random.nextInt(0, ProprietyCell.nameBank.length);
+            } while (ProprietyCell.nameBank[nameIndex].isBlacklisted());
+            this.cells[pos] = new ProprietyCell(
+                    ProprietyCell.nameBank[nameIndex],
+                    getRandomRent(),
+                    getRandomPurchasePrice(),
+                    getRandomHousePrice(),
+                    getRandomHotelPrice()
+            );
             ProprietyCell.nameBank[nameIndex].setBlacklisted(true);
         }
         int row = Constant.BOARD_HEIGHT - 1;
@@ -203,7 +264,25 @@ public class Board {
                             detail = new StringBuilder(boardCells[row][col].getTitle());
                         } else if (d == 1) {
                             detail = new StringBuilder(String.valueOf(boardCells[row][col].getDetail()));
-                        } else if (d == Constant.CELL_DETAILS-1) {
+                        } else if (d == 2) {
+                            if (boardCells[row][col].getOwner()!=null) {
+                                detail = new StringBuilder("Owner ");
+                                detail.append(boardCells[row][col].getOwner().getSymbol());
+                            } else {
+                                if(boardCells[row][col] instanceof ProprietyCell tmp){
+                                    detail = new StringBuilder("Buy ");
+                                    detail.append(tmp.getPurchasePrice());
+                                }
+                            }
+                        } else if (d == 3) {
+                            if(boardCells[row][col] instanceof ProprietyCell tmp){
+                                detail = new StringBuilder(String.valueOf(tmp.getBuildingPrice()));
+                            }
+                        }else if (d == 4) {
+                            if(boardCells[row][col] instanceof ProprietyCell tmp){
+                                detail = new StringBuilder(String.valueOf(tmp.showBuildings()));
+                            }
+                        } else {
                             for (int i = 0; i < boardCells[row][col].getPlayers().length; i++) {
                                 if (boardCells[row][col].getPlayers()[i] != null) {
                                     detail.append(boardCells[row][col].getPlayers()[i].getSymbol()).append(" ");
@@ -233,6 +312,15 @@ public class Board {
     }
 
     /**
+     * Setter for the working cell array.
+     *
+     * @param cells the cell array.
+     */
+    public void setCells(Cell[] cells) {
+        this.cells = cells;
+    }
+
+    /**
      * Returns a cell from the board given its index.
      *
      * @param index the index of the cell to return
@@ -249,5 +337,25 @@ public class Board {
     @Override
     public String toString() {
         return generateBoard();
+    }
+
+    /**
+     * Collects all cells of a given color and returns them.
+     *
+     * @param color the color to look for
+     * @return the cells of the given color
+     */
+    public Cell[] getAllProprietiesOfColor(int color) {
+        int cellsOfSameColorCounter;
+        if (color == ANSIUtility.BROWN) cellsOfSameColorCounter = Constant.BROWN_PROPRIETIES_AMOUNT;
+        else if (color == ANSIUtility.BLUE) cellsOfSameColorCounter = Constant.BLUE_PROPRIETIES_AMOUNT;
+        else cellsOfSameColorCounter = Constant.OTHER_PROPRIETIES_AMOUNT;
+        Cell[] cellsOfSameColor = new Cell[cellsOfSameColorCounter];
+        int j = 0;
+        for (Cell cell : cells) {
+            if (cell instanceof ProprietyCell proprietyCell && (proprietyCell.getColor() == color))
+                cellsOfSameColor[j++] = proprietyCell;
+        }
+        return cellsOfSameColor;
     }
 }
