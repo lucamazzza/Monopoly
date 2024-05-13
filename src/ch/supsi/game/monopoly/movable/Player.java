@@ -53,6 +53,16 @@ public class Player extends PlayerMovementDelegate implements Movable{
     private final Movable delegate;
 
     /**
+     * Flag that states if the player is in prison
+     */
+    private boolean isInPrison;
+
+    /**
+     * Times that the player tried to evade
+     */
+    private int timesTriedEvading;
+
+    /**
      * A list of integers representing the proprieties, group by color, owned by the player.
      * <b>Example:</b>
      * <table>
@@ -101,6 +111,8 @@ public class Player extends PlayerMovementDelegate implements Movable{
         }
         this.name = name;
         this.symbol = symbol;
+        this.isInPrison = false;
+        this.timesTriedEvading = 0;
         this.delegate = new PlayerMovementDelegate();
     }
 
@@ -112,6 +124,47 @@ public class Player extends PlayerMovementDelegate implements Movable{
     @Override
     public int getPosition() {
         return this.delegate.getPosition();
+    }
+
+    /**
+     * Set the position of the player
+     * @param position
+     */
+    @Override
+    public void setPosition(int position) {
+        this.delegate.setPosition(position);
+    }
+
+    /**
+     * If the player is in prison returns true
+     * @return if the player is in prison
+     */
+    public boolean isInPrison() {
+        return isInPrison;
+    }
+
+    /**
+     * Set the prison flag
+     * @param inPrison
+     */
+    public void setInPrison(boolean inPrison) {
+        isInPrison = inPrison;
+    }
+
+    /**
+     * Get the times that the player tried to evade
+     * @return the times the player tried to evade
+     */
+    public int getTimesTriedEvading() {
+        return timesTriedEvading;
+    }
+
+    /**
+     * Set the times the player tried evading from the prison
+     * @param timesTriedEvading
+     */
+    public void setTimesTriedEvading(int timesTriedEvading) {
+        this.timesTriedEvading = timesTriedEvading;
     }
 
     /**
@@ -192,7 +245,7 @@ public class Player extends PlayerMovementDelegate implements Movable{
     }
 
     /**
-     * Determines whether or not the player can build a propriety,
+     * Determines whether the player can build a propriety,
      * which means that they own at least all proprieties of one color.
      *
      * @return true if the player can build, false otherwise

@@ -29,6 +29,12 @@ public interface Movable {
     int getPosition();
 
     /**
+     * Set the position of the player
+     * @param position
+     */
+    void setPosition(int position);
+
+    /**
      * Adds a new listener to the {@code PropertyChange} trigger class ({@code this}).
      *
      * @param pcl a PropertyChangeListener object describing the event listener

@@ -1,10 +1,13 @@
 package ch.supsi.game.monopoly;
 
 import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.cells.Cell;
 import ch.supsi.game.monopoly.cells.ProprietyCell;
 import ch.supsi.game.monopoly.movable.Player;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import static ch.supsi.game.monopoly.Bank.deposit;
 
 /**
  * <p>
@@ -79,7 +82,7 @@ public class Game implements PropertyChangeListener {
      */
     public Game(int playersNumber) {
         playersNumber = Math.max(playersNumber, Constant.PLAYER_NUMBER);
-        this.board = new Board(Constant.BOARD_HEIGHT, Constant.BOARD_WIDTH);
+        this.board = new Board();
         this.players = new Player[playersNumber];
         this.dices = new Dice[Constant.NUMBER_OF_DICES];
         for (int i = 0; i < Constant.NUMBER_OF_DICES; i++) {
@@ -250,7 +253,7 @@ public class Game implements PropertyChangeListener {
      * </p>
      * <p>
      * When called the dice is rolled and the player's position is moved.
-     * Once the player is moved the cell he' onto gets checked and the relative fee
+     * Once the player is moved the cell he's onto gets checked and the relative fee
      * is applied to the player.
      * </p>
      */
@@ -260,23 +263,44 @@ public class Game implements PropertyChangeListener {
             this.dices[i].roll();
             ANSIUtility.printcf("Dice " + (i + 1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
         }
-        currentPlayer.move(this.getDicesValue());
-        if (this.hasPlayerPassedStart()){
-            this.board.getCell(Constant.START_POSITION).applyEffect(currentPlayer);
+        if(currentPlayer.isInPrison()){
+            boolean willBeInPrison = false;
+            if(currentPlayer.getTimesTriedEvading()==3){
+                System.out.println("To get out of prison you need to pay " + Constant.PRISON_TAX + "CHF");
+                this.scannerUtils.readKey("Press enter to continue...");
+                currentPlayer.pay(Constant.PRISON_TAX);
+                deposit(Constant.PRISON_TAX);
+                willBeInPrison = false;
+            }else{
+                for(int i = 0; i < this.dices.length-1; i++){
+                    if(this.dices[i] != this.dices[i+1]){
+                        willBeInPrison = true;
+                        break;
+                    }
+                }
+                currentPlayer.setTimesTriedEvading(currentPlayer.getTimesTriedEvading() + 1);
+            }
+            currentPlayer.setInPrison(willBeInPrison);
         }
-        System.out.println(board);
+        if(!currentPlayer.isInPrison()){
+            currentPlayer.move(this.getDicesValue());
+            if (this.hasPlayerPassedStart()){
+                this.board.getCell(Constant.START_POSITION).applyEffect(currentPlayer);
+            }
+            System.out.println(board);
 
-        // Land on a propriety owned by the bank
-        if (this.board.getCell(currentPlayer.getPosition()) instanceof ProprietyCell pc &&
-                this.board.getCell(currentPlayer.getPosition()).getOwner() == null){
-            System.out.printf("Buy %s for %.2f$%n",
-                    this.board.getCell(currentPlayer.getPosition()).getTitle(),
-                    pc.getPurchasePrice());
-            if (this.scannerUtils.readBoolean()){
-                currentPlayer.pay(pc.getPurchasePrice());
-                Bank.deposit(pc.getPurchasePrice());
-                pc.setOwner(currentPlayer);
-                currentPlayer.addColor(pc);
+            // Land on a propriety owned by the bank
+            if (this.board.getCell(currentPlayer.getPosition()) instanceof ProprietyCell pc &&
+                    this.board.getCell(currentPlayer.getPosition()).getOwner() == null){
+                System.out.printf("Buy %s for %.2f$%n",
+                        this.board.getCell(currentPlayer.getPosition()).getTitle(),
+                        pc.getPurchasePrice());
+                if (this.scannerUtils.readBoolean()){
+                    currentPlayer.pay(pc.getPurchasePrice());
+                    Bank.deposit(pc.getPurchasePrice());
+                    pc.setOwner(currentPlayer);
+                    currentPlayer.addColor(pc);
+                }
             }
         }
 
@@ -360,6 +384,7 @@ public class Game implements PropertyChangeListener {
         this.init();
         do {
             while (this.hasPlayerLost(this.indexOfCurrentPlayer)) {
+                this.playerGameOver(this.indexOfCurrentPlayer);
                 this.getNextPlayer();
             }
             this.printUI();
@@ -373,6 +398,10 @@ public class Game implements PropertyChangeListener {
                     this.scannerUtils.readKey("Press enter to continue...");
                     break;
                 case 3:
+                    System.out.println("\n"+getProprietiesOfPlayer(this.players[this.indexOfCurrentPlayer]));
+                    this.scannerUtils.readKey("Press enter to continue...");
+                    break;
+                case 4:
                     this.isGameRunning = false;
                     break;
                 default:
@@ -384,6 +413,40 @@ public class Game implements PropertyChangeListener {
         this.printLeaderboard();
         this.scannerUtils.readKey("Game ended, press enter to exit...");
         this.quit();
+    }
+
+    /**
+     * Resets all the propriety of the player that lost.
+     * @param playerIndex index of the player that lost
+     */
+    private void playerGameOver(int playerIndex) {
+        Player player = this.players[playerIndex];
+        Cell[] cells = this.board.getCells();
+        for(int i = 0; i < cells.length; i++){
+            if(cells[i] instanceof ProprietyCell pc){
+                pc.removeBuildings();
+                pc.setOwner(null);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param player
+     * @return the list of the propriety owned by the player
+     */
+    private String getProprietiesOfPlayer(Player player){
+        StringBuilder sb = new StringBuilder();
+        Cell[] cells = this.board.getCells();
+        int tmp = 0;
+        for(int i = 0; i < cells.length; i++){
+            if(cells[i] instanceof ProprietyCell pc){
+                if(pc.getOwner()!=null && pc.getOwner().equals(player)){
+                    sb.append((++tmp) + " " + pc.getTitle() + "\n");
+                }
+            }
+        }
+        return sb.toString();
     }
 
     /**

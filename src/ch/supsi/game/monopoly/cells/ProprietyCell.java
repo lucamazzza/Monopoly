@@ -40,6 +40,11 @@ public class ProprietyCell extends Cell{
      * The name of the cell, as defined in {@link ProprietyCell#nameBank}.
      */
     private final ProprietyName name;
+
+    /**
+     *
+     * @return the color of the propriety.
+     */
     public int getColor(){
         return name.getColor();
     }
@@ -113,7 +118,7 @@ public class ProprietyCell extends Cell{
     private int numberOfHouses = 0;
 
     /**
-     * Whether or not the propriety has an hotel built upon it.
+     * Whether the propriety has a hotel built upon it.
      */
     private boolean hotel = false;
 
@@ -227,6 +232,18 @@ public class ProprietyCell extends Cell{
             this.numberOfHouses++;
             this.rent += Constant.PROPRIETY_HOUSE_RENT_INCREASE;
         }
+    }
+
+    /**
+     * Removes all the buildings on the propriety
+     */
+    public void removeBuildings(){
+        if(this.hotel){
+            this.rent -= Constant.PROPRIETY_HOTEL_RENT_INCREASE;
+        }
+        this.rent -= this.numberOfHouses * Constant.PROPRIETY_HOUSE_RENT_INCREASE;
+        this.hotel = false;
+        this.numberOfHouses = 0;
     }
 
     /**

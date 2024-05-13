@@ -66,6 +66,13 @@ public class PlayerMovementDelegate implements Movable {
         return this.position;
     }
 
+    @Override
+    public void setPosition(int position) {
+        int old = this.position;
+        this.position = position;
+        this.support.firePropertyChange("position", old, this.position);
+    }
+
     /**
      * Adds a new listener to the {@code PropertyChange} trigger class ({@code this}).
      *

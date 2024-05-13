@@ -43,20 +43,6 @@ public final class Constant {
      */
     public static final int WEALTH_TAX_PERCENTAGE = 10;
 
-    /**
-     * The start amount of money to receive in the start cell.
-     */
-    public static final int START_CELL_AMOUNT = 100;
-
-    /**
-     * The amount of money to pay in the luxury tax.
-     */
-    public static final int LUXURY_TAX_AMOUNT = 100;
-
-    /**
-     * The percentage of the wealth tax.
-     */
-    public static final int WEALTH_TAX_PERCENTAGE = 10;
 
     /**
      * The number of players in the game.
@@ -81,12 +67,12 @@ public final class Constant {
     /**
      * The width of the board.
      */
-    public static final int BOARD_WIDTH = 9;
+    public static final int BOARD_WIDTH = 11;
 
     /**
      * The height of the board.
      */
-    public static final int BOARD_HEIGHT = 9;
+    public static final int BOARD_HEIGHT = 11;
 
     /**
      * The width of the cell.
@@ -134,6 +120,16 @@ public final class Constant {
     public static final int EAST_STATION_POSITION = NORTH_STATION_POSITION + (BOARD_WIDTH - 1)/2 + (BOARD_HEIGHT - 1)/2;
 
     /**
+     * Prison cell position on the game loop board.
+     */
+    public static final int PRISON_POSITION = BOARD_WIDTH - 1;
+
+    /**
+     * Go to prison cell position on the game loop board.
+     */
+    public static final int GO_TO_PRISON_POSITION = (BOARD_WIDTH - 1) * 2 + (BOARD_HEIGHT - 1);
+
+    /**
      * Number of tax cells.
      */
     public static final int TAX_CELLS_QTY = 2;
@@ -154,10 +150,25 @@ public final class Constant {
     public static final int PARKING_CELLS_QTY = 1;
 
     /**
+     * Number of prisons cells
+     */
+    public static final int PRISON_CELLS_QTY = 1;
+
+    /**
+     * Number of go to prisons cells
+     */
+    public static final int GO_TO_PRISON_CELLS_QTY = 1;
+
+    /**
+     * Number of extra cells.
+     */
+    public static final int EXTRA_CELLS_QTY = 6;
+
+    /**
      * Number of propriety cells.
      */
     public static final int PROPRIETY_CELLS_QTY =
-            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY;
+            BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY - PRISON_CELLS_QTY - GO_TO_PRISON_CELLS_QTY - EXTRA_CELLS_QTY;
 
     // PROPRIETIES -----------------------------------------------------------------------------------------------------
     /**
@@ -190,9 +201,20 @@ public final class Constant {
      */
     public static final int MAX_NUMBER_HOUSES = 4;
 
+    /**
+     * The rent increase if the propriety has a hotel.
+     */
     public static final int PROPRIETY_HOTEL_RENT_INCREASE = 100;
 
+    /**
+     * The rent increases for every house built on the propriety.
+     */
     public static final int PROPRIETY_HOUSE_RENT_INCREASE = 15;
+
+    /**
+     * The tax to evade the prison.
+     */
+    public static final int PRISON_TAX = 50;
 
 
     /**

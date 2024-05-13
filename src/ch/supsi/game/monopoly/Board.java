@@ -65,14 +65,9 @@ public class Board {
      * If these values are set to less than the specified board size, in class
      * {@link Constant}, they are set to the specified board size.
      * </p>
-     *
-     * @param rows the number of rows
-     * @param cols the number of columns
      */
-    public Board(int rows, int cols) {
-        rows = Math.max(rows, Constant.BOARD_HEIGHT);
-        cols = Math.max(cols, Constant.BOARD_WIDTH);
-        this.boardCells = new Cell[rows][cols];
+    public Board() {
+        this.boardCells = new Cell[Constant.BOARD_HEIGHT][Constant.BOARD_WIDTH];
         this.cells = new Cell[Constant.BOARD_SIZE];
         initBoard();
     }
@@ -157,14 +152,18 @@ public class Board {
                 getRandomHousePrice(),
                 getRandomHotelPrice()
         );
+        Cell prison = new PrisonCell();
+        Cell goToPrison = new GoToPrisonCell();
         this.cells[Constant.START_POSITION] = start;
         this.cells[Constant.PARKING_POSITION] = parking;
         this.cells[Constant.NORTH_STATION_POSITION] = nStation;
         this.cells[Constant.SOUTH_STATION_POSITION] = sStation;
         this.cells[Constant.EAST_STATION_POSITION] = eStation;
         this.cells[Constant.WEST_STATION_POSITION] = wStation;
+        this.cells[Constant.PRISON_POSITION] = prison;
+        this.cells[Constant.GO_TO_PRISON_POSITION] = goToPrison;
         for (int i = 0; i < Constant.TAX_CELLS_QTY; i++){
-            int pos = this.random.nextInt(0, Constant.BOARD_SIZE);
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
             if (this.cells[pos] != null) {
                 i--;
                 continue;
@@ -175,18 +174,25 @@ public class Board {
                 this.cells[pos] = new WealthTaxCell();
             }
         }
-        int tmp = Constant.PROPRIETY_CELLS_QTY;
-        for (int i = 0; i < tmp; i++) {
-            if (this.cells[i] != null) {
-                tmp++;
-                continue;
-            }
-            int nameIndex = this.random.nextInt(0, ProprietyCell.nameBank.length);
-            if (ProprietyCell.nameBank[nameIndex].isBlacklisted()) {
+        for (int i = 0; i < Constant.EXTRA_CELLS_QTY; i++) {
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
+            if (this.cells[pos] != null) {
                 i--;
                 continue;
             }
-            this.cells[i] = new ProprietyCell(
+            this.cells[pos] = new ParkingCell();
+        }
+        for (int i = 0; i < Constant.PROPRIETY_CELLS_QTY; i++) {
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
+            if (this.cells[pos] != null) {
+                i--;
+                continue;
+            }
+            int nameIndex;
+            do {
+                nameIndex = this.random.nextInt(0, ProprietyCell.nameBank.length);
+            } while (ProprietyCell.nameBank[nameIndex].isBlacklisted());
+            this.cells[pos] = new ProprietyCell(
                     ProprietyCell.nameBank[nameIndex],
                     getRandomRent(),
                     getRandomPurchasePrice(),

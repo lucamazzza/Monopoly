@@ -167,14 +167,15 @@ public class ScannerUtils {
      * The user is asked to choose one of the three options:
      * 1. Roll the dice
      * 2. View your balance
-     * 3. Quit
+     * 3. View your proprieties
+     * 4. Quit
      * </p>
      *
      * @return the user's option
      */
     public int readOption(){
         System.out.println("What do you want to do?");
-        return this.readIntInRange(1,3,"1. Roll the dice\n2. View your balance\n3. Quit\nOption: ");
+        return this.readIntInRange(1,4,"1. Roll the dice\n2. View your balance\n3. View your proprieties\n4. Quit\nOption: ");
     }
 
     /**
