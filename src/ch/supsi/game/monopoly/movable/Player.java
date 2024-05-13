@@ -402,7 +402,7 @@ public class Player extends PlayerMovementDelegate implements Movable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return this.symbol == player.symbol && Objects.equals(this.name, player.name);
+        return this.symbol == player.symbol;
     }
 
     /**
