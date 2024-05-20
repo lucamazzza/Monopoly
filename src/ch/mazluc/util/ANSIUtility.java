@@ -34,10 +34,11 @@ package ch.mazluc.util;
  * {@code
  * ANSIUtility.clearScreen();                                           // clear the screen
  * ANSIUtility.moveTo(10, 10);                                          // move the cursor to row 10 and column 10
- * ANSIUtuility.printcf("%s", ANSIUtility.RED, "Hello World!");         // print in red
+ * ANSIUtility.printcf("%s", ANSIUtility.RED, "Hello World!");         // print in red
  * ANSIUtility.printbcf("Your name is %s", ANSIUtility.BLUE, "Luca");   // print in blue background
  * ANSIUtility.reset();                                                 // reset the output format
  * String s = ANSIUtility.colorize("Hello World!", ANSIUtility.GREEN);  // colorize a string
+ * String p = ANSIUtility.decolorize(s);                                // de-colorize a string
  * }
  * </pre>
  *
@@ -184,7 +185,7 @@ public class ANSIUtility {
     /**
      * Resets the output format to the default.
      */
-    public static void reset() {
+    public static void resetf() {
         System.out.print(RESET);
     }
 
@@ -219,7 +220,7 @@ public class ANSIUtility {
      * @param row the vertical coordinate
      * @param col the horizontal coordinate
      */
-    public static void moveTo(int row, int col) {
+    public static void moveTo(final int row, final int col) {
         if (row > 0 && col > 0) {
             System.out.print(ESC + row + ";" + col + "H");
         }
@@ -233,7 +234,7 @@ public class ANSIUtility {
      *
      * @param code the color code
      */
-    public static void setForegroundColor(int code) {
+    public static void setForegroundColor(final int code) {
         if (isColorCodeValid(code)) {
             System.out.print(ESC + code + "m");
         }
@@ -244,7 +245,7 @@ public class ANSIUtility {
      *
      * @param code the color
      */
-    public static void setBackgroundColor(int code) {
+    public static void setBackgroundColor(final int code) {
         if (isColorCodeValid(code)) {
             System.out.print(ESC + (code + 10) + "m");
         }
@@ -259,7 +260,7 @@ public class ANSIUtility {
      * @param bg the background color
      * @param fg the foreground color
      */
-    public static void setColor(int bg, int fg) {
+    public static void setColor(final int bg, final int fg) {
         if (isColorCodeValid(bg) && isColorCodeValid(fg)) {
             System.out.print(ESC + fg + ";" + (bg + 10) + "m");
         }
@@ -271,7 +272,7 @@ public class ANSIUtility {
      * @param code the color code
      * @return true if the color code is valid, false otherwise
      */
-    private static boolean isColorCodeValid(int code) {
+    private static boolean isColorCodeValid(final int code) {
         return code >= 30 && code <= 37 || code >= 90 && code <= 97;
     }
 
@@ -283,21 +284,10 @@ public class ANSIUtility {
      * @param color the ANSI color code
      * @param args the arguments to the `printf` function
      */
-    public static void printcf(String format, int color, Object... args) {
+    public static void printcf(final String format, final int color, Object... args) {
             setForegroundColor(color);
         System.out.printf(format, args);
-        reset();
-    }
-
-    /**
-     * Colorize a string with the given ANSI color code.
-     *
-     * @param s the string
-     * @param code the ANSI color code
-     * @return the colorized string
-     */
-    public static String colorize(String s, int code) {
-        return ESC + code + "m" + s + RESET;
+        resetf();
     }
 
     /**
@@ -308,9 +298,31 @@ public class ANSIUtility {
      * @param color the ANSI color code
      * @param args the arguments to the `printf` function
      */
-    public static void printbcf(String format, int color, Object... args) {
+    public static void printbcf(final String format, final int color, Object... args) {
         setBackgroundColor(color);
         System.out.printf(format, args);
-        reset();
+        resetf();
     }
+
+    /**
+     * Colorize a string with the given ANSI color code.
+     *
+     * @param s the string to colorize
+     * @param code the ANSI color code
+     * @return the colorized string
+     */
+    public static String colorize(final String s, final int code) {
+        return ESC + code + "m" + s + RESET;
+    }
+
+    /**
+     * De-colorize a string.
+     *
+     * @param s the string to de-colorize
+     * @return the de-colorized string
+     */
+    public static String decolorize(final String s){
+        return s.replaceAll("\u001B\\[[\\d;]*[^\\d;]","");
+    }
+
 }

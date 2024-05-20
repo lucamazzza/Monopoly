@@ -10,9 +10,15 @@ package ch.supsi.game.monopoly;
  *
  * @author Andrea Masciocchi
  * @author Ivo Herceg
- * @version 1.3.0
+ * @version 1.4.0
  */
 public final class Constant {
+
+    // SCANNER ---------------------------------------------------------------------------------------------------------
+    /**
+     * The message to print when the user presses enter to continue.
+     */
+    public static final String PRESS_ENTER_TO_CONTINUE = "Press enter to continue...";
 
     // BANK ------------------------------------------------------------------------------------------------------------
     /**
@@ -160,16 +166,21 @@ public final class Constant {
     public static final int GO_TO_PRISON_CELLS_QTY = 1;
 
     /**
-     * Number of extra cells.
+     * Number of chance cells.
      */
-    public static final int EXTRA_CELLS_QTY = 6;
+    public static final int CHANCE_CELLS_QTY = 3;
+
+    /**
+     * Number of unexpected cells
+     */
+    public static final int UNEXPECTED_CELLS_QTY = 3;
 
     /**
      * Number of propriety cells.
      */
     public static final int PROPRIETY_CELLS_QTY =
             BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY - PRISON_CELLS_QTY -
-            GO_TO_PRISON_CELLS_QTY - EXTRA_CELLS_QTY;
+            GO_TO_PRISON_CELLS_QTY - CHANCE_CELLS_QTY - UNEXPECTED_CELLS_QTY;
 
     // PROPRIETIES -----------------------------------------------------------------------------------------------------
     /**
@@ -217,6 +228,17 @@ public final class Constant {
      */
     public static final int PRISON_TAX = 50;
 
+    /**
+     * The maximum number of evasions in prison.
+     */
+    public static final int MAX_PRISON_EVASIONS = 3;
+
+    // CARDS -----------------------------------------------------------------------------------------------------------
+
+    /**
+     * The separator used in the cards file.
+     */
+    public static final String FILE_SEPARATOR = ";";
 
     /**
      * <p>

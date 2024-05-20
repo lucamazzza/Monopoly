@@ -1,7 +1,8 @@
 package ch.supsi.game.monopoly.cells;
 
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.movable.Player;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Player;
 
 /**
  * <p>
@@ -13,7 +14,7 @@ import ch.supsi.game.monopoly.movable.Player;
  * <b>Usage</b>:
  * <pre>
  * {@code
- * Cell cell = new GoToPrisonCell();   // instantiate a new Luxury Tax Cell
+ * Cell cell = new GoToPrisonCell();   // instantiate a new Go To Prison Cell
  * cell.getTitle();                    // get "Go To Prison"
  * cell.getDetail();                   // get ""
  * cell.applyEffect(player);           // move the player directly to prison
@@ -33,20 +34,25 @@ public class GoToPrisonCell extends Cell{
     }
 
     /**
+     * <p>
      * Move the player to the prison.
+     * </p>
      *
      * @param player the player to apply the effect on.
+     * @param game   the game to apply the effect on.
      */
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect(final Player player, final Game game) {
         player.setPosition(Constant.PRISON_POSITION);
         player.setInPrison(true);
-        System.out.println("You are now in prison, to evade (like the Daltons) you need to roll for both dices the same number");
+        System.out.println(
+                "You are now in prison, to break out you need to roll for both dices the same number");
     }
 
     /**
+     * <p>
      * Returns the description of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the detail of the cell on the board.
      * </p>

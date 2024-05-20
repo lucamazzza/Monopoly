@@ -19,7 +19,7 @@ import java.util.Random;
  * </pre>
  *
  * @author Ivo Herceg
- * @version 1.1.0
+ * @version 1.4.0
  */
 public class Dice {
 
@@ -57,35 +57,41 @@ public class Dice {
      * @param loBound the lower bound of the dice
      * @param hiBound the upper bound of the dice
      */
-    public Dice(int loBound, int hiBound) {
+    public Dice(final int loBound, final int hiBound) {
         if (loBound < 1) {
-            loBound = 1;
+            throw new IllegalArgumentException("Lower bound must be at least 1");
         }
         if (hiBound < 1) {
-            hiBound = loBound + 1;
+            throw new IllegalArgumentException("Upper bound must be at least 1");
         }
         this.loBound = Math.min(loBound, hiBound);
         this.hiBound = Math.max(loBound, hiBound);
     }
 
     /**
+     * <p>
      * Returns the current value of the dice, as an integer.
+     * </p>
      *
      * @return the current value
      */
     public int getCurrentValue() {
-        return currentValue;
+        return this.currentValue;
     }
 
     /**
+     * <p>
      * Rolls the dice, updating the current value of the dice, in {@link Dice#currentValue}.
+     * </p>
      */
     public void roll(){
-        this.currentValue = random.nextInt(loBound,hiBound + 1);
+        this.currentValue = this.random.nextInt(this.loBound,this.hiBound + 1);
     }
 
     /**
+     * <p>
      * Returns the dice value as a String.
+     * </p>
      *
      * @return the dice value
      */

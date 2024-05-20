@@ -28,7 +28,7 @@ public class ScannerUtils {
     /**
      * Scanner instance.
      */
-    private static final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     /**
      * <p>
@@ -49,13 +49,13 @@ public class ScannerUtils {
      * @param msg the directive message to display the user
      * @return the integer entered
      */
-    public int readIntInRange(int min, int max, String msg) {
+    public int readIntInRange(final int min, final int max, final String msg) {
         int input = 0;
         boolean correctInput = false;
         while (!correctInput) {
             System.out.print(msg);
-            if (scanner.hasNextInt()) {
-                input = scanner.nextInt();
+            if (this.scanner.hasNextInt()) {
+                input = this.scanner.nextInt();
                 if (input < min || input > max)
                     System.out.println("Error: number not in range.");
                 else
@@ -65,12 +65,14 @@ public class ScannerUtils {
                 emptyTheScanner();
             }
         }
-        emptyTheScanner();
+        this.emptyTheScanner();
         return input;
     }
 
     /**
+     * <p>
      * Reads a boolean input in the "yes/no" form.
+     * </p>
      *
      * @return true if the user input is yes, false if it is no
      */
@@ -78,7 +80,7 @@ public class ScannerUtils {
         String input;
         do {
             System.out.print("Y/n: ");
-            input = scanner.nextLine().trim().toLowerCase();
+            input = this.scanner.nextLine().trim().toLowerCase();
             if (input.equals("y")) {
                 return true;
             } else if (input.equals("n")) {
@@ -107,7 +109,7 @@ public class ScannerUtils {
         boolean correctInput = false;
         while (!correctInput) {
             System.out.print(msg);
-            input = scanner.nextLine();
+            input = this.scanner.nextLine();
             if (input.trim().isEmpty()) {
                 System.out.println("Error: string is empty or contains only white spaces.");
             } else {
@@ -135,7 +137,7 @@ public class ScannerUtils {
         boolean correctInput = false;
         while (!correctInput) {
             System.out.print(msg);
-            input = scanner.nextLine();
+            input = this.scanner.nextLine();
             if (input.trim().isEmpty()) {
                 System.out.println("Error: character is empty or contains only white spaces.");
             } else if(input.length()!=1){
@@ -179,20 +181,24 @@ public class ScannerUtils {
      */
     public void readKey(String msg){
         System.out.print(msg);
-        scanner.nextLine();
+        this.scanner.nextLine();
     }
 
     /**
+     * <p>
      * Closes the {@link ScannerUtils#scanner} used by this class.
+     * </p>
      */
     public void closeScanner() {
-        scanner.close();
+        this.scanner.close();
     }
 
     /**
-     * Empties the {@link ScannerUtils#scanner}'s buffer
+     * <p>
+     * Empties the {@link ScannerUtils#scanner}'s buffer.
+     * </p>
      */
     public void emptyTheScanner() {
-        scanner.nextLine();
+        this.scanner.nextLine();
     }
 }
