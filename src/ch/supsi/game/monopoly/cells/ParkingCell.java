@@ -1,6 +1,7 @@
 package ch.supsi.game.monopoly.cells;
 
-import ch.supsi.game.monopoly.movable.Player;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Player;
 
 /**
  * <p>
@@ -24,38 +25,34 @@ import ch.supsi.game.monopoly.movable.Player;
 public class ParkingCell extends Cell {
 
     /**
+     * <p>
      * Instantiates a new Parking cell.
+     * </p>
      */
     public ParkingCell() {
         super("Parking");
     }
 
     /**
-     * Instantiates a new Parking cell with a custom title
-     * TEMPORARY, TO DISPLAY BLANK CELLS
-     * @param title the title.
-     */
-    public ParkingCell(String title) {
-        super(title);
-    }
-
-    /**
+     * <p>
      * Applies the effect of a specific cell on a player.
-     *
+     * </p>
      * <p>
      * This method does nothing.
      * </p>
      *
      * @param player the player to apply the effect on.
+     * @param game the game to apply the effect on.
      */
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect(final Player player, final Game game) {
         // does nothing
     }
 
     /**
+     * <p>
      * Returns the description of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the detail of the cell on the board.
      * </p>

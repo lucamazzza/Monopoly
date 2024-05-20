@@ -2,7 +2,8 @@ package ch.supsi.game.monopoly.cells;
 
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.movable.Player;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Player;
 
 /**
  * <p>
@@ -32,7 +33,9 @@ public class StartCell extends Cell{
     private final int receivedAmount;
 
     /**
+     * <p>
      * Instantiate a new Start Cell.
+     * </p>
      */
     public StartCell() {
         super("Start");
@@ -40,24 +43,27 @@ public class StartCell extends Cell{
     }
 
     /**
+     * <p>
      * Applies the effect of a specific cell on a player.
-     *
+     * </p>
      * <p>
      * When the luxury tax is applied, the player pays
      * 200.– to the bank.
      * </p>
      *
      * @param player the player to apply the effect on.
+     * @param game the game to apply the effect on.
      */
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect(final Player player, final Game game) {
         player.receive(this.receivedAmount);
-        Bank.withdraw(this.receivedAmount);
+        Bank.getInstance().withdraw(this.receivedAmount);
     }
 
     /**
+     * <p>
      * Returns the description of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the detail of the cell on the board.
      * </p>

@@ -1,7 +1,11 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.movable.Player;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Player;
+import ch.supsi.game.monopoly.cards.Card;
+import ch.supsi.game.monopoly.exception.NoCellFoundException;
 
 /**
  * <p>
@@ -12,8 +16,9 @@ import ch.supsi.game.monopoly.movable.Player;
  * </p>
  * <p>
  * See {@link ParkingCell}, {@link StartCell},
- * {@link ProprietyCell} and {@link LuxuryTaxCell}/{@link WealthTaxCell}
- * for concrete implementations and usage.
+ * {@link ProprietyCell}, {@link LuxuryTaxCell}/{@link WealthTaxCell},
+ * {@link PrisonCell}, {@link GoToPrisonCell} and {@link ChanceCell}/
+ * {@link UnexpectedCell} for concrete implementations and usage.
  * </p>
  *
  * @author Luca Mazza
@@ -58,7 +63,7 @@ public abstract class Cell {
      * @return the owner
      */
     public Player getOwner() {
-        return owner;
+        return this.owner;
     }
 
     /**
@@ -66,7 +71,7 @@ public abstract class Cell {
      *
      * @param owner the owner
      */
-    public void setOwner(Player owner) {
+    public void setOwner(final Player owner) {
         if (owner == null)
             return;
         this.owner = owner;
@@ -77,11 +82,9 @@ public abstract class Cell {
      *
      * @param player the player to add to the list of players
      */
-    public void setPlayer(Player player) {
+    public void setPlayer(final Player player) {
         int i = 0;
-        while (this.players[i] != null) {
-            i++;
-        }
+        while (this.players[i] != null) i++;
         this.players[i] = player;
     }
 
@@ -90,11 +93,10 @@ public abstract class Cell {
      *
      * @param playerToRemove the player to remove
      */
-    public void removePlayer(Player playerToRemove) {
+    public void removePlayer(final Player playerToRemove) {
         for (int i = 0; i < players.length; i++){
-            if (players[i] == playerToRemove){
+            if (players[i] != null && players[i].equals(playerToRemove))
                 players[i] = null;
-            }
         }
     }
 
@@ -119,9 +121,10 @@ public abstract class Cell {
      * variable type `Cell`.
      * </p>
      *
-     * @param player the player to apply the effect on.
+     * @param player the player to apply the effect on
+     * @param game the game the cell is in
      */
-    public abstract void applyEffect(Player player);
+    public abstract void applyEffect(final Player player, final Game game);
 
     /**
      * Returns the name of the cell.
@@ -146,4 +149,42 @@ public abstract class Cell {
      * @return the description of the cell
      */
     public abstract String getDetail();
+
+    /**
+     * Performs the action of the card on the player.
+     *
+     * @param game The game instance the cell is in
+     * @param player The player on the cell
+     * @param card The card to use
+     */
+    void selectCardAction(final Game game, final Player player, final Card card) {
+        System.out.println(card);
+        switch (card.getCardAction()) {
+            case GO_TO:
+                int previousPosition = player.getPosition();
+                if (card.getCellName().equalsIgnoreCase("prison")) {
+                    player.setPosition(Constant.PRISON_POSITION);
+                    player.setInPrison(true);
+                } else {
+                    try {
+                        player.setPosition(game.getCellIndexByName(card.getCellName()));
+                    } catch (NoCellFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                if (game.hasPlayerPassedStart() && game.hasPlayerPassedStartWithCards(previousPosition)) {
+                    player.receive(Constant.START_CELL_AMOUNT);
+                    Bank.getInstance().withdraw(Constant.START_CELL_AMOUNT);
+                }
+                break;
+            case PAY:
+                player.pay(card.getAmount());
+                Bank.getInstance().deposit(card.getAmount());
+                break;
+            case RECEIVE:
+                player.receive(card.getAmount());
+                Bank.getInstance().withdraw(card.getAmount());
+                break;
+        }
+    }
 }
