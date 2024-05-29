@@ -140,6 +140,9 @@ public class Player {
      * @param position the position
      */
     public void setPosition(final int position) {
+        if (position < 0 || position >= Constant.BOARD_SIZE) {
+            throw new IllegalArgumentException("Position must be between 0 and " + (Constant.BOARD_SIZE - 1));
+        }
         final int old = this.position;
         this.position = position;
         this.support.firePropertyChange("position", old, this.position);
