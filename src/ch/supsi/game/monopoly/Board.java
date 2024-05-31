@@ -184,6 +184,7 @@ public class Board {
         this.initFixedProprietyCells();
         this.initTaxCells();
         this.initCardCells();
+        this.initTaxEvasionCells();
         this.initRandomProprietyCells();
         int row = Constant.BOARD_HEIGHT - 1;
         int col = Constant.BOARD_WIDTH - 1;
@@ -243,7 +244,7 @@ public class Board {
      */
     private void initCardCells() {
         int i = 0;
-        while (i < Constant.CHANCE_CELLS_QTY) {
+        while (i < Constant.CHANCE_CELLS_QTY - 1) {
             int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
             if (this.cells[pos] != null) {
                 continue;
@@ -262,6 +263,17 @@ public class Board {
         }
     }
 
+    private void initTaxEvasionCells() {
+        int i = 0;
+        while (i < Constant.EVADE_CELLS_QTY){
+            int pos = this.random.nextInt(1, Constant.BOARD_SIZE);
+            if (this.cells[pos] != null) {
+                continue;
+            }
+            this.cells[pos] = new TaxEvasionCell();
+            i++;
+        }
+    }
     /**
      * <p>
      * Initializes the fixed propriety cells ({@link ProprietyCell}).
@@ -276,27 +288,31 @@ public class Board {
                 new ProprietyName("North Station", ANSIUtility.DEFAULT), getRandomRent(),
                 getRandomPurchasePrice(),
                 getRandomHousePrice(),
-                getRandomHotelPrice()
+                getRandomHotelPrice(),
+                false
         );
         final Cell sStation = new ProprietyCell(
                 new ProprietyName("South Station", ANSIUtility.DEFAULT),
                 getRandomRent(),getRandomPurchasePrice(),
                 getRandomHousePrice(),
-                getRandomHotelPrice()
+                getRandomHotelPrice(),
+                false
         );
         final Cell eStation = new ProprietyCell(
                 new ProprietyName("East Station", ANSIUtility.DEFAULT),
                 getRandomRent(),
                 getRandomPurchasePrice(),
                 getRandomHousePrice(),
-                getRandomHotelPrice()
+                getRandomHotelPrice(),
+                false
         );
         final Cell wStation = new ProprietyCell(
                 new ProprietyName("West Station", ANSIUtility.DEFAULT),
                 getRandomRent(),
                 getRandomPurchasePrice(),
                 getRandomHousePrice(),
-                getRandomHotelPrice()
+                getRandomHotelPrice(),
+                false
         );
         this.cells[Constant.NORTH_STATION_POSITION] = nStation;
         this.cells[Constant.SOUTH_STATION_POSITION] = sStation;
@@ -323,13 +339,24 @@ public class Board {
             do {
                 nameIndex = this.random.nextInt(0, nameBank.length);
             } while (nameBank[nameIndex].isBlacklisted());
-            this.cells[pos] = new ProprietyCell(
-                    nameBank[nameIndex],
-                    getRandomRent(),
-                    getRandomPurchasePrice(),
-                    getRandomHousePrice(),
-                    getRandomHotelPrice()
-            );
+            if (nameBank[nameIndex].getColor() == 0) {
+                this.cells[pos] = new ProprietyCell(
+                        nameBank[nameIndex],
+                        getRandomRent(),
+                        getRandomPurchasePrice(),
+                        getRandomHousePrice(),
+                        getRandomHotelPrice(),
+                        false
+                );
+            } else {
+                this.cells[pos] = new ProprietyCell(
+                        nameBank[nameIndex],
+                        getRandomRent(),
+                        getRandomPurchasePrice(),
+                        getRandomHousePrice(),
+                        getRandomHotelPrice()
+                );
+            }
             nameBank[nameIndex].setBlacklisted(true);
             i++;
         }
@@ -434,7 +461,11 @@ public class Board {
                 StringBuilder detail = new StringBuilder();
                 for (Player player : this.boardCells[row][col].getPlayers()) {
                     if (player != null)
-                        detail.append(player.getSymbol()).append(" ");
+                        if (player.isEvader())
+                            detail.append(ANSIUtility.colorize(
+                                    new String(player.getSymbol() + ""), ANSIUtility.RED)
+                            ).append(" ");
+                        else detail.append(player.getSymbol()).append(" ");
                 }
                 return detail.toString();
         }

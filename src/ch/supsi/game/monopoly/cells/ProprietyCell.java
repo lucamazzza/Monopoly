@@ -1,5 +1,6 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.Game;
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
@@ -71,8 +72,55 @@ public class ProprietyCell extends Cell{
     private boolean hotel = false;
 
     /**
+     * Whether the cell must display building options
+     */
+    private boolean buildDetail = true;
+
+    /**
      * <p>
      * Instantiates a new ProprietyCell with a name and a rent.
+     * </p>
+     *
+     * @param title the name of the cell
+     * @param rent  the rent of the cell
+     * @param purchasePrice the purchase price of the cell
+     * @param housePrice the price to build a house
+     * @param hotelPrice the price to build a hotel
+     * @throws IllegalArgumentException if the rent or the price is negative
+     */
+    public ProprietyCell(
+            final ProprietyName title,
+            final int rent,
+            final int purchasePrice,
+            final int housePrice,
+            final int hotelPrice) {
+        super(title.getName());
+        if (rent < 0) {
+            throw new IllegalArgumentException("The rent must be positive.");
+        }
+        if (purchasePrice < 0) {
+            throw new IllegalArgumentException("The purchase price must be positive.");
+        }
+        if (housePrice < 0) {
+            throw new IllegalArgumentException("The house price must be positive.");
+        }
+        if (hotelPrice < 0) {
+            throw new IllegalArgumentException("The hotel price must be positive.");
+        }
+        this.name = title;
+        this.rent = rent;
+        this.purchasePrice = purchasePrice;
+        this.housePrice = housePrice;
+        this.hotelPrice = hotelPrice;
+        this.buildDetail = true;
+    }
+
+    /**
+     * <p>
+     * Instantiates a new ProprietyCell with a name and a rent.
+     * </p>
+     * <p>
+     * This cell will not display any building options.
      * </p>
      *
      * @param title the name of the cell
@@ -83,19 +131,10 @@ public class ProprietyCell extends Cell{
             final int rent,
             final int purchasePrice,
             final int housePrice,
-            final int hotelPrice) {
-        super(title.getName());
-        this.name = title;
-        if (rent < 0) {
-            throw new IllegalArgumentException("The rent must be positive.");
-        }
-        this.rent = rent;
-        if (purchasePrice < 0) {
-            throw new IllegalArgumentException("The purchase price must be positive.");
-        }
-        this.purchasePrice = purchasePrice;
-        this.housePrice = housePrice;
-        this.hotelPrice = hotelPrice;
+            final int hotelPrice,
+            final boolean buildDetail) {
+        this(title, rent, purchasePrice, housePrice, hotelPrice);
+        this.buildDetail = buildDetail;
     }
 
     /**
@@ -111,12 +150,24 @@ public class ProprietyCell extends Cell{
      */
     @Override
     public void applyEffect(final Player player, final Game game) {
+        if (player.isEvader()) {
+            player.incrementAmountEvaded(this.rent);
+            ANSIUtility.printcf("As tax evader, you do not pay...%n", ANSIUtility.RED);
+            return;
+        }
         if (getOwner() != null){
+            if (getOwner().equals(player)) {
+                return;
+            }
             player.pay(this.rent);
             getOwner().receive(this.rent);
+            ANSIUtility.printcf("Paid %s$ to %s%n", ANSIUtility.BRIGHT_YELLOW, this.rent, getOwner().getName());
+            return;
         }
         player.pay(this.rent);
         Bank.getInstance().deposit(this.rent);
+        ANSIUtility.printcf("Paid %s$ to the bank%n", ANSIUtility.BRIGHT_YELLOW, this.rent);
+
     }
 
     /**
@@ -168,6 +219,7 @@ public class ProprietyCell extends Cell{
      * @return the building prices
      */
     public String getBuildingPrice() {
+        if (!buildDetail) return "";
         return "Prices: " + "⇧ " + this.housePrice + "$" + " □ " + this.hotelPrice + "$";
     }
 

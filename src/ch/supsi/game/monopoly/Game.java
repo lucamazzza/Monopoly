@@ -11,6 +11,7 @@ import ch.supsi.game.monopoly.exception.NoCellFoundException;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Random;
 
 /**
  * <p>
@@ -141,17 +142,15 @@ public class Game implements PropertyChangeListener {
                     this.scannerUtils.readNonBlankChar("Player #" + (i + 1) + " symbol: ")
             );
             if (i > 0 && this.isNotUniquePlayer(tmp, i)) {
-                ANSIUtility.setForegroundColor(ANSIUtility.RED);
-                System.out.println("Player name already taken, please choose another one.\n");
-                ANSIUtility.resetf();
+                ANSIUtility.printbcf(Constant.PLAYER_ALREADY_EXISTING, ANSIUtility.RED, tmp.getName());
                 continue;
             }
             this.players[i] = tmp;
             this.bank.withdraw(Constant.PLAYER_START_AMOUNT);
             this.players[i].receive(Constant.PLAYER_START_AMOUNT);
             ANSIUtility.printcf(
-                    "Player %s (%c) created%n%n",
-                    ANSIUtility.GREEN,
+                    Constant.PLAYER_CREATED,
+                    ANSIUtility.WHITE,
                     this.players[i].getName(),
                     this.players[i].getSymbol()
             );
@@ -166,7 +165,7 @@ public class Game implements PropertyChangeListener {
             this.chanceCards.shuffle();
             this.unexpectedCards.shuffle();
         } catch (EmptyDeckException e) {
-            ANSIUtility.printcf("%s", ANSIUtility.RED, e.getMessage());
+            ANSIUtility.printbcf("%s", ANSIUtility.RED, e.getMessage());
         }
     }
 
@@ -196,18 +195,10 @@ public class Game implements PropertyChangeListener {
      * </p>
      */
     private void printStartMessage() {
-        final String text = """
-                       8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
-                       88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
-                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""'  Yb   dP 88  .o   8P
-                       88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
-                """;
-        final String copyright = "Copyright © 2024 - Mazza, Masciocchi, Herceg\n";
         ANSIUtility.clearScreen();
         ANSIUtility.setBold();
-        ANSIUtility.printcf("%s       ", ANSIUtility.RED, text);
-        ANSIUtility.printcf("%s       ", ANSIUtility.WHITE, copyright);
-        ANSIUtility.setBold();
+        ANSIUtility.printcf("%s       ", ANSIUtility.RED, Constant.TITLE);
+        ANSIUtility.printcf("%s%n       ", ANSIUtility.WHITE, Constant.COPYRIGHT);
         this.scannerUtils.readKey("Press enter to start...");
         ANSIUtility.resetf();
     }
@@ -241,7 +232,7 @@ public class Game implements PropertyChangeListener {
         ANSIUtility.printbcf("Leaderboard%n", ANSIUtility.RED);
         this.sortPlayersByBalance();
         for (Player player : this.players) {
-            System.out.printf("%-20s: %.2f%n", player.getName(), player.getBalance());
+            ANSIUtility.printcf("%-20s: %.2f%n", ANSIUtility.BRIGHT_WHITE, player.getName(), player.getBalance());
         }
     }
 
@@ -255,7 +246,7 @@ public class Game implements PropertyChangeListener {
     private void printUI() {
         System.out.println();
         ANSIUtility.printbcf(
-                "%s's Turn [Balance: %.2f]%n",
+                Constant.TURN_INFORMATION,
                 ANSIUtility.GREEN,
                 this.players[this.indexOfCurrentPlayer].getName(),
                 this.players[this.indexOfCurrentPlayer].getBalance()
@@ -302,6 +293,7 @@ public class Game implements PropertyChangeListener {
         this.rollDices();
         if (currentPlayer.isInPrison()) this.playerInPrisonCase(currentPlayer);
         if (!currentPlayer.isInPrison())this.playerNotInPrisonCase(currentPlayer);
+        this.board.getCell(currentPlayer.getPosition()).applyEffect(currentPlayer, this);
         this.playerBuildingCase(currentPlayer);
         this.scannerUtils.readKey(Constant.PRESS_ENTER_TO_CONTINUE);
         this.getNextPlayer();
@@ -315,7 +307,22 @@ public class Game implements PropertyChangeListener {
     private void rollDices() {
         for (int i = 0; i < this.dices.length; i++) {
             this.dices[i].roll();
-            ANSIUtility.printcf("Dice " + (i + 1) + " rolled: %s%n", ANSIUtility.BRIGHT_YELLOW, this.dices[i]);
+            ANSIUtility.printcf(Constant.DICE_ROLL, ANSIUtility.BRIGHT_YELLOW, (i + 1), this.dices[i]);
+        }
+        final Player currentPlayer = this.players[this.indexOfCurrentPlayer];
+        if(currentPlayer.isEvader()) {
+            if (this.getDicesValue() % 3 == 0) {
+                currentPlayer.setInPrison(true);
+                this.board.getCell(
+                        Constant.GO_TO_PRISON_POSITION).applyEffect(currentPlayer, this);
+                ANSIUtility.printcf(Constant.UNLUCKY_EVADER_MESSAGE, ANSIUtility.RED);
+                this.scannerUtils.readKey(Constant.PRESS_ENTER_TO_CONTINUE);
+                final double amount = currentPlayer.getAmountEvaded() * Constant.DEBT_INTEREST_RATE;
+                currentPlayer.pay(amount);
+                ANSIUtility.printcf("Paid %.2f to repair your debt%n", ANSIUtility.BRIGHT_YELLOW,amount);
+                currentPlayer.setEvader(false);
+                currentPlayer.setAmountEvaded(0);
+            }
         }
     }
 
@@ -337,7 +344,7 @@ public class Game implements PropertyChangeListener {
     private void playerInPrisonCase(final Player currentPlayer) {
         boolean willBeInPrison = false;
         if (currentPlayer.getTimesTriedEvading() == Constant.MAX_PRISON_EVASIONS) {
-            System.out.println("To get out of prison you need to pay " + Constant.PRISON_TAX + "CHF");
+            ANSIUtility.printcf(Constant.PRISON_GETOUT_MESSAGE, ANSIUtility.BRIGHT_WHITE, Constant.PRISON_TAX);
             this.scannerUtils.readKey(Constant.PRESS_ENTER_TO_CONTINUE);
             currentPlayer.pay(Constant.PRISON_TAX);
             this.bank.deposit(Constant.PRISON_TAX);
@@ -379,6 +386,7 @@ public class Game implements PropertyChangeListener {
                 this.bank.deposit(pc.getPurchasePrice());
                 pc.setOwner(currentPlayer);
                 currentPlayer.addColor(pc);
+                ANSIUtility.printcf("You have bought %s%n", ANSIUtility.GREEN, pc.getTitle());
             }
         }
     }
@@ -395,9 +403,6 @@ public class Game implements PropertyChangeListener {
      * @param currentPlayer the player
      */
     private void playerBuildingCase(final Player currentPlayer) {
-        if (!(currentPlayer.equals(board.getCell(currentPlayer.getPosition()).getOwner()))) {
-            this.board.getCell(currentPlayer.getPosition()).applyEffect(currentPlayer, this);
-        }
         if (currentPlayer.canBuild()) {
             System.out.println("Would you want to build ?");
             if (scannerUtils.readBoolean()) {

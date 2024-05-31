@@ -1,5 +1,6 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.Constant;
 import ch.supsi.game.monopoly.Game;
 import ch.supsi.game.monopoly.Player;
@@ -43,10 +44,15 @@ public class GoToPrisonCell extends Cell{
      */
     @Override
     public void applyEffect(final Player player, final Game game) {
+        if (player.isEvader()) {
+
+        }
         player.setPosition(Constant.PRISON_POSITION);
         player.setInPrison(true);
-        System.out.println(
-                "You are now in prison, to break out you need to roll for both dices the same number");
+        ANSIUtility.printcf(
+                "You are now in prison, to break out you need to roll for both dices the same number%n",
+                ANSIUtility.BLUE
+        );
     }
 
     /**

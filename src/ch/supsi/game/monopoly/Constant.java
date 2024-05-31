@@ -26,6 +26,8 @@ public final class Constant {
      */
     public static final int BANK_START_AMOUNT = 1_000_000;
 
+    public static final double DEBT_INTEREST_RATE = 1.05;
+
     // PLAYER ----------------------------------------------------------------------------------------------------------
     /**
      * The start amount of money of the player, given by the bank
@@ -175,6 +177,8 @@ public final class Constant {
      */
     public static final int UNEXPECTED_CELLS_QTY = 3;
 
+    public static final int EVADE_CELLS_QTY = 1;
+
     /**
      * Number of propriety cells.
      */
@@ -239,6 +243,43 @@ public final class Constant {
      * The separator used in the cards file.
      */
     public static final String FILE_SEPARATOR = ";";
+
+
+    // MESSAGES --------------------------------------------------------------------------------------------------------
+
+    public static final String PLAYER_ALREADY_EXISTING = "Player name (%s) taken, please choose another one.%n";
+
+    public static final String PLAYER_CREATED = "Player %s (%c) created%n%n";
+
+    public static final String TITLE = """
+                       8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
+                       88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
+                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""'  Yb   dP 88  .o   8P
+                       88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
+                """;
+
+    public static final String COPYRIGHT = "Copyright © 2024 - Mazza, Masciocchi, Herceg";
+
+    public static final String TURN_INFORMATION = "%s's Turn [Balance: %.2f]%n";
+
+    public static final String DICE_ROLL = "Dice %d rolled: %s%n";
+
+    public static final String PRISON_GETOUT_MESSAGE = "To get out of prison you need to pay %d CHF%n";
+
+    public static final String TAX_EVASION_MESSAGE = """
+            You are now a tax evader.
+            From now on you do not pay any taxes.
+            There is a catch, every turn you roll a dice you have 1 in 4 chances to go directly to prison.
+            If you go to prison you pay all you evaded plus 5 percent interest.
+            
+            Have fun being naughty! 😈%n
+            """;
+
+    public static final String UNLUCKY_EVADER_MESSAGE = """
+            You are unlucky, you are caught evading taxes.
+            You go directly to prison and you pay your debt entirely with 5 percent interest.
+            You are no longer a tax evader.%n
+            """;
 
     /**
      * <p>

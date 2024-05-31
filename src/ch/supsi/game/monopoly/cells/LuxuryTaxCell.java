@@ -1,5 +1,6 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
 import ch.supsi.game.monopoly.Game;
@@ -56,8 +57,14 @@ public class LuxuryTaxCell extends Cell{
      */
     @Override
     public void applyEffect(final Player player, final Game game) {
+        if (player.isEvader()) {
+            player.incrementAmountEvaded(this.tax);
+            ANSIUtility.printcf("As tax evader, you do not pay...%n", ANSIUtility.RED);
+            return;
+        }
         player.pay(this.tax);
         Bank.getInstance().deposit(this.tax);
+        ANSIUtility.printcf("Paid %s$ to the bank.%n", ANSIUtility.BRIGHT_YELLOW, this.tax);
     }
 
     /**

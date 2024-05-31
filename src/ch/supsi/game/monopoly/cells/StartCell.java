@@ -1,5 +1,6 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
 import ch.supsi.game.monopoly.Game;
@@ -58,6 +59,7 @@ public class StartCell extends Cell{
     public void applyEffect(final Player player, final Game game) {
         player.receive(this.receivedAmount);
         Bank.getInstance().withdraw(this.receivedAmount);
+        ANSIUtility.printcf("Received %s$ by passing on the start cell.%n", ANSIUtility.GREEN, this.receivedAmount);
     }
 
     /**

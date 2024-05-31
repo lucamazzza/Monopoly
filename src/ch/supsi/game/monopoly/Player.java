@@ -64,6 +64,16 @@ public class Player {
     private boolean isInPrison;
 
     /**
+     * Flag that states if the player is a tax evader.
+     */
+    private boolean isEvader;
+
+    /**
+     * The amount of money the player evaded.
+     */
+    private double amountEvaded;
+
+    /**
      * Times that the player tried to evade
      */
     private int timesTriedEvading;
@@ -162,13 +172,13 @@ public class Player {
 
     /**
      * <p>
-     * If the player is in prison returns true
+     * If the player is in prison returns true.
      * </p>
      *
      * @return if the player is in prison
      */
     public boolean isInPrison() {
-        return isInPrison;
+        return this.isInPrison;
     }
 
     /**
@@ -180,6 +190,61 @@ public class Player {
      */
     public void setInPrison(final boolean inPrison) {
         isInPrison = inPrison;
+    }
+
+    /**
+     * <p>
+     * If the player is an evader returns true.
+     * </p>
+     *
+     * @return if the player is in prison
+     */
+    public boolean isEvader() {
+        return this.isEvader;
+    }
+
+    /**
+     * <p>
+     * Set the evader flag.
+     * </p>
+     *
+     * @param isEvader the boolean flag
+     */
+    public void setEvader(final boolean isEvader) {
+        this.isEvader = isEvader;
+    }
+
+    /**
+     * <p>
+     * Increment the amount of money the player evaded.
+     * </p>
+     *
+     * @param amountEvaded the amount of money
+     */
+    public void incrementAmountEvaded(final double amountEvaded) {
+        this.amountEvaded += amountEvaded;
+    }
+
+    /**
+     * <p>
+     * Returns the amount of money the player evaded.
+     * </p>
+     *
+     * @return the amount of money
+     */
+    public double getAmountEvaded() {
+        return this.amountEvaded;
+    }
+
+    /**
+     * <p>
+     * Set the amount of money the player evaded.
+     * </p>
+     *
+     * @param amountEvaded the amount of money
+     */
+    public void setAmountEvaded(final double amountEvaded) {
+        this.amountEvaded = amountEvaded;
     }
 
     /**
