@@ -6,6 +6,29 @@ import ch.supsi.game.monopoly.Game;
 import ch.supsi.game.monopoly.Player;
 import ch.supsi.game.monopoly.ScannerUtils;
 
+/**
+ * <p>
+ * This class represents the "Tax evasion" cell of the game "Monopoly".
+ * </p>
+ * <p>
+ * When a player lands on it, they can become a tax evader.
+ * A tax evader does not pay anything to other players or the bank until they are caught.
+ * There can only be one tax evader per game and once the player is caught
+ * they can no longer be a tax evader.
+ * </p>
+ * <b>Usage</b>:
+ * <pre>
+ * {@code
+ * Cell cell = new TaxEvasionCell();   // instantiate a new Tax Evasion Cell
+ * cell.getTitle();                    // get "Tax Evasion"
+ * cell.getDetail();                   // get "Want to be naughty?"
+ * cell.applyEffect(player);           // the player can choose to become a tax evader.
+ * }
+ * </pre>
+ *
+ * @author Luca Mazza
+ * @version 1.4.1
+ */
 public class TaxEvasionCell extends Cell {
 
     private boolean active;
@@ -24,13 +47,7 @@ public class TaxEvasionCell extends Cell {
     /**
      * Applies the effect of a specific cell on a player.
      * <p>
-     * As an abstract implementation, you must implement
-     * a version of this method for each concrete cell.
-     * </p>
-     * <p>
-     * In this case it is mandatory to use Dynamic Dispatch
-     * to apply the effect on a player, from a call of a
-     * variable type `Cell`.
+     * Gives the option to the player to become a tax evader.
      * </p>
      *
      * @param player the player to apply the effect on

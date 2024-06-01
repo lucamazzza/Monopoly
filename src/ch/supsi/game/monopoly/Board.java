@@ -262,7 +262,16 @@ public class Board {
             i++;
         }
     }
-
+    /**
+     * <p>
+     * Initializes the tax evasion cells on the board.
+     * </p>
+     * <p>
+     * This method randomly selects positions on the board and creates a new TaxEvasionCell object
+     * at each selected position, as long as the corresponding cell in the cells array is not already occupied.
+     * The number of tax evasion cells initialized is determined by the value of the EVADE_CELLS_QTY constant.
+     * <p>
+     */
     private void initTaxEvasionCells() {
         int i = 0;
         while (i < Constant.EVADE_CELLS_QTY){
@@ -463,7 +472,7 @@ public class Board {
                     if (player != null)
                         if (player.isEvader())
                             detail.append(ANSIUtility.colorize(
-                                    new String(player.getSymbol() + ""), ANSIUtility.RED)
+                                    player.getSymbol() + "", ANSIUtility.RED)
                             ).append(" ");
                         else detail.append(player.getSymbol()).append(" ");
                 }

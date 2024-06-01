@@ -26,6 +26,9 @@ public final class Constant {
      */
     public static final int BANK_START_AMOUNT = 1_000_000;
 
+    /**
+     * The debt interest rate, for tax evader.
+     */
     public static final double DEBT_INTEREST_RATE = 1.05;
 
     // PLAYER ----------------------------------------------------------------------------------------------------------
@@ -247,10 +250,19 @@ public final class Constant {
 
     // MESSAGES --------------------------------------------------------------------------------------------------------
 
+    /**
+     * Message displayed when a player already exists.
+     */
     public static final String PLAYER_ALREADY_EXISTING = "Player name (%s) taken, please choose another one.%n";
 
+    /**
+     * Message displayed when a player is created.
+     */
     public static final String PLAYER_CREATED = "Player %s (%c) created%n%n";
 
+    /**
+     * The title of the start screen.
+     */
     public static final String TITLE = """
                        8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
                        88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
@@ -258,14 +270,29 @@ public final class Constant {
                        88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
                 """;
 
+    /**
+     * The copyright string of the start screen.
+     */
     public static final String COPYRIGHT = "Copyright © 2024 - Mazza, Masciocchi, Herceg";
 
+    /**
+     * The turn information string.
+     */
     public static final String TURN_INFORMATION = "%s's Turn [Balance: %.2f]%n";
 
+    /**
+     * The message displayed when a die is rolled.
+     */
     public static final String DICE_ROLL = "Dice %d rolled: %s%n";
 
+    /**
+     * The message displayed when a player gets out of prison by paying a fee.
+     */
     public static final String PRISON_GETOUT_MESSAGE = "To get out of prison you need to pay %d CHF%n";
 
+    /**
+     * The message displayed when a player is tax evading.
+     */
     public static final String TAX_EVASION_MESSAGE = """
             You are now a tax evader.
             From now on you do not pay any taxes.
@@ -275,6 +302,10 @@ public final class Constant {
             Have fun being naughty! 😈%n
             """;
 
+    /**
+     * The message displayed when a player is unlucky and gets caught
+     * evading taxes.
+     */
     public static final String UNLUCKY_EVADER_MESSAGE = """
             You are unlucky, you are caught evading taxes.
             You go directly to prison and you pay your debt entirely with 5 percent interest.

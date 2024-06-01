@@ -11,7 +11,6 @@ import ch.supsi.game.monopoly.exception.NoCellFoundException;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Random;
 
 /**
  * <p>
@@ -291,6 +290,7 @@ public class Game implements PropertyChangeListener {
     private void diceRollCase() {
         final Player currentPlayer = this.players[this.indexOfCurrentPlayer];
         this.rollDices();
+        this.checkIfEvaderIsCaught(currentPlayer);
         if (currentPlayer.isInPrison()) this.playerInPrisonCase(currentPlayer);
         if (!currentPlayer.isInPrison())this.playerNotInPrisonCase(currentPlayer);
         this.board.getCell(currentPlayer.getPosition()).applyEffect(currentPlayer, this);
@@ -309,7 +309,20 @@ public class Game implements PropertyChangeListener {
             this.dices[i].roll();
             ANSIUtility.printcf(Constant.DICE_ROLL, ANSIUtility.BRIGHT_YELLOW, (i + 1), this.dices[i]);
         }
-        final Player currentPlayer = this.players[this.indexOfCurrentPlayer];
+    }
+
+    /**
+     * <p>
+     * Check if the current player is a tax evader and
+     * check their chance of getting caught.
+     * </p>
+     * <p>
+     * If they are caught they are sent to prison and their debt is paid.
+     * </p>
+     *
+     * @param currentPlayer the current player
+     */
+    private void checkIfEvaderIsCaught(Player currentPlayer) {
         if(currentPlayer.isEvader()) {
             if (this.getDicesValue() % 3 == 0) {
                 currentPlayer.setInPrison(true);
@@ -319,6 +332,7 @@ public class Game implements PropertyChangeListener {
                 this.scannerUtils.readKey(Constant.PRESS_ENTER_TO_CONTINUE);
                 final double amount = currentPlayer.getAmountEvaded() * Constant.DEBT_INTEREST_RATE;
                 currentPlayer.pay(amount);
+                Bank.getInstance().deposit(amount);
                 ANSIUtility.printcf("Paid %.2f to repair your debt%n", ANSIUtility.BRIGHT_YELLOW,amount);
                 currentPlayer.setEvader(false);
                 currentPlayer.setAmountEvaded(0);
