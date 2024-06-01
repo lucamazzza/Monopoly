@@ -31,6 +31,9 @@ import ch.supsi.game.monopoly.ScannerUtils;
  */
 public class TaxEvasionCell extends Cell {
 
+    /**
+     * Flag that enables the cell effect.
+     */
     private boolean active;
     /**
      * Constructor of the class.
