@@ -1,8 +1,10 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.movable.Player;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Player;
 
 /**
  * <p>
@@ -32,7 +34,9 @@ public class LuxuryTaxCell extends Cell{
     private final int tax;
 
     /**
+     * <p>
      * Instantiates a new Luxury tax cell.
+     * </p>
      */
     public LuxuryTaxCell() {
         super("Luxury Tax");
@@ -40,24 +44,33 @@ public class LuxuryTaxCell extends Cell{
     }
 
     /**
+     * <p>
      * Applies the effect of a specific cell on a player.
-     *
+     * </p>
      * <p>
      * When the luxury tax is applied, the player pays
      * 200.– to the bank.
      * </p>
      *
      * @param player the player to apply the effect on.
+     * @param game the game to apply the effect on.
      */
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect(final Player player, final Game game) {
+        if (player.isEvader()) {
+            player.incrementAmountEvaded(this.tax);
+            ANSIUtility.printcf("As tax evader, you do not pay...%n", ANSIUtility.RED);
+            return;
+        }
         player.pay(this.tax);
-        Bank.deposit(this.tax);
+        Bank.getInstance().deposit(this.tax);
+        ANSIUtility.printcf("Paid %s$ to the bank.%n", ANSIUtility.BRIGHT_YELLOW, this.tax);
     }
 
     /**
+     * <p>
      * Returns the name of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the name of the cell on the board.
      * </p>
@@ -70,8 +83,9 @@ public class LuxuryTaxCell extends Cell{
     }
 
     /**
+     * <p>
      * Returns the description of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the detail of the cell on the board.
      * </p>

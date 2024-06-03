@@ -19,63 +19,97 @@ package ch.supsi.game.monopoly;
  * </p>
  * <pre>
  * {@code
- * Bank.deposit(500);                       // give some money to the bank
- * Bank.withdraw(100);                      // take some money from the bank
- * System.out.print(Bank.getBalance());     // prints: "Bank: 1000400.00"
+ * Bank bank = Bank.getInstance();          // get the bank instance
+ * bank.deposit(500);                       // give some money to the bank
+ * bank.withdraw(100);                      // take some money from the bank
+ * System.out.print(bank.getBalance());     // prints: "Bank: 1000400.00"
  * }
  * </pre>
  *
  * @author Andrea Masciocchi
  * @author Luca Mazza
- * @version 1.2.0
+ * @version 1.4.0
  */
 public final class Bank {
 
     /**
-     * The amount of money held in the bank.
+     * The instance of the bank.
      */
-    private static double balance = Math.max(Constant.BANK_START_AMOUNT, 1_000_000);
+    private static Bank instance;
 
     /**
+     * The amount of money held in the bank.
+     */
+    private double balance;
+
+    /**
+     * <p>
      * Private constructor for class Bank.
-     * Prevents instantiation.
+     * Prevents instantiation, as for Singleton specification.
+     * </p>
      */
     private Bank() {
-        throw new IllegalStateException("Static class");
+        this.balance = Math.max(Constant.BANK_START_AMOUNT, 1_000_000);
     }
 
     /**
+     * <p>
+     * Returns the singleton instance of the bank.
+     * </p>
+     * <p>
+     * If the bank is not yet instantiated, it is instantiated,
+     * otherwise the existing instance is returned.
+     * </p>
+     *
+     * @return the singleton instance of the bank
+     */
+    public static Bank getInstance() {
+        if (instance == null) instance = new Bank();
+        return instance;
+    }
+
+    /**
+     * <p>
      * Deposits to the bank some money, defined in `amount`.
+     * </p>
+     * <p>
      * Used to pay the bank the fee of the current player.
+     * </p>
      *
      * @param amount the amount of money to deposit
      */
-    public static void deposit(double amount) {
+    public void deposit(final double amount) {
         if (amount < 1) {
             return;
         }
-        balance += amount;
+        this.balance += amount;
     }
 
     /**
+     * <p>
      * Withdraws some money, defined in `amount`, from the bank.
+     * </p>
+     * <p>
      * Used to give money to the player when a cell specifies so.
+     * </p>
      *
      * @param amount the amount of money to withdraw
      */
-    public static void withdraw (double amount){
+    public void withdraw(final double amount){
         if (amount < 1) {
             return;
         }
-        balance -= amount;
+        this.balance -= amount;
     }
 
     /**
+     * <p>
      * Prints the current balance of the bank.
+     * </p>
      *
      * @return the current balance as a String
      */
-    public static String getBalance() {
-        return String.format("Bank: %.2f", balance);
+    public String getBalance() {
+        return String.format("Bank: %.2f", this.balance);
     }
 }

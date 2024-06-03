@@ -1,10 +1,10 @@
 package ch.supsi.game.monopoly.cells;
 
 import ch.mazluc.util.ANSIUtility;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.movable.Player;
-
-import static ch.supsi.game.monopoly.Bank.deposit;
+import ch.supsi.game.monopoly.Player;
 
 /**
  * <p>
@@ -14,8 +14,8 @@ import static ch.supsi.game.monopoly.Bank.deposit;
  * The cell has a unique name and a color.
  * </p>
  * <p>
- * The names of the different cells are defined in the {@link ProprietyCell#nameBank}
- * field, which contains {@link ProprietyName} objects.
+ * The names of the different cells are defined in the {@code nameBank}
+ * field (in class {@link Game}), which contains {@link ProprietyName} objects.
  * </p>
  * <p>
  * Finally, every cell has a fee, assigned randomly
@@ -37,60 +37,9 @@ import static ch.supsi.game.monopoly.Bank.deposit;
 public class ProprietyCell extends Cell{
 
     /**
-     * The name of the cell, as defined in {@link ProprietyCell#nameBank}.
+     * The name of the cell.
      */
     private final ProprietyName name;
-
-    /**
-     *
-     * @return the color of the propriety.
-     */
-    public int getColor(){
-        return name.getColor();
-    }
-
-    /**
-     * The different names a propriety cell can assume, instances of {@link ProprietyName}.
-     * <p>
-     * As it is a static field, it is accessible throughout the code, and is constant
-     * so that accessibility issues are avoided.
-     * </p>
-     */
-    public static final ProprietyName[] nameBank = {
-            // BROWN
-            new ProprietyName("Short End", ANSIUtility.BROWN),
-            new ProprietyName("Tight End", ANSIUtility.BROWN),
-            // CYAN
-            new ProprietyName("Bastioni Gran Sasso", ANSIUtility.CYAN),
-            new ProprietyName("Viale Monterosa", ANSIUtility.CYAN),
-            new ProprietyName("Viale Vesuvio", ANSIUtility.CYAN),
-            // PINK
-            new ProprietyName("Via Accademia", ANSIUtility.MAGENTA),
-            new ProprietyName("Corso Ateneo", ANSIUtility.MAGENTA),
-            new ProprietyName("Piazza Università", ANSIUtility.MAGENTA),
-            // GREY
-            new ProprietyName("Via Verdi", ANSIUtility.WHITE),
-            new ProprietyName("Corso Raffaello", ANSIUtility.WHITE),
-            new ProprietyName("Piazza Dante", ANSIUtility.WHITE),
-            // RED
-            new ProprietyName("Via Marco Polo", ANSIUtility.RED),
-            new ProprietyName("Corso Magellano", ANSIUtility.RED),
-            new ProprietyName("Largo Colombo", ANSIUtility.RED),
-            // YELLOW
-            new ProprietyName("Viale Costantino", ANSIUtility.BRIGHT_YELLOW),
-            new ProprietyName("Viale Traiano", ANSIUtility.BRIGHT_YELLOW),
-            new ProprietyName("Piazza Giulio Cesare", ANSIUtility.BRIGHT_YELLOW),
-            // GREEN
-            new ProprietyName("Via Roma", ANSIUtility.GREEN),
-            new ProprietyName("Corso Impero", ANSIUtility.GREEN),
-            new ProprietyName("Largo Augusto", ANSIUtility.GREEN),
-            // BLUE
-            new ProprietyName("Viale dei Giardini", ANSIUtility.BLUE),
-            new ProprietyName("Parco della Vittoria", ANSIUtility.BLUE),
-            // BLACK
-            new ProprietyName("Water Works", ANSIUtility.DEFAULT),
-            new ProprietyName("Electric Company", ANSIUtility.DEFAULT)
-    };
 
     /**
      * The rent of the cell.
@@ -108,7 +57,7 @@ public class ProprietyCell extends Cell{
     private final int housePrice;
 
     /**
-     * Tbe price to build an hotel.
+     * Tbe price to build a hotel.
      */
     private final int hotelPrice;
 
@@ -123,48 +72,108 @@ public class ProprietyCell extends Cell{
     private boolean hotel = false;
 
     /**
+     * Whether the cell must display building options
+     */
+    private boolean buildDetail = true;
+
+    /**
+     * <p>
      * Instantiates a new ProprietyCell with a name and a rent.
+     * </p>
+     *
+     * @param title the name of the cell
+     * @param rent  the rent of the cell
+     * @param purchasePrice the purchase price of the cell
+     * @param housePrice the price to build a house
+     * @param hotelPrice the price to build a hotel
+     * @throws IllegalArgumentException if the rent or the price is negative
+     */
+    public ProprietyCell(
+            final ProprietyName title,
+            final int rent,
+            final int purchasePrice,
+            final int housePrice,
+            final int hotelPrice) {
+        super(title.getName());
+        if (rent < 0) {
+            throw new IllegalArgumentException("The rent must be positive.");
+        }
+        if (purchasePrice < 0) {
+            throw new IllegalArgumentException("The purchase price must be positive.");
+        }
+        if (housePrice < 0) {
+            throw new IllegalArgumentException("The house price must be positive.");
+        }
+        if (hotelPrice < 0) {
+            throw new IllegalArgumentException("The hotel price must be positive.");
+        }
+        this.name = title;
+        this.rent = rent;
+        this.purchasePrice = purchasePrice;
+        this.housePrice = housePrice;
+        this.hotelPrice = hotelPrice;
+        this.buildDetail = true;
+    }
+
+    /**
+     * <p>
+     * Instantiates a new ProprietyCell with a name and a rent.
+     * </p>
+     * <p>
+     * This cell will not display any building options.
+     * </p>
      *
      * @param title the name of the cell
      * @param rent  the rent of the cell
      */
-    public ProprietyCell(ProprietyName title, int rent, int purchasePrice, int housePrice, int hotelPrice) {
-        super(title.getName());
-        this.name = title;
-        if (rent < 0) {
-            throw new IllegalArgumentException("The rent must be positive.");
-        }
-        this.rent = rent;
-        if (purchasePrice < 0) {
-            throw new IllegalArgumentException("The purchase price must be positive.");
-        }
-        this.purchasePrice = purchasePrice;
-        this.housePrice = housePrice;
-        this.hotelPrice = hotelPrice;
+    public ProprietyCell(
+            final ProprietyName title,
+            final int rent,
+            final int purchasePrice,
+            final int housePrice,
+            final int hotelPrice,
+            final boolean buildDetail) {
+        this(title, rent, purchasePrice, housePrice, hotelPrice);
+        this.buildDetail = buildDetail;
     }
 
     /**
+     * <p>
      * Applies the effect of a specific cell on a player.
-     *
+     * </p>
      * <p>
      * When a player lands on a cell, he must pay the rent to the bank.
      * </p>
      *
      * @param player the player to apply the effect on.
+     * @param game   the game to apply the effect on.
      */
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect(final Player player, final Game game) {
+        if (player.isEvader()) {
+            player.incrementAmountEvaded(this.rent);
+            ANSIUtility.printcf("As tax evader, you do not pay...%n", ANSIUtility.RED);
+            return;
+        }
         if (getOwner() != null){
+            if (getOwner().equals(player)) {
+                return;
+            }
             player.pay(this.rent);
             getOwner().receive(this.rent);
+            ANSIUtility.printcf("Paid %s$ to %s%n", ANSIUtility.BRIGHT_YELLOW, this.rent, getOwner().getName());
+            return;
         }
         player.pay(this.rent);
-        deposit(this.rent);
+        Bank.getInstance().deposit(this.rent);
+        ANSIUtility.printcf("Paid %s$ to the bank%n", ANSIUtility.BRIGHT_YELLOW, this.rent);
+
     }
 
     /**
+     * <p>
      * Returns the name of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the name of the cell on the board.
      * </p>
@@ -177,8 +186,9 @@ public class ProprietyCell extends Cell{
     }
 
     /**
+     * <p>
      * Returns the description of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the detail of the cell on the board.
      * </p>
@@ -191,7 +201,9 @@ public class ProprietyCell extends Cell{
     }
 
     /**
+     * <p>
      * Returns the purchase price of the propriety.
+     * </p>
      *
      * @return the purchase price
      */
@@ -200,12 +212,26 @@ public class ProprietyCell extends Cell{
     }
 
     /**
+     * <p>
      * Returns the building prices (houses and hotel) of the propriety.
+     * </p>
      *
      * @return the building prices
      */
     public String getBuildingPrice() {
-        return "Prices: " + "⌂ " + this.housePrice + "$" + " ⎕ " + this.hotelPrice + "$";
+        if (!buildDetail) return "";
+        return "Prices: " + "⇧ " + this.housePrice + "$" + " □ " + this.hotelPrice + "$";
+    }
+
+    /**
+     * <p>
+     * Returns the color of the cell.
+     * </p>
+     *
+     * @return the color of the propriety.
+     */
+    public int getColor(){
+        return name.getColor();
     }
 
     /**
@@ -219,7 +245,7 @@ public class ProprietyCell extends Cell{
      *
      * @param currentPlayer The player building
      */
-    public void addBuilding(Player currentPlayer) {
+    public void addBuilding(final Player currentPlayer) {
         if (this.hotel){
             System.out.println("You can't build anymore on this propriety");
         } else if (this.numberOfHouses == Constant.MAX_NUMBER_HOUSES) {
@@ -235,7 +261,9 @@ public class ProprietyCell extends Cell{
     }
 
     /**
+     * <p>
      * Removes all the buildings on the propriety
+     * </p>
      */
     public void removeBuildings(){
         if(this.hotel){
@@ -247,15 +275,17 @@ public class ProprietyCell extends Cell{
     }
 
     /**
+     * <p>
      * Show the buildings on a cell, as a detail.
+     * </p>
      *
      * @return A string containing little images of houses ⌂ and hotels ⎕.
      */
     public String showBuildings() {
         if (this.hotel){
-            return "⎕";
+            return "□";
         }else {
-            return "⌂".repeat(Math.max(0, numberOfHouses));
+            return "⇧".repeat(Math.max(0, numberOfHouses));
         }
     }
 }

@@ -10,15 +10,26 @@ package ch.supsi.game.monopoly;
  *
  * @author Andrea Masciocchi
  * @author Ivo Herceg
- * @version 1.3.0
+ * @version 1.4.0
  */
 public final class Constant {
+
+    // SCANNER ---------------------------------------------------------------------------------------------------------
+    /**
+     * The message to print when the user presses enter to continue.
+     */
+    public static final String PRESS_ENTER_TO_CONTINUE = "Press enter to continue...";
 
     // BANK ------------------------------------------------------------------------------------------------------------
     /**
      * The start amount of money in the bank.
      */
     public static final int BANK_START_AMOUNT = 1_000_000;
+
+    /**
+     * The debt interest rate, for tax evader.
+     */
+    public static final double DEBT_INTEREST_RATE = 1.05;
 
     // PLAYER ----------------------------------------------------------------------------------------------------------
     /**
@@ -160,16 +171,23 @@ public final class Constant {
     public static final int GO_TO_PRISON_CELLS_QTY = 1;
 
     /**
-     * Number of extra cells.
+     * Number of chance cells.
      */
-    public static final int EXTRA_CELLS_QTY = 6;
+    public static final int CHANCE_CELLS_QTY = 3;
+
+    /**
+     * Number of unexpected cells
+     */
+    public static final int UNEXPECTED_CELLS_QTY = 3;
+
+    public static final int EVADE_CELLS_QTY = 1;
 
     /**
      * Number of propriety cells.
      */
     public static final int PROPRIETY_CELLS_QTY =
             BOARD_SIZE - TAX_CELLS_QTY - STATION_CELLS_QTY - START_CELLS_QTY - PARKING_CELLS_QTY - PRISON_CELLS_QTY -
-            GO_TO_PRISON_CELLS_QTY - EXTRA_CELLS_QTY;
+            GO_TO_PRISON_CELLS_QTY - CHANCE_CELLS_QTY - UNEXPECTED_CELLS_QTY;
 
     // PROPRIETIES -----------------------------------------------------------------------------------------------------
     /**
@@ -217,6 +235,82 @@ public final class Constant {
      */
     public static final int PRISON_TAX = 50;
 
+    /**
+     * The maximum number of evasions in prison.
+     */
+    public static final int MAX_PRISON_EVASIONS = 3;
+
+    // CARDS -----------------------------------------------------------------------------------------------------------
+
+    /**
+     * The separator used in the cards file.
+     */
+    public static final String FILE_SEPARATOR = ";";
+
+
+    // MESSAGES --------------------------------------------------------------------------------------------------------
+
+    /**
+     * Message displayed when a player already exists.
+     */
+    public static final String PLAYER_ALREADY_EXISTING = "Player name (%s) taken, please choose another one.%n";
+
+    /**
+     * Message displayed when a player is created.
+     */
+    public static final String PLAYER_CREATED = "Player %s (%c) created%n%n";
+
+    /**
+     * The title of the start screen.
+     */
+    public static final String TITLE = """
+                       8b    d8  dP"Yb  88b 88  dP"Yb  88""Yb  dP"Yb  88     Yb  dP
+                       88b  d88 dP   Yb 88Yb88 dP   Yb 88__dP dP   Yb 88      YbdP
+                       88YbdP88 Yb   dP 88 Y88 Yb   dP 88""'  Yb   dP 88  .o   8P
+                       88 YY 88  YbodP  88  Y8  YbodP  88      YbodP  88ood8  dP
+                """;
+
+    /**
+     * The copyright string of the start screen.
+     */
+    public static final String COPYRIGHT = "Copyright © 2024 - Mazza, Masciocchi, Herceg";
+
+    /**
+     * The turn information string.
+     */
+    public static final String TURN_INFORMATION = "%s's Turn [Balance: %.2f]%n";
+
+    /**
+     * The message displayed when a die is rolled.
+     */
+    public static final String DICE_ROLL = "Dice %d rolled: %s%n";
+
+    /**
+     * The message displayed when a player gets out of prison by paying a fee.
+     */
+    public static final String PRISON_GETOUT_MESSAGE = "To get out of prison you need to pay %d CHF%n";
+
+    /**
+     * The message displayed when a player is tax evading.
+     */
+    public static final String TAX_EVASION_MESSAGE = """
+            You are now a tax evader.
+            From now on you do not pay any taxes.
+            There is a catch, every turn you roll a dice you have 1 in 4 chances to go directly to prison.
+            If you go to prison you pay all you evaded plus 5 percent interest.
+            
+            Have fun being naughty! 😈%n
+            """;
+
+    /**
+     * The message displayed when a player is unlucky and gets caught
+     * evading taxes.
+     */
+    public static final String UNLUCKY_EVADER_MESSAGE = """
+            You are unlucky, you are caught evading taxes.
+            You go directly to prison and you pay your debt entirely with 5 percent interest.
+            You are no longer a tax evader.%n
+            """;
 
     /**
      * <p>

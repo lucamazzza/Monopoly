@@ -1,8 +1,10 @@
 package ch.supsi.game.monopoly.cells;
 
+import ch.mazluc.util.ANSIUtility;
 import ch.supsi.game.monopoly.Bank;
 import ch.supsi.game.monopoly.Constant;
-import ch.supsi.game.monopoly.movable.Player;
+import ch.supsi.game.monopoly.Game;
+import ch.supsi.game.monopoly.Player;
 
 /**
  * <p>
@@ -32,7 +34,9 @@ public class WealthTaxCell extends Cell{
     private final double percentage;
 
     /**
+     * <p>
      * Constructor of the WealthTaxCell class.
+     * </p>
      */
     public WealthTaxCell() {
         super("Wealth Tax");
@@ -40,8 +44,9 @@ public class WealthTaxCell extends Cell{
     }
 
     /**
+     * <p>
      * Applies the effect of a specific cell on a player.
-     *
+     * </p>
      * <p>
      * When the wealth tax is applied, the player pays
      * the {@link WealthTaxCell#percentage} of its balance
@@ -49,17 +54,25 @@ public class WealthTaxCell extends Cell{
      * </p>
      *
      * @param player the player to apply the effect on.
+     * @param game   the game to apply the effect on.
      */
     @Override
-    public void applyEffect(Player player) {
+    public void applyEffect(final Player player, final Game game) {
         double tax = player.getBalance() / this.percentage;
+        if (player.isEvader()) {
+            player.incrementAmountEvaded(tax);
+            ANSIUtility.printcf("As tax evader, you do not pay...%n", ANSIUtility.RED);
+            return;
+        }
         player.pay(tax);
-        Bank.deposit(tax);
+        Bank.getInstance().deposit(tax);
+        ANSIUtility.printcf("Paid %s$ to the bank.%n", ANSIUtility.BRIGHT_YELLOW, tax);
     }
 
     /**
+     * <p>
      * Returns the description of the cell.
-     *
+     * </p>
      * <p>
      * Used to display the detail of the cell on the board.
      * </p>

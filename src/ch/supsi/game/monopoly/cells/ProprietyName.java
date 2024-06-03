@@ -30,7 +30,9 @@ public class ProprietyName {
     private final String name;
 
     /**
+     * <p>
      * True if the propriety is blacklisted.
+     * </p>
      * <p>
      * Blacklisted proprieties are used to
      * distinguish when a cell already exists.
@@ -44,27 +46,32 @@ public class ProprietyName {
     private final int color;
 
     /**
+     * <p>
      * Instantiates a new Propriety name.
-     *
+     * </p>
      * @param name the name of the propriety
      * @param color the color of the propriety
      */
-    public ProprietyName(String name, int color) {
+    public ProprietyName(final String name, final int color) {
         this.name = name;
         this.color = color;
     }
 
     /**
+     * <p>
      * Sets the name blacklisted or not.
+     * </p>
      *
      * @param blacklisted true if the name has to be blacklisted
      */
-    public void setBlacklisted(boolean blacklisted) {
+    public void setBlacklisted(final boolean blacklisted) {
         this.blacklisted = blacklisted;
     }
 
     /**
+     * <p>
      * Checks if the name is blacklisted or not.
+     * </p>
      *
      * @return true if the name is blacklisted, false if not
      */
@@ -73,7 +80,9 @@ public class ProprietyName {
     }
 
     /**
+     * <p>
      * Gets the name of the propriety.
+     * </p>
      * <b>Warning</b>:
      * <p>
      * The colorization of a String adds ANSI hidden characters to
@@ -87,8 +96,11 @@ public class ProprietyName {
     }
 
     /**
+     * <p>
+     * Returns the color of the cell.
+     * </p>
      *
-     * @return
+     * @return the color of the cell
      */
     public int getColor() {
         return color;
