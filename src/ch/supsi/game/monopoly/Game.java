@@ -546,14 +546,8 @@ public class Game implements PropertyChangeListener {
     private void playerGameOver(final int playerIndex) {
         if (playerIndex >= this.players.length) return;
         final Player player = this.players[playerIndex];
-        final Cell[] cells = this.board.getCells();
-        for (Cell cell : cells) {
-            if (cell instanceof ProprietyCell pc && (pc.getOwner() != null && pc.getOwner().equals(player))) {
-                pc.removeBuildings();
-                cell.setOwner(null);
-            }
-        }
-        this.board.setCells(cells);
+        this.board.stripAllProprietiesOfPlayer(player);
+        this.printUI();
     }
 
     /**

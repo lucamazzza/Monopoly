@@ -474,6 +474,10 @@ public class Board {
                             detail.append(ANSIUtility.colorize(
                                     player.getSymbol() + "", ANSIUtility.RED)
                             ).append(" ");
+                        else if (player.isInPrison())
+                            detail.append(ANSIUtility.colorize(
+                                    player.getSymbol() + "", ANSIUtility.WHITE)
+                            ).append(" ");
                         else detail.append(player.getSymbol()).append(" ");
                 }
                 return detail.toString();
@@ -572,5 +576,25 @@ public class Board {
                 cellsOfSameColor.add(pc);
         }
         return cellsOfSameColor;
+    }
+
+    /**
+     * <p>
+     * Removes all proprieties of a player.
+     * </p>
+     *
+     * @param player the player
+     */
+    public void stripAllProprietiesOfPlayer (Player player) {
+        for (Cell cell : this.cells) {
+            if (cell instanceof ProprietyCell pc && (pc.getOwner() != null && pc.getOwner().equals(player))) {
+                pc.removeBuildings();
+                pc.setOwner(null);
+            }
+            for (Player player1 : cell.getPlayers()) {
+                if (player1 != null && player1.equals(player))
+                    cell.removePlayer(player1);
+            }
+        }
     }
 }

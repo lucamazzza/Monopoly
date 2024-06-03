@@ -72,8 +72,6 @@ public abstract class Cell {
      * @param owner the owner
      */
     public void setOwner(final Player owner) {
-        if (owner == null)
-            return;
         this.owner = owner;
     }
 

@@ -165,7 +165,8 @@ public class ScannerUtils {
      */
     public int readOption(){
         System.out.println("What do you want to do?");
-        return this.readIntInRange(1,4,"1. Roll the dice\n2. View your balance\n3. View your proprieties\n4. Quit\nOption: ");
+        return this.readIntInRange(1,4,
+                "1. Roll the dice\n2. View your balance\n3. View your proprieties\n4. Quit\nOption: ");
     }
 
     /**
